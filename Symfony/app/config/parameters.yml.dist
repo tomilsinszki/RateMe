@@ -1,0 +1,14 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: localhost
+    database_port: '3306'
+    database_name: rateme
+    database_user: rateme
+    database_password: emetar
+    mailer_transport: smtp
+    mailer_host: localhost
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: 54aab60745807da2b5da812a20c8754c650796de
+    database_path: /var/run/mysqld/mysqld.sock
