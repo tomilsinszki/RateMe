@@ -18,9 +18,14 @@ security:
             entity: { class: AcmeUserBundle:User, property: username }
             
     firewalls:
-        admin_area:
+        login_firewall:
+            pattern:    ^/login$
+            anonymous:  ~
+        secured_area:
             pattern:    ^/
-            http_basic: ~
+            form_login:
+                login_path:  /login
+                check_path:  /login_check
 
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
