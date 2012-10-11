@@ -139,4 +139,30 @@ class Rating
     {
         return $this->updated;
     }
+
+    public function setRateable($rateable)
+    {
+        if ( empty($this->rateable) === FALSE )
+            $this->rateable->removeRating($this);
+
+        $rateable->addRating($this);
+        $this->rateable = $rateable;
+    }
+
+    public function getRateable()
+    {
+        return $this->rateable;
+    }
+
+    public function setRatingUser($user)
+    {
+        $this->ratingUser = $user;
+
+        return $this;
+    }
+
+    public function getRatingUser()
+    {
+        return $this->ratingUser;
+    }
 }

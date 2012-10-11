@@ -67,7 +67,7 @@ class RateableCollection
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", unique=true)}
      *      )
      */
-     private $owners;
+    private $owners;
 
 
     public function __construct() 
@@ -190,5 +190,29 @@ class RateableCollection
     public function getIdentifier()
     {
         return $this->identifier;
+    }
+
+    public function addRateable($rateable)
+    {
+        if ( $this->rateables->contains($rateable) === FALSE )
+            $this->rateables[] = $rateable;
+    }
+
+    public function removeRateable($rateable)
+    {
+        if ( $this->rateables->contains($rateable) === TRUE )
+            $this->rateables->removeElement($rateable);
+    }
+
+    public function addOwner($user)
+    {
+        if ( $this->owners->contains($user) === FALSE )
+            $this->owners[] = $user;
+    }
+
+    public function removeOwner($user)
+    {
+        if ( $this->owners->contains($user) === TRUE )
+            $this->owners->removeElement($user);
     }
 }

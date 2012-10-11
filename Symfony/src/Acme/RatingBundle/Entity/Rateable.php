@@ -254,4 +254,42 @@ class Rateable
     {
         return $this->identifier;
     }
+
+    public function setCollection($collection)
+    {
+        if ( empty($this->collection) === FALSE )
+            $this->collection->removeRateable($this);
+
+        $collection->addRateable($this);
+        $this->collection = $collection;
+    }
+
+    public function getCollection()
+    {
+        return $this->collection;
+    }
+
+    public function addRating($rating)
+    {
+        if ( $this->ratings->contains($rating) === FALSE )
+            $this->ratings[] = $rating;
+    }
+
+    public function removeRating($rating)
+    {
+        if ( $this->ratings->contains($rating) === TRUE )
+            $this->ratings->removeElement($rating);
+    }
+
+    public function setRateableUser($user)
+    {
+        $this->rateableUser = $user;
+
+        return $this;
+    }
+
+    public function getRateableUser()
+    {
+        return $this->rateableUser;
+    }
 }
