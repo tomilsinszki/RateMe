@@ -31,25 +31,18 @@ class IdentifierController extends Controller
             $form->bind($request);
 
             if ( $form->isValid() ) {
-                // TODO: check if alphanumeric value exists, if not error page
-
-                // TODO: get alphanumeric value
                 $alphanumericValue = $form->get('alphanumericValue')->getData();
-
-                $identifier = $this->getDoctrine()
-                    ->getRepository('AcmeRatingBundle:Identifier')
-                    ->findOneByAlphanumericValue($alphanumericValue);
-
-                if ( empty($identifier) === TRUE )
-                    return $this->redirect($this->generateUrl('identifier_not_found'));
-
+                $identifier = $this->getDoctrine()->getRepository('AcmeRatingBundle:Identifier')->findOneByAlphanumericValue($alphanumericValue);
                 
-                /*
-                else {
-                }
-                */
-
-                //return $this->redirect($this->generateUrl('acme_user_registration'));
+                $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByIdentifier($identifier);
+                if ( empty($rateable) === FALSE )
+                    return $this->redirect($this->generateUrl('rateable_main', array('alphanumericValue' => $alphanumericValue)));
+                
+                $collection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->findOneByIdentifier($identifier);
+                if ( empty($collection) === FALSE )
+                    return $this->redirect($this->generateUrl('rateable_collection_main', array('alphanumericValue' => $alphanumericValue)));
+                
+                return $this->redirect($this->generateUrl('identifier_not_found'));
             }
         }
     }

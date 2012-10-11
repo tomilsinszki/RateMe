@@ -5,3 +5,11 @@ identifier_search:
 identifier_not_found:
     pattern:   /azonosito/nincs
     defaults: { _controller: AcmeRatingBundle:Identifier:notExists }
+
+rateable_main:
+    pattern:   /{alphanumericValue}
+    defaults: { _controller: AcmeRatingBundle:Rateable:index }
+
+rateable_collection_main:
+    pattern:   /hely/{alphanumericValue}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:index }
