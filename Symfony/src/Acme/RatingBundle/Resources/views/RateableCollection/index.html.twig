@@ -2,6 +2,8 @@
     <div>{{ collection.name }}</div>
 {% endif %}
 
+<div style="margin-top:20px;">Kit értékelsz?</div>
+
 {% for rateable in rateables %}
     <div style="margin-top:20px;">
         <div><a href="{{ path('rateable_by_id_main', {'id': rateable.id}) }}">{{ rateable.name }}</a></div>
