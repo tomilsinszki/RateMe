@@ -40,9 +40,10 @@ class IdentifierController extends Controller
                     ->getRepository('AcmeRatingBundle:Identifier')
                     ->findOneByAlphanumericValue($alphanumericValue);
 
-                if ( empty($identifier) === TRUE ) {
+                if ( empty($identifier) === TRUE )
                     return $this->redirect($this->generateUrl('identifier_not_found'));
-                }
+
+                
                 /*
                 else {
                 }
