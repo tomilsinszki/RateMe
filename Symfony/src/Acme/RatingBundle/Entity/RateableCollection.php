@@ -29,11 +29,11 @@ class RateableCollection
     private $name;
 
     /**
-     * @var string $foreign_url
+     * @var string $foreignUrl
      *
      * @ORM\Column(name="foreign_url", type="string", length=255, nullable=true)
      */
-    private $foreign_url;
+    private $foreignUrl;
 
     /**
      * @var \DateTime $created
@@ -109,26 +109,26 @@ class RateableCollection
     }
 
     /**
-     * Set foreign_url
+     * Set foreignUrl
      *
      * @param string $foreignUrl
      * @return RateableCollection
      */
     public function setForeignUrl($foreignUrl)
     {
-        $this->foreign_url = $foreignUrl;
+        $this->foreignUrl = $foreignUrl;
     
         return $this;
     }
 
     /**
-     * Get foreign_url
+     * Get foreignUrl
      *
      * @return string 
      */
     public function getForeignUrl()
     {
-        return $this->foreign_url;
+        return $this->foreignUrl;
     }
 
     /**

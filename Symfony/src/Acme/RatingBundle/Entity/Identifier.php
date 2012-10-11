@@ -22,18 +22,18 @@ class Identifier
     private $id;
 
     /**
-     * @var string $qr_code_url
+     * @var string $qrCodeUrl
      *
      * @ORM\Column(name="qr_code_url", type="string", length=255, unique=true, nullable=false)
      */
-    private $qr_code_url;
+    private $qrCodeUrl;
 
     /**
-     * @var string $alphanumeric_value
+     * @var string $alphanumericValue
      *
      * @ORM\Column(name="alphanumeric_value", type="string", length=255, unique=true, nullable=false)
      */
-    private $alphanumeric_value;
+    private $alphanumericValue;
 
 
     /**
@@ -47,48 +47,48 @@ class Identifier
     }
 
     /**
-     * Set qr_code_url
+     * Set qrCodeUrl
      *
      * @param string $qrCodeUrl
      * @return Identifier
      */
     public function setQrCodeUrl($qrCodeUrl)
     {
-        $this->qr_code_url = $qrCodeUrl;
+        $this->qrCodeUrl = $qrCodeUrl;
     
         return $this;
     }
 
     /**
-     * Get qr_code_url
+     * Get qrCodeUrl
      *
      * @return string 
      */
     public function getQrCodeUrl()
     {
-        return $this->qr_code_url;
+        return $this->qrCodeUrl;
     }
 
     /**
-     * Set alphanumeric_value
+     * Set alphanumericValue
      *
      * @param string $alphanumericValue
      * @return Identifier
      */
     public function setAlphanumericValue($alphanumericValue)
     {
-        $this->alphanumeric_value = $alphanumericValue;
+        $this->alphanumericValue = $alphanumericValue;
     
         return $this;
     }
 
     /**
-     * Get alphanumeric_value
+     * Get alphanumericValue
      *
      * @return string 
      */
     public function getAlphanumericValue()
     {
-        return $this->alphanumeric_value;
+        return $this->alphanumericValue;
     }
 }

@@ -29,25 +29,25 @@ class Rateable
     private $name;
 
     /**
-     * @var string $type_name
+     * @var string $typeName
      *
      * @ORM\Column(name="type_name", type="string", length=255, nullable=false)
      */
-    private $type_name;
+    private $typeName;
 
     /**
-     * @var string $image_url
+     * @var string $imageURL
      *
      * @ORM\Column(name="image_url", type="string", length=255, nullable=false)
      */
-    private $image_url;
+    private $imageURL;
 
     /**
-     * @var boolean $is_active
+     * @var boolean $isActive
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=false)
      */
-    private $is_active;
+    private $isActive;
 
     /**
      * @var \DateTime $created
@@ -125,72 +125,72 @@ class Rateable
     }
 
     /**
-     * Set type_name
+     * Set typeName
      *
      * @param string $typeName
      * @return Rateable
      */
     public function setTypeName($typeName)
     {
-        $this->type_name = $typeName;
+        $this->typeName = $typeName;
     
         return $this;
     }
 
     /**
-     * Get type_name
+     * Get typeName
      *
      * @return string 
      */
     public function getTypeName()
     {
-        return $this->type_name;
+        return $this->typeName;
     }
 
     /**
-     * Set image_url
+     * Set imageURL
      *
-     * @param string $imageUrl
+     * @param string $imageURL
      * @return Rateable
      */
-    public function setImageUrl($imageUrl)
+    public function setImageURL($imageURL)
     {
-        $this->image_url = $imageUrl;
+        $this->imageURL = $imageURL;
     
         return $this;
     }
 
     /**
-     * Get image_url
+     * Get imageURL
      *
      * @return string 
      */
-    public function getImageUrl()
+    public function getImageURL()
     {
-        return $this->image_url;
+        return $this->imageURL;
     }
 
     /**
-     * Set is_active
+     * Set isActive
      *
      * @param boolean $isActive
      * @return Rateable
      */
     public function setIsActive($isActive)
     {
-        $this->is_active = $isActive;
+        $this->isActive = $isActive;
     
         return $this;
     }
 
     /**
-     * Get is_active
+     * Get isActive
      *
      * @return boolean 
      */
     public function getIsActive()
     {
-        return $this->is_active;
+        return $this->isActive;
     }
 
     /**
