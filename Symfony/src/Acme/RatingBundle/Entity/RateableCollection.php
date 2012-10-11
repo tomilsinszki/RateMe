@@ -70,7 +70,10 @@ class RateableCollection
      private $owners;
 
 
-    public function __construct() {
+    public function __construct() 
+    {
+        $this->created = new \DateTime("now");
+        $this->updated = new \DateTime("now");
         $this->rateables = new \Doctrine\Common\Collections\ArrayCollection();
         $this->owners = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -175,5 +178,17 @@ class RateableCollection
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    public function setIdentifier($identifier)
+    {
+        $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 }

@@ -87,7 +87,11 @@ class Rateable
     private $rateableUser;
 
 
-    public function __construct() {
+    public function __construct() 
+    {
+        $this->created = new \DateTime("now");
+        $this->updated = new \DateTime("now");
+        $this->isActive = TRUE;
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -237,5 +241,17 @@ class Rateable
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    public function setIdentifier($identifier)
+    {
+        $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 }

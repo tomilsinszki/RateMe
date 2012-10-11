@@ -55,6 +55,12 @@ class Rating
     private $ratingUser;
 
 
+    public function __construct() 
+    {
+        $this->created = new \DateTime("now");
+        $this->updated = new \DateTime("now");
+    }
+
     /**
      * Get id
      *
