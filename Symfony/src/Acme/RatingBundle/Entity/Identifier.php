@@ -22,11 +22,11 @@ class Identifier
     private $id;
 
     /**
-     * @var string $qrCodeUrl
+     * @var string $qrCodeURL
      *
      * @ORM\Column(name="qr_code_url", type="string", length=255, unique=true, nullable=false)
      */
-    private $qrCodeUrl;
+    private $qrCodeURL;
 
     /**
      * @var string $alphanumericValue
@@ -67,26 +67,26 @@ class Identifier
     }
 
     /**
-     * Set qrCodeUrl
+     * Set qrCodeURL
      *
-     * @param string $qrCodeUrl
+     * @param string $qrCodeURL
      * @return Identifier
      */
-    public function setQrCodeUrl($qrCodeUrl)
+    public function setQrCodeURL($qrCodeURL)
     {
-        $this->qrCodeUrl = $qrCodeUrl;
+        $this->qrCodeURL = $qrCodeURL;
     
         return $this;
     }
 
     /**
-     * Get qrCodeUrl
+     * Get qrCodeURL
      *
      * @return string 
      */
-    public function getQrCodeUrl()
+    public function getQrCodeURL()
     {
-        return $this->qrCodeUrl;
+        return $this->qrCodeURL;
     }
 
     /**

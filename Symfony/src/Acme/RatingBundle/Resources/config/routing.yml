@@ -10,6 +10,10 @@ rateable_main:
     pattern:   /{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:Rateable:index }
 
+rateable_by_id_main:
+    pattern:   /id/{id}
+    defaults: { _controller: AcmeRatingBundle:Rateable:indexById }
+
 rateable_collection_main:
     pattern:   /hely/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:index }

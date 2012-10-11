@@ -12,27 +12,84 @@ class LoadIdentifierData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $collectionIdentifier = new Identifier();
-        $collectionIdentifier->setQrCodeUrl('http://www.one.com');
-        $collectionIdentifier->setAlphanumericValue('1111');
+        $collection = $this->createCollectionWithIdentifier($manager, 
+            'Kék Osztriga Bár', 
+            $this->createIdentifier($manager, 'http://www.one.com', '1111')
+        );
 
+        $this->createRateableWithCollection($manager,
+            'Érték Elek',
+            'Felszolgáló',
+            'http://www.image.com',
+            $collection
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Jó Áron',
+            'Üzletvezető',
+            'http://www.image.com',
+            $collection
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Mézga Géza',
+            'Konyhafőnök',
+            'http://www.image.com',
+            $collection
+        );
+
+        $this->createRateableWithIdentifier($manager,
+            'Kovács Béla',
+            'Felszolgáló',
+            'http://www.image.com',
+            $this->createIdentifier($manager, 'http://www.two.com', '2222')
+        );
+    }
+
+    private function createIdentifier($manager, $qrCodeURL, $alphanumericValue)
+    {
+        $identifier = new Identifier();
+        $identifier->setQrCodeUrl($qrCodeURL);
+        $identifier->setAlphanumericValue($alphanumericValue);
+
+        $manager->persist($identifier);
+        $manager->flush();
+
+        return $identifier;
+    }
+
+    private function createCollectionWithIdentifier($manager, $name, $identifier)
+    {
         $collection = new RateableCollection();
-        $collection->setName('my collection');
-        $collection->setIdentifier($collectionIdentifier);
+        $collection->setName($name);
+        $collection->setIdentifier($identifier);
 
-        $rateableIdentifier = new Identifier();
-        $rateableIdentifier->setQrCodeUrl('http://www.two.com');
-        $rateableIdentifier->setAlphanumericValue('2222');
-
-        $rateable = new Rateable();
-        $rateable->setName('my rateable');
-        $rateable->setTypeName('my type');
-        $rateable->setimageURL('http://www.image.com');
-        $rateable->setIdentifier($rateableIdentifier);
-
-        $manager->persist($collectionIdentifier);
         $manager->persist($collection);
-        $manager->persist($rateableIdentifier);
+        $manager->flush();
+
+        return $collection;
+    }
+
+    private function createRateableWithIdentifier($manager, $name, $typeName, $imageURL, $identifier)
+    {
+        $rateable = new Rateable();
+        $rateable->setName($name);
+        $rateable->setTypeName($typeName);
+        $rateable->setimageURL($imageURL);
+        $rateable->setIdentifier($identifier);
+
+        $manager->persist($rateable);
+        $manager->flush();
+    }
+
+    private function createRateableWithCollection($manager, $name, $typeName, $imageURL, $collection)
+    {
+        $rateable = new Rateable();
+        $rateable->setName($name);
+        $rateable->setTypeName($typeName);
+        $rateable->setimageURL($imageURL);
+        $rateable->setCollection($collection);
+
         $manager->persist($rateable);
         $manager->flush();
     }

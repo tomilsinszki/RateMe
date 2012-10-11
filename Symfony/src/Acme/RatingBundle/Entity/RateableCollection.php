@@ -192,6 +192,11 @@ class RateableCollection
         return $this->identifier;
     }
 
+    public function getRateables()
+    {
+        return $this->rateables;
+    }
+
     public function addRateable($rateable)
     {
         if ( $this->rateables->contains($rateable) === FALSE )
