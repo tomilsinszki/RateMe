@@ -1,6 +1,6 @@
 _welcome:
     pattern:   /
-    defaults:  { _controller: AcmeRatingBundle:Default:index }
+    defaults:  { _controller: AcmeRatingBundle:Identifier:index }
 
 acme_rating:
     resource: "@AcmeRatingBundle/Resources/config/routing.yml"

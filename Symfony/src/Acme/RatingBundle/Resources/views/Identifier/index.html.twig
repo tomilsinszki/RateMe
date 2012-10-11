@@ -1,0 +1,11 @@
+Értékelj, nálunk számít...
+<form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>
+    <div>
+        {{ form_errors(form.alphanumericValue) }}
+        {{ form_widget(form.alphanumericValue) }}
+    </div>
+
+    {{ form_rest(form) }}
+
+    <input type="submit" value="OK" />
+</form>
