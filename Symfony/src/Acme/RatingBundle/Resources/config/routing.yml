@@ -17,3 +17,7 @@ rateable_by_id_main:
 rateable_collection_main:
     pattern:   /hely/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:index }
+
+rating_new:
+    pattern:   /ertekeles/uj
+    defaults: { _controller: AcmeRatingBundle:Rating:new }

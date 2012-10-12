@@ -49,7 +49,7 @@ class Rating
     private $rateable;
 
     /**
-     * @ORM\OneToOne(targetEntity="Acme\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Acme\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="rating_user_id", referencedColumnName="id")
      */
     private $ratingUser;
