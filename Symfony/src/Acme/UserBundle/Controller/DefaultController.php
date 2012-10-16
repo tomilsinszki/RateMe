@@ -32,6 +32,9 @@ class DefaultController extends Controller
 
         foreach($ratings AS $rating) 
             $ratingSum += $rating->getStars();
+        
+        if ( count($ratings) == 0 )
+            return 0.0;
 
         return (float)$ratingSum / (float)count($ratings);
     }

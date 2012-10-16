@@ -281,6 +281,11 @@ class Rateable
             $this->ratings->removeElement($rating);
     }
 
+    public function getRatings()
+    {
+        return $this->ratings;
+    }
+
     public function setRateableUser($user)
     {
         $this->rateableUser = $user;

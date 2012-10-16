@@ -1,0 +1,23 @@
+<div>
+    {{ rateableCollection.name }}
+</div>
+
+<div>
+    {{ ratingCount }} értékelés
+</div>
+
+<div>
+    átlag: {{ ratingAverage }}
+</div>
+
+{% for rating in ratings %}
+<div>
+    <div>
+        {{ rating.rateable.name }} – {{ rating.rateable.typeName }}
+    </div>
+
+    <div>
+        {{ rating.stars }}
+    </div>
+</div>
+{% endfor %}

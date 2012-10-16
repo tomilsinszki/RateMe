@@ -19,8 +19,16 @@ rateable_collection_main:
     defaults: { _controller: AcmeRatingBundle:RateableCollection:index }
 
 rateable_profile_by_id:
-    pattern:   /profile/id/{id}
+    pattern:   /profil/id/{id}
     defaults: { _controller: AcmeRatingBundle:Rateable:profile }
+
+rateable_collection_public_profile_by_id:
+    pattern:   /hely/profil/publikus/id/{id}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:publicProfile }
+
+rateable_collection_profile_by_id:
+    pattern:   /hely/profil/id/{id}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:profile }
 
 rating_new:
     pattern:   /ertekeles/uj
