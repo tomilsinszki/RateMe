@@ -1,0 +1,22 @@
+<div>
+    {{ rateable.name }}
+</div>
+
+<div>
+    {{ rateable.typeName }}
+</div>
+
+<div>
+    {{ ratingCount }} értékelés
+</div>
+
+<div>
+    átlag: {{ ratingAverage }}
+</div>
+
+{% for rating in ratings %}
+    <div>
+        {{ rating.ratingUser.username }}
+        {{ rating.stars }}
+    </div>
+{% endfor %}

@@ -14,6 +14,32 @@ class RateableController extends Controller
         return new Response($this->getRateablePageContents($rateable));
     }
 
+    public function profileAction($id)
+    {
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
+        if ( empty($rateable) === TRUE )
+            throw $this->createNotFoundException('Rateable could not be found.');
+
+        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findByRateable($rateable);
+        
+        return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
+            'rateable' => $rateable,
+            'ratingCount' => count($ratings),
+            'ratingAverage' => $this->getRatingsAverage($ratings),
+            'ratings' => $ratings,
+        ));
+    }
+
+    private function getRatingsAverage($ratings)
+    {
+        $ratingSum = 0.0;
+
+        foreach($ratings AS $rating) 
+            $ratingSum += $rating->getStars();
+
+        return (float)$ratingSum / (float)count($ratings);
+    }
+
     public function indexByIdAction($id)
     {
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);

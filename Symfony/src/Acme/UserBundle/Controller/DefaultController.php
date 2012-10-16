@@ -22,7 +22,7 @@ class DefaultController extends Controller
             'user' => $user,
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverage($ratings),
-            'ratings' => $ratings
+            'ratings' => $ratings,
         ));
     }
 
