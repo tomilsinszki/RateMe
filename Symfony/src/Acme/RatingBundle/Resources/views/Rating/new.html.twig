@@ -1,0 +1,54 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+    {% if collection %}
+        <div>{{ collection.name }}</div>
+    {% endif %}
+
+    <div style="margin-top:20px;">
+        <div>{{ rateable.name }}</div>
+        <div>{{ rateable.typeName }}</div>
+    </div>
+
+    <div>
+        Köszönjük az értékelést!
+    </div>
+
+    <div>
+        Az általad adott pontszám
+    </div>
+
+    <div>
+        {% if 1 <= rating.stars %}
+            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+        {% else %}
+            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        {% endif %}
+
+        {% if 2 <= rating.stars %}
+            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+        {% else %}
+            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        {% endif %}
+
+        {% if 3 <= rating.stars %}
+            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+        {% else %}
+            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        {% endif %}
+
+        {% if 4 <= rating.stars %}
+            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+        {% else %}
+            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        {% endif %}
+
+        {% if 5 <= rating.stars %}
+            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+        {% else %}
+            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        {% endif %}
+    </div>
+{% endblock %}

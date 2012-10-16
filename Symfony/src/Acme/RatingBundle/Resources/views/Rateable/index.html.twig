@@ -19,16 +19,16 @@
     </div>
 
     <div>
-        <img id="star0" src="{{ asset('bundles/acmerating/images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star1" src="{{ asset('bundles/acmerating/images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star2" src="{{ asset('bundles/acmerating/images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star3" src="{{ asset('bundles/acmerating/images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star4" src="{{ asset('bundles/acmerating/images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        <img id="star0" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        <img id="star1" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        <img id="star2" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        <img id="star3" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+        <img id="star4" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
     </div>
 
     <form method="post" action="{{ path('rating_new') }}">
         <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
         <input type="hidden" id="stars" name="stars" />
-        <input type="submit" value="OK" />
+        <input type="submit" id="submitRating" disabled="true" value="OK" />
     </form>
 {% endblock %}

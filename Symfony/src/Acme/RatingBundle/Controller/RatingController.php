@@ -14,16 +14,24 @@ class RatingController extends Controller
 
     public function newAction()
     {
+        $rateable = $this->getRateableFromRequest();
+
         $rating = new Rating();
         $rating->setStars($this->getStarsFromRequest());
-        $rating->setRateable($this->getRateableIdFromRequest());
+        $rating->setRateable($rateable);
         $rating->setRatingUser($this->getUserFromContext());
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($rating);
         $entityManager->flush();
+        
+        $content = $this->renderView('AcmeRatingBundle:Rating:new.html.twig', array(
+            'rating' => $rating,
+            'rateable' => $rateable,
+            'collection' => $rateable->getCollection(),
+        ));
 
-        return new Response("mentve");
+        return new Response($content);
     }
 
     private function getStarsFromRequest()
@@ -35,7 +43,7 @@ class RatingController extends Controller
         return $stars;
     }
 
-    private function getRateableIdFromRequest()
+    private function getRateableFromRequest()
     {
         $rateableId = $this->getRequest()->request->get('rateableId');
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($rateableId);
