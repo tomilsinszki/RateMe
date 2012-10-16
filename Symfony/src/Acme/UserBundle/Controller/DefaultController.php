@@ -4,14 +4,36 @@ namespace Acme\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Acme\UserBundle\Entity\User;
+use Acme\RatingBundle\Entity\Rating;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContext;
 
 class DefaultController extends Controller
 {
-    public function indexAction($name)
+    public function profileAction(Request $request)
     {
-        return $this->render('AcmeUserBundle:Default:index.html.twig', array('name' => $name));
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ( empty($user) === TRUE )
+            throw $this->createNotFoundException('Current user could not be found.');
+        
+        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findByRatingUser($user);
+        
+        return $this->render('AcmeUserBundle:Default:profile.html.twig', array(
+            'user' => $user,
+            'ratingCount' => count($ratings),
+            'ratingAverage' => $this->getRatingsAverage($ratings),
+            'ratings' => $ratings
+        ));
+    }
+
+    private function getRatingsAverage($ratings)
+    {
+        $ratingSum = 0.0;
+
+        foreach($ratings AS $rating) 
+            $ratingSum += $rating->getStars();
+
+        return (float)$ratingSum / (float)count($ratings);
     }
 
     public function registerAction(Request $request)
