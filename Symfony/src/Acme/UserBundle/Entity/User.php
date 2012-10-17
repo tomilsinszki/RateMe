@@ -46,19 +46,19 @@ class User implements UserInterface
     private $isActive;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Acme\UserBundle\Entity\Role")
-     * @ORM\JoinTable(name="user_role",
+     * @ORM\ManyToMany(targetEntity="Acme\UserBundle\Entity\Group", inversedBy="users")
+     * @ORM\JoinTable(name="user_group",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      *      )
      */
-    private $roles;
+    private $groups;
 
     public function __construct()
     {
         $this->isActive = TRUE;
         $this->salt = md5(uniqid(null, TRUE));
-        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getUsername() { return $this->username; }
@@ -73,21 +73,21 @@ class User implements UserInterface
     public function setEmail($email) { $this->email = $email; }
     public function setIsActive($isActive) { $this->isActive = $isActive; }
 
-    public function addRole($role)
+    public function addGroup($group)
     {
-        if ( $this->roles->contains($role) === FALSE )
-            $this->roles[] = $role;
+        if ( $this->groups->contains($group) === FALSE )
+            $this->groups[] = $group;
     }
 
-    public function removeOwner($role)
+    public function removeGroup($group)
     {
-        if ( $this->roles->contains($role) === TRUE )
-            $this->roles->removeElement($role);
+        if ( $this->groups->contains($group) === TRUE )
+            $this->groups->removeElement($group);
     }
-
+    
     public function getRoles()
     {
-        return $this->roles->toArray();
+        return $this->groups->toArray();
     }
 
     public function eraseCredentials()

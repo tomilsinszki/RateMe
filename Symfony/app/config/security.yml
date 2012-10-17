@@ -28,4 +28,4 @@ security:
                 check_path:  /login_check
 
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/azonosito, roles: ROLE_RATER }

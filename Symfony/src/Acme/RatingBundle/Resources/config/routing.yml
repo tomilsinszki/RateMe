@@ -7,7 +7,7 @@ identifier_not_found:
     defaults: { _controller: AcmeRatingBundle:Identifier:notExists }
 
 rateable_main:
-    pattern:   /{alphanumericValue}
+    pattern:   /azonosito/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:Rateable:index }
 
 rateable_by_id_main:
@@ -15,7 +15,7 @@ rateable_by_id_main:
     defaults: { _controller: AcmeRatingBundle:Rateable:indexById }
 
 rateable_collection_main:
-    pattern:   /hely/{alphanumericValue}
+    pattern:   /hely/azonosito/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:index }
 
 rateable_profile_by_id:
