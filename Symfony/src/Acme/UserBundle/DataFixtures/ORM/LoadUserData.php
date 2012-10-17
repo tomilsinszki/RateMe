@@ -1,12 +1,13 @@
 <?php
 
-namespace Acme\RatingBundle\DataFixtures\ORM;
+namespace Acme\UserBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Acme\UserBundle\Entity\User;
+use Acme\UserBundle\Entity\Role;
 
 class LoadUserData implements FixtureInterface, ContainerAwareInterface
 {
@@ -19,6 +20,9 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
 
     public function load(ObjectManager $manager)
     {
+        $role = new Role();
+        $role->setName('ROLE_RATER');
+
         $user = new User();
 
         $user->setUsername('test');
@@ -30,6 +34,9 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         $password = $encoder->encodePassword('test', $user->getSalt());
         $user->setPassword($password);
 
+        $user->addRole($role);
+
+        $manager->persist($role);
         $manager->persist($user);
         $manager->flush();
     }
