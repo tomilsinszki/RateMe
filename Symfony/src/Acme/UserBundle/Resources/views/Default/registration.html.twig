@@ -1,5 +1,16 @@
-<form action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }}>
-    {{ form_widget(form) }}
+{% extends '::base.html.twig' %}
 
-    <input type="submit" />
-</form>
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <form action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }}>
+        {{ form_widget(form) }}
+
+        <input type="submit" />
+    </form>
+{% endblock %}

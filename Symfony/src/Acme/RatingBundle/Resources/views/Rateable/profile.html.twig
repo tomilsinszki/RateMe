@@ -1,22 +1,31 @@
-<div>
-    {{ rateable.name }}
-</div>
+{% extends '::base.html.twig' %}
 
-<div>
-    {{ rateable.typeName }}
-</div>
+{% block javascripts %}
+    {{ parent() }}
 
-<div>
-    {{ ratingCount }} értékelés
-</div>
+{% endblock %}
 
-<div>
-    átlag: {{ ratingAverage }}
-</div>
-
-{% for rating in ratings %}
+{% block body %}
     <div>
-        {{ rating.ratingUser.username }}
-        {{ rating.stars }}
+        {{ rateable.name }}
     </div>
-{% endfor %}
+
+    <div>
+        {{ rateable.typeName }}
+    </div>
+
+    <div>
+        {{ ratingCount }} értékelés
+    </div>
+
+    <div>
+        átlag: {{ ratingAverage }}
+    </div>
+
+    {% for rating in ratings %}
+        <div>
+            {{ rating.ratingUser.username }}
+            {{ rating.stars }}
+        </div>
+    {% endfor %}
+{% endblock %}

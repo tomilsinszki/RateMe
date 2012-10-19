@@ -4,6 +4,7 @@ namespace Acme\RatingBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Acme\RatingBundle\Entity\Rateable;
 
 class RateableCollectionController extends Controller
 {
@@ -94,5 +95,86 @@ class RateableCollectionController extends Controller
             return 0.0;
 
         return (float)$ratingSum / (float)count($ratings);
+    }
+
+    public function editAction($id)
+    {
+        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
+        if ( empty($rateableCollection) === TRUE )
+            throw $this->createNotFoundException('RateableCollection could not be found.');
+
+        $rateables = $rateableCollection->getRateables();
+        
+        return $this->render('AcmeRatingBundle:RateableCollection:edit.html.twig', array(
+            'rateableCollection' => $rateableCollection,
+            'rateables' => $rateables,
+        ));
+    }
+
+    public function updateAction()
+    {
+        $collection = $this->getRateableCollectionFromRequest();
+
+        $collection->setName($this->getRequest()->request->get('collectionName'));
+        $collection->setForeignURL($this->getRequest()->request->get('collectionForeignURL'));
+        $collection->logUpdated();
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($collection);
+        $entityManager->flush();
+
+        return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
+    }
+
+    public function newRateableForCollectionAction()
+    {
+        $collection = $this->getRateableCollectionFromRequest();
+
+        $rateable = new Rateable();
+        $rateable->setName($this->getRequest()->request->get('rateableName'));
+        $rateable->setTypeName($this->getRequest()->request->get('rateableTypeName'));
+        $rateable->setImageURL('www.index.hu');
+        $rateable->setCollection($collection);
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($rateable);
+        $entityManager->flush();
+
+        return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
+    }
+
+    private function getRateableCollectionFromRequest()
+    {
+        $rateableCollectionId = $this->getRequest()->request->get('rateableCollectionId');
+        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
+        if ( empty($rateableCollection) === TRUE )
+            throw $this->createNotFoundException('The rateable collection does not exists.');
+
+        return $rateableCollection;
+    }
+
+    public function updateRateableForCollectionAction()
+    {
+        $rateable = $this->getRateableFromRequest();
+        
+        $rateable->setName($this->getRequest()->request->get('rateableName'));
+        $rateable->setTypeName($this->getRequest()->request->get('rateableTypeName'));
+        $rateable->logUpdated();
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($rateable);
+        $entityManager->flush();
+
+        return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $this->getRequest()->request->get('rateableCollectionId'))));
+    }
+
+    private function getRateableFromRequest()
+    {
+        $rateableId = $this->getRequest()->request->get('rateableId');
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($rateableId);
+        if ( empty($rateable) === TRUE )
+            throw $this->createNotFoundException('The rateable does not exists.');
+
+        return $rateable;
     }
 }

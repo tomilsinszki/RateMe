@@ -1,0 +1,64 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/acmerating/js/rateableCollectionEdit.js') }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+    <form action="{{ path('update_collection', {}) }}" method="post">
+        <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+        
+        <div style="margin-top:5px;">
+            <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" />
+        </div>
+
+        <div style="margin-top:5px;">
+            <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" />
+        </div>
+        
+        <div style="margin-top:5px;">
+            <input type="file" />
+        </div>
+
+        <div style="margin-top:5px;">
+            <input type="submit" value="mentés" />
+        </div>
+    </form>
+
+    <form style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection', {}) }}" method="post">
+        <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+
+        <div style="margin-top:5px;">
+            <input id="newRateableName" name="rateableName" type="text" value="" />
+        </div>
+
+        <div style="margin-top:5px;">
+            <input id="newRateableTypeName" name="rateableTypeName" type="text" value="" />
+        </div>
+
+        <div style="margin-top:5px;">
+            <input type="submit" value="létrehozás" />
+        </div>
+    </form>
+
+    {% for rateable in rateables %}
+        <form style="border-top:1px solid black; padding-top:10px;" action="{{ path('update_rateable_for_collection', {}) }}" method="post">
+            <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+            <input name="rateableId" value="{{ rateable.id }}" type="hidden" />
+
+            <div style="margin-top:5px;">
+                <input name="rateableName" type="text" value="{{ rateable.name }}" />
+            </div>
+
+            <div style="margin-top:5px;">
+                <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" />
+            </div>
+
+            <div style="margin-top:5px;">
+                <input type="submit" value="mentés" />
+            </div>
+        </form>
+    {% endfor %}
+{% endblock %}

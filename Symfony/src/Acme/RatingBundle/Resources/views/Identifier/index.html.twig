@@ -1,11 +1,22 @@
-Értékelj, nálunk számít...
-<form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>
-    <div>
-        {{ form_errors(form.alphanumericValue) }}
-        {{ form_widget(form.alphanumericValue) }}
-    </div>
+{% extends '::base.html.twig' %}
 
-    {{ form_rest(form) }}
+{% block javascripts %}
+    {{ parent() }}
 
-    <input type="submit" value="OK" />
-</form>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    Értékelj, nálunk számít...
+    <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>
+        <div>
+            {{ form_errors(form.alphanumericValue) }}
+            {{ form_widget(form.alphanumericValue) }}
+        </div>
+
+        {{ form_rest(form) }}
+
+        <input type="submit" value="OK" />
+    </form>
+{% endblock %}

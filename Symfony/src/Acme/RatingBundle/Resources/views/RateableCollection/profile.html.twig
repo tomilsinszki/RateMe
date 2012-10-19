@@ -1,23 +1,38 @@
-<div>
-    {{ rateableCollection.name }}
-</div>
+{% extends '::base.html.twig' %}
 
-<div>
-    {{ ratingCount }} értékelés
-</div>
+{% block javascripts %}
+    {{ parent() }}
 
-<div>
-    átlag: {{ ratingAverage }}
-</div>
+{% endblock %}
 
-{% for rating in ratings %}
-<div>
+{% block body %}
+    {{ parent() }}
+    
     <div>
-        {{ rating.rateable.name }} – {{ rating.rateable.typeName }}
+        <a href="{{ path('rateable_collection_profile_edit_by_id', {'id': rateableCollection.id}) }}">szerkesztés</a>
     </div>
 
     <div>
-        {{ rating.stars }}
+        {{ rateableCollection.name }}
     </div>
-</div>
-{% endfor %}
+
+    <div>
+        {{ ratingCount }} értékelés
+    </div>
+
+    <div>
+        átlag: {{ ratingAverage }}
+    </div>
+
+    {% for rating in ratings %}
+    <div>
+        <div>
+            {{ rating.rateable.name }} – {{ rating.rateable.typeName }}
+        </div>
+
+        <div>
+            {{ rating.stars }}
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

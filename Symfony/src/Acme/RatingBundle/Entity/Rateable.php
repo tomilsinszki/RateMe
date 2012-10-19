@@ -233,6 +233,13 @@ class Rateable
         return $this;
     }
 
+    public function logUpdated()
+    {
+        $this->updated = new \DateTime("now");
+    
+        return $this;
+    }
+
     /**
      * Get updated
      *

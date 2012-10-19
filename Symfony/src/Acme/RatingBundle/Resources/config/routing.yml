@@ -30,6 +30,22 @@ rateable_collection_profile_by_id:
     pattern:   /hely/profil/id/{id}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:profile }
 
+rateable_collection_profile_edit_by_id:
+    pattern:   /hely/profil/szerkesztes/id/{id}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:edit }
+
+update_collection:
+    pattern:   /hely/profile/szerkesztes/mentes
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:update }
+
+new_rateable_for_collection:
+    pattern:   /hely/profile/szerkesztes/uj/elem
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:newRateableForCollection }
+
+update_rateable_for_collection:
+    pattern:   /hely/profile/szerkesztes/uj/mentes
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:updateRateableForCollection }
+
 rating_new:
     pattern:   /ertekeles/uj
     defaults: { _controller: AcmeRatingBundle:Rating:new }
