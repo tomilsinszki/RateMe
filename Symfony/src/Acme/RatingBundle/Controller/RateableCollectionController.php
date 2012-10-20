@@ -5,6 +5,7 @@ namespace Acme\RatingBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Acme\RatingBundle\Entity\Rateable;
+use Acme\RatingBundle\Entity\Image;
 
 class RateableCollectionController extends Controller
 {

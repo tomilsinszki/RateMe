@@ -12,27 +12,35 @@
         <a href="{{ path('rateable_collection_profile_edit_by_id', {'id': rateableCollection.id}) }}">szerkesztés</a>
     </div>
 
-    <div>
-        {{ rateableCollection.name }}
-    </div>
-
-    <div>
-        {{ ratingCount }} értékelés
-    </div>
-
-    <div>
-        átlag: {{ ratingAverage }}
-    </div>
-
-    {% for rating in ratings %}
-    <div>
+    <div style="margin-top:15px;">
         <div>
-            {{ rating.rateable.name }} – {{ rating.rateable.typeName }}
+            <span style="font-weight:bold;">hely neve:</span> {{ rateableCollection.name }}
         </div>
 
         <div>
-            {{ rating.stars }}
+            <span style="font-weight:bold;">értékelések száma:</span> {{ ratingCount }}
+        </div>
+
+        <div>
+            <span style="font-weight:bold;">átlag:</span> {{ ratingAverage }}
         </div>
     </div>
-    {% endfor %}
+
+    <div style="margin-top:15px;">
+        {% for rating in ratings %}
+        <div style="margin-top:15px; border-top:1px solid gray;">
+            <div>
+                név: {{ rating.rateable.name }}
+            </div>
+
+            <div>
+                beosztás: {{ rating.rateable.typeName }}
+            </div>
+
+            <div>
+                pontszám: {{ rating.stars }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}

@@ -9,30 +9,36 @@
     {{ parent() }}
 
     <div>
-        {{ rateableCollection.name }}
+        <span style="font-weight:bold;">hely neve:</span> {{ rateableCollection.name }}
     </div>
 
     <div>
-        {{ ratingCount }} értékelés
+        <span style="font-weight:bold;">értékelések száma:</span> {{ ratingCount }}
     </div>
 
     <div>
-        átlag: {{ ratingAverage }}
+        <span style="font-weight:bold;">átlag:</span> {{ ratingAverage }}
     </div>
 
-    {% for rateableData in rateablesData %}
-    <div>
-        <div>
-            {{ rateableData.rateable.name }} – {{ rateableData.rateable.typeName }}
-        </div>
+    <div style="margin-top:15px;">
+        {% for rateableData in rateablesData %}
+        <div style="margin-top:15px; border-top:1px solid gray;">
+            <div>
+                név: {{ rateableData.rateable.name }}
+            </div>
 
-        <div>
-            {{ rateableData.ratingsCount }} értékelés
-        </div>
+            <div>
+                beosztás: {{ rateableData.rateable.typeName }}
+            </div>
 
-        <div>
-            átlag: {{ rateableData.ratingsAverage }}
+            <div>
+                értékelések száma: {{ rateableData.ratingsCount }}
+            </div>
+
+            <div>
+                átlag: {{ rateableData.ratingsAverage }}
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 {% endblock %}

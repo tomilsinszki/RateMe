@@ -7,25 +7,32 @@
 
 {% block body %}
     <div>
-        {{ rateable.name }}
+        <span style="font-weight:bold;">név:</span> {{ rateable.name }}
     </div>
 
     <div>
-        {{ rateable.typeName }}
+        <span style="font-weight:bold;">beosztása:</span> {{ rateable.typeName }}
     </div>
 
     <div>
-        {{ ratingCount }} értékelés
+        <span style="font-weight:bold;">értékelések száma:</span> {{ ratingCount }}
     </div>
 
     <div>
-        átlag: {{ ratingAverage }}
+        <span style="font-weight:bold;">átlag:</span> {{ ratingAverage }}
     </div>
 
+    <div style="margin-top:15px;">
     {% for rating in ratings %}
-        <div>
-            {{ rating.ratingUser.username }}
-            {{ rating.stars }}
+        <div style="margin-top:15px; border-top:1px solid gray;">
+            <div>
+                szavazó neve: {{ rating.ratingUser.username }}
+            </div>
+
+            <div>
+                szavazat: {{ rating.stars }}
+            </div>
         </div>
     {% endfor %}
+    </div>
 {% endblock %}

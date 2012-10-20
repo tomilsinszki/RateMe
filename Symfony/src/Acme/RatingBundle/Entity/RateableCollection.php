@@ -56,6 +56,12 @@ class RateableCollection
     private $identifier;
 
     /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+    private $image;
+
+    /**
      * @ORM\OneToMany(targetEntity="Rateable", mappedBy="collection")
      */
     private $rateables;
@@ -197,6 +203,18 @@ class RateableCollection
     public function getIdentifier()
     {
         return $this->identifier;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
     }
 
     public function getRateables()
