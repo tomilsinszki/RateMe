@@ -26,6 +26,11 @@ security:
             form_login:
                 login_path:  /login
                 check_path:  /login_check
+            logout: ~
+        ajax_calls:
+            pattern:    ^/_wdt
+            anonymous:  ~
 
     access_control:
+        - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }  
         #- { path: ^/azonosito, roles: ROLE_RATER }

@@ -16,6 +16,12 @@
         {% block body %}
             <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:none; width:150px;"/>
             <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:none; width:150px;" />
+
+            <div style="text-align:right;">
+                <a href="{{ path('acme_user_profile') }}">{{ app.user.username }}</a>
+                /
+                <a href="{{ path('logout') }}">kijelentkezés</a>
+            </div>
         {% endblock %}
     </body>
 </html>

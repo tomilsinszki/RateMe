@@ -6,8 +6,6 @@
 {% endblock %}
 
 {% block body %}
-    {{ parent() }}
-    
     {% if error %}
         <div>{{ error.message }}</div>
     {% endif %}

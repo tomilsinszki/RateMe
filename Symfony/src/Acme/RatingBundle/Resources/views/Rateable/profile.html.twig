@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block body %}
+    {{ parent() }}
+    
     <div>
         <span style="font-weight:bold;">név:</span> {{ rateable.name }}
     </div>
