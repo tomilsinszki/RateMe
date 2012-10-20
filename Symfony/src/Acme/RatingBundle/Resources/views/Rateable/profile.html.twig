@@ -7,6 +7,16 @@
 
 {% block body %}
     {{ parent() }}
+
+    {% if imageURL %}
+        <img src="{{ asset(imageURL) }}" />
+    {% endif %}
+
+    <form action="{{ path('rateable_upload_image', {'id': rateable.id}) }}" method="post" {{ form_enctype(imageUploadForm) }}>
+        {{ form_widget(imageUploadForm) }}
+
+        <input type="submit" value="Kép beállítása" />
+    </form>
     
     <div>
         <span style="font-weight:bold;">név:</span> {{ rateable.name }}

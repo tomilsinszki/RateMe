@@ -4,6 +4,7 @@ namespace Acme\RatingBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Acme\RatingBundle\Entity\Image;
 
 class RateableController extends Controller
 {
@@ -21,13 +22,53 @@ class RateableController extends Controller
             throw $this->createNotFoundException('Rateable could not be found.');
 
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findByRateable($rateable);
+
+        $image = new Image();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
         return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
             'rateable' => $rateable,
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverage($ratings),
             'ratings' => $ratings,
+            'imageURL' => $this->getImageURL($rateable),
+            'imageUploadForm' => $imageUploadForm->createView(),
         ));
+    }
+
+    private function getImageURL($rateable)
+    {
+        $imageURL = null;
+        $image = $rateable->getImage();
+        if ( empty($image) === FALSE )
+            $imageURL = $image->getWebPath();
+        
+        return $imageURL;
+    }
+
+    public function uploadImageAction($id)
+    {
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
+        if ( empty($rateable) === TRUE )
+            throw $this->createNotFoundException('Rateable could not be found.');
+
+        $image = new Image();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
+        
+        if ( $this->getRequest()->isMethod('POST') ) {
+            $imageUploadForm->bind($this->getRequest());
+
+            if ( $imageUploadForm->isValid() ) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $rateable->setImage($image);
+                $rateable->logUpdated();
+                $entityManager->persist($image);
+                $entityManager->persist($rateable);
+                $entityManager->flush();
+
+                return $this->redirect($this->generateUrl('rateable_profile_by_id', array('id' => $id)));
+            }
+        }
     }
 
     private function getRatingsAverage($ratings)

@@ -36,13 +36,6 @@ class Rateable
     private $typeName;
 
     /**
-     * @var string $imageURL
-     *
-     * @ORM\Column(name="image_url", type="string", length=255, nullable=false)
-     */
-    private $imageURL;
-
-    /**
      * @var boolean $isActive
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=false)
@@ -68,6 +61,12 @@ class Rateable
      * @ORM\JoinColumn(name="identifier_id", referencedColumnName="id")
      */
     private $identifier;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+    private $image;
 
     /**
      * @ORM\ManyToOne(targetEntity="RateableCollection", inversedBy="rateables")
@@ -149,29 +148,6 @@ class Rateable
     public function getTypeName()
     {
         return $this->typeName;
-    }
-
-    /**
-     * Set imageURL
-     *
-     * @param string $imageURL
-     * @return Rateable
-     */
-    public function setImageURL($imageURL)
-    {
-        $this->imageURL = $imageURL;
-    
-        return $this;
-    }
-
-    /**
-     * Get imageURL
-     *
-     * @return string 
-     */
-    public function getImageURL()
-    {
-        return $this->imageURL;
     }
 
     /**
@@ -260,6 +236,18 @@ class Rateable
     public function getIdentifier()
     {
         return $this->identifier;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
     }
 
     public function setCollection($collection)

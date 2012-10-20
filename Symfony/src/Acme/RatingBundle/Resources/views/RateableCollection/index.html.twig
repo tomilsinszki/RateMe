@@ -16,6 +16,10 @@
 
     {% for rateable in rateables %}
         <div style="margin-top:20px;">
+            {% if rateableImageURLs[rateable.id] %}
+                <img src="{{ asset(rateableImageURLs[rateable.id]) }}" />
+            {% endif %}
+
             <div><a href="{{ path('rateable_by_id_main', {'id': rateable.id}) }}">{{ rateable.name }}</a></div>
             <div>{{ rateable.typeName }}</div>
         </div>

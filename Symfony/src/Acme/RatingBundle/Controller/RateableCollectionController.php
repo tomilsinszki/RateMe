@@ -20,6 +20,7 @@ class RateableCollectionController extends Controller
         $content = $this->renderView('AcmeRatingBundle:RateableCollection:index.html.twig', array(
             'collection' => $collection,
             'rateables' => $collection->getRateables(),
+            'rateableImageURLs' => $this->getImageURLsForRateablesInCollection($collection),
         ));
 
         return new Response($content);
@@ -123,6 +124,26 @@ class RateableCollectionController extends Controller
         return $collectionImageURL;
     }
 
+    private function getImageURLsForRateablesInCollection($rateableCollection)
+    {
+        $imageURLs = array();
+
+        foreach($rateableCollection->getRateables() AS $rateable)
+            $imageURLs[$rateable->getId()] = $this->getImageURL($rateable);
+        
+        return $imageURLs;
+    }
+
+    private function getImageURL($rateable)
+    {
+        $imageURL = null;
+        $image = $rateable->getImage();
+        if ( empty($image) === FALSE )
+            $imageURL = $image->getWebPath();
+        
+        return $imageURL;
+    }
+
     public function uploadImageAction($id)
     {
         $rateableCollection = $this->getRateableCollectionById($id);
@@ -182,7 +203,6 @@ class RateableCollectionController extends Controller
         $rateable = new Rateable();
         $rateable->setName($rateableName);
         $rateable->setTypeName($rateableTypeName);
-        $rateable->setImageURL('www.index.hu');
         $rateable->setCollection($collection);
         
         $entityManager = $this->getDoctrine()->getManager();

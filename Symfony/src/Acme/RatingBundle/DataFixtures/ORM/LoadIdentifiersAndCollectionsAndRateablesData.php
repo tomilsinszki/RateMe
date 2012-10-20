@@ -20,28 +20,24 @@ class LoadIdentifierData implements FixtureInterface
         $this->createRateableWithCollection($manager,
             'Érték Elek',
             'Felszolgáló',
-            'http://www.image.com',
             $collection
         );
 
         $this->createRateableWithCollection($manager,
             'Jó Áron',
             'Üzletvezető',
-            'http://www.image.com',
             $collection
         );
 
         $this->createRateableWithCollection($manager,
             'Mézga Géza',
             'Konyhafőnök',
-            'http://www.image.com',
             $collection
         );
 
         $this->createRateableWithIdentifier($manager,
             'Kovács Béla',
             'Felszolgáló',
-            'http://www.image.com',
             $this->createIdentifier($manager, 'http://www.two.com', '2222')
         );
     }
@@ -70,24 +66,22 @@ class LoadIdentifierData implements FixtureInterface
         return $collection;
     }
 
-    private function createRateableWithIdentifier($manager, $name, $typeName, $imageURL, $identifier)
+    private function createRateableWithIdentifier($manager, $name, $typeName, $identifier)
     {
         $rateable = new Rateable();
         $rateable->setName($name);
         $rateable->setTypeName($typeName);
-        $rateable->setimageURL($imageURL);
         $rateable->setIdentifier($identifier);
 
         $manager->persist($rateable);
         $manager->flush();
     }
 
-    private function createRateableWithCollection($manager, $name, $typeName, $imageURL, $collection)
+    private function createRateableWithCollection($manager, $name, $typeName, $collection)
     {
         $rateable = new Rateable();
         $rateable->setName($name);
         $rateable->setTypeName($typeName);
-        $rateable->setimageURL($imageURL);
         $rateable->setCollection($collection);
 
         $manager->persist($rateable);
