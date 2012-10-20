@@ -173,10 +173,15 @@ class RateableCollectionController extends Controller
     public function newRateableForCollectionAction()
     {
         $collection = $this->getRateableCollectionFromRequest();
+        $rateableName = $this->getRequest()->request->get('rateableName');
+        $rateableTypeName = $this->getRequest()->request->get('rateableTypeName');
+
+        if ( ( empty($rateableName) === TRUE ) AND ( empty($rateableTypeName) === TRUE ) )
+            return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
 
         $rateable = new Rateable();
-        $rateable->setName($this->getRequest()->request->get('rateableName'));
-        $rateable->setTypeName($this->getRequest()->request->get('rateableTypeName'));
+        $rateable->setName($rateableName);
+        $rateable->setTypeName($rateableTypeName);
         $rateable->setImageURL('www.index.hu');
         $rateable->setCollection($collection);
         

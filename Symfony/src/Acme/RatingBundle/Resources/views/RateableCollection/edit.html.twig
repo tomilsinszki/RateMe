@@ -24,7 +24,7 @@
             </td>
             
             <td style="vertical-align: top;">
-                <form action="{{ path('update_collection', {}) }}" method="post">
+                <form id="rateableCollectionEditForm" action="{{ path('update_collection', {}) }}" method="post">
                     <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
                     
                     <div style="margin-top:5px;">
@@ -43,7 +43,7 @@
         </tr>
     </table>
 
-    <form style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection', {}) }}" method="post">
+    <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection', {}) }}" method="post">
         <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
 
         <div style="margin-top:5px;">
