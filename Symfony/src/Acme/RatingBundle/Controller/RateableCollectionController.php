@@ -100,22 +100,12 @@ class RateableCollectionController extends Controller
 
     public function editAction($id)
     {
-        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
-        if ( empty($rateableCollection) === TRUE )
-            throw $this->createNotFoundException('RateableCollection could not be found.');
-
+        $rateableCollection = $this->getRateableCollectionById($id);
         $rateables = $rateableCollection->getRateables();
-
-        $collectionImageURL = null;
-        $collectionImage = $rateableCollection->getImage();
-        if ( empty($collectionImage) === FALSE )
-            $collectionImageURL = $collectionImage->getWebPath();
+        $collectionImageURL = $this->getImageURLForCollection($rateableCollection);
 
         $image = new Image();
-
-        $imageUploadForm = $this->createFormBuilder($image)
-            ->add('file')
-            ->getForm();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
         return $this->render('AcmeRatingBundle:RateableCollection:edit.html.twig', array(
             'rateableCollection' => $rateableCollection,
@@ -125,27 +115,30 @@ class RateableCollectionController extends Controller
         ));
     }
 
+    private function getImageURLForCollection($rateableCollection)
+    {
+        $collectionImageURL = null;
+        $collectionImage = $rateableCollection->getImage();
+        if ( empty($collectionImage) === FALSE )
+            $collectionImageURL = $collectionImage->getWebPath();
+        
+        return $collectionImageURL;
+    }
+
     public function uploadImageAction($id)
     {
-        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
-        if ( empty($rateableCollection) === TRUE )
-            throw $this->createNotFoundException('RateableCollection could not be found.');
+        $rateableCollection = $this->getRateableCollectionById($id);
         
         $image = new Image();
-
-        $imageUploadForm = $this->createFormBuilder($image)
-            ->add('file')
-            ->getForm();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
         if ( $this->getRequest()->isMethod('POST') ) {
             $imageUploadForm->bind($this->getRequest());
 
             if ( $imageUploadForm->isValid() ) {
                 $entityManager = $this->getDoctrine()->getManager();
-                
                 $rateableCollection->setImage($image);
                 $rateableCollection->logUpdated();
-                
                 $entityManager->persist($image);
                 $entityManager->persist($rateableCollection);
                 $entityManager->flush();
@@ -153,6 +146,15 @@ class RateableCollectionController extends Controller
                 return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $id)));
             }
         }
+    }
+
+    private function getRateableCollectionById($id)
+    {
+        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
+        if ( empty($rateableCollection) === TRUE )
+            throw $this->createNotFoundException('RateableCollection could not be found.');
+        
+        return $rateableCollection;
     }
 
     public function updateAction()
