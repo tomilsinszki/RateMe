@@ -105,11 +105,54 @@ class RateableCollectionController extends Controller
             throw $this->createNotFoundException('RateableCollection could not be found.');
 
         $rateables = $rateableCollection->getRateables();
+
+        $collectionImageURL = null;
+        $collectionImage = $rateableCollection->getImage();
+        if ( empty($collectionImage) === FALSE )
+            $collectionImageURL = $collectionImage->getWebPath();
+
+        $image = new Image();
+
+        $imageUploadForm = $this->createFormBuilder($image)
+            ->add('file')
+            ->getForm();
         
         return $this->render('AcmeRatingBundle:RateableCollection:edit.html.twig', array(
             'rateableCollection' => $rateableCollection,
             'rateables' => $rateables,
+            'imageUploadForm' => $imageUploadForm->createView(),
+            'collectionImageURL' => $collectionImageURL,
         ));
+    }
+
+    public function uploadImageAction($id)
+    {
+        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
+        if ( empty($rateableCollection) === TRUE )
+            throw $this->createNotFoundException('RateableCollection could not be found.');
+        
+        $image = new Image();
+
+        $imageUploadForm = $this->createFormBuilder($image)
+            ->add('file')
+            ->getForm();
+        
+        if ( $this->getRequest()->isMethod('POST') ) {
+            $imageUploadForm->bind($this->getRequest());
+
+            if ( $imageUploadForm->isValid() ) {
+                $entityManager = $this->getDoctrine()->getManager();
+                
+                $rateableCollection->setImage($image);
+                $rateableCollection->logUpdated();
+                
+                $entityManager->persist($image);
+                $entityManager->persist($rateableCollection);
+                $entityManager->flush();
+
+                return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $id)));
+            }
+        }
     }
 
     public function updateAction()

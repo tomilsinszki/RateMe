@@ -34,6 +34,10 @@ rateable_collection_profile_edit_by_id:
     pattern:   /hely/profil/szerkesztes/id/{id}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:edit }
 
+rateable_collection_upload_image:
+    pattern:   /hely/profil/kepfeltoltes/id/{id}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:uploadImage }
+
 update_collection:
     pattern:   /hely/profile/szerkesztes/mentes
     defaults: { _controller: AcmeRatingBundle:RateableCollection:update }

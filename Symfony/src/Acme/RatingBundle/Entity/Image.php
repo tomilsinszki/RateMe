@@ -4,12 +4,14 @@ namespace Acme\RatingBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Acme\RatingBundle\Entity\Image
  *
  * @ORM\Table(name="image")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Image
 {
@@ -33,6 +35,8 @@ class Image
      * @Assert\File(maxSize="6000000")
      */
     private $file;
+    
+    private $filenameForRemove;
 
 
     /**
@@ -82,12 +86,12 @@ class Image
 
     public function getAbsolutePath()
     {
-        return null === $this->path ? null : $this->getUploadRootDir().'/'.$this->path;
+        return null === $this->path ? null : $this->getUploadRootDir().'/'.$this->id.'.'.$this->path;
     }
 
     public function getWebPath()
     {
-        return null === $this->path ? null : $this->getUploadDir().'/'.$this->path;
+        return null === $this->path ? null : $this->getUploadDir().'/'.$this->id.'.'.$this->path;
     }
 
     protected function getUploadRootDir()
@@ -100,16 +104,43 @@ class Image
         return 'uploads/images';
     }
 
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if (null !== $this->file)
+            $this->path = $this->file->guessExtension();
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
     public function upload()
     {
         if (null === $this->file)
             return;
 
-        // we use the original file name here but you should
-        // sanitize it at least to avoid any security issues
+        $this->file->move($this->getUploadRootDir(), $this->id.'.'.$this->file->guessExtension());
+        unset($this->file);
+    }
 
-        $this->file->move($this->getUploadRootDir(), $this->file->getClientOriginalName());
-        $this->path = $this->file->getClientOriginalName();
-        $this->file = null;
+    /**
+     * @ORM\PreRemove()
+     */
+    public function storeFilenameForRemove()
+    {
+        $this->filenameForRemove = $this->getAbsolutePath();
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if ($this->filenameForRemove)
+            unlink($this->filenameForRemove);
     }
 }

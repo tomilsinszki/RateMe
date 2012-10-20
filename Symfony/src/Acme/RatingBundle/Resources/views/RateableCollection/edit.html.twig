@@ -7,21 +7,41 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ path('update_collection', {}) }}" method="post">
-        <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
-        
-        <div style="margin-top:5px;">
-            <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" />
-        </div>
+    {{ parent() }}
 
-        <div style="margin-top:5px;">
-            <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" />
-        </div>
+    <table border="0">
+        <tr>
+            <td style="padding-right:30px;">
+                {% if collectionImageURL %}
+                    <img src="{{ asset(collectionImageURL) }}" />
+                {% endif %}
 
-        <div style="margin-top:5px;">
-            <input type="submit" value="mentés" />
-        </div>
-    </form>
+                <form action="{{ path('rateable_collection_upload_image', {'id': rateableCollection.id}) }}" method="post" {{ form_enctype(imageUploadForm) }}>
+                    {{ form_widget(imageUploadForm) }}
+
+                    <input type="submit" value="Kép beállítása" />
+                </form>
+            </td>
+            
+            <td style="vertical-align: top;">
+                <form action="{{ path('update_collection', {}) }}" method="post">
+                    <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+                    
+                    <div style="margin-top:5px;">
+                        <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" />
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" />
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        <input type="submit" value="mentés" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
 
     <form style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection', {}) }}" method="post">
         <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />

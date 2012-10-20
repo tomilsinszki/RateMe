@@ -4,5 +4,6 @@
 /Symfony/app/cache/*
 /Symfony/app/logs/*
 /Symfony/vendor/
+Symfony/web/uploads/
 /Symfony/app/config/parameters.yml
 *.swp
