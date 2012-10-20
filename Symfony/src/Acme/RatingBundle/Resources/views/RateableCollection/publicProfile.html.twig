@@ -8,6 +8,10 @@
 {% block body %}
     {{ parent() }}
 
+    {% if collectionImageURL %}
+        <img src="{{ asset(collectionImageURL) }}" />
+    {% endif %}
+
     <div>
         <span style="font-weight:bold;">hely neve:</span> {{ rateableCollection.name }}
     </div>

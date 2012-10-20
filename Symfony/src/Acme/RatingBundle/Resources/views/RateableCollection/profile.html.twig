@@ -7,6 +7,10 @@
 
 {% block body %}
     {{ parent() }}
+
+    {% if collectionImageURL %}
+        <img src="{{ asset(collectionImageURL) }}" />
+    {% endif %}
     
     <div>
         <a href="{{ path('rateable_collection_profile_edit_by_id', {'id': rateableCollection.id}) }}">szerkesztés</a>

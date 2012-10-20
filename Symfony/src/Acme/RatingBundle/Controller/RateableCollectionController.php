@@ -27,18 +27,17 @@ class RateableCollectionController extends Controller
 
     public function publicProfileAction($id)
     {
-        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
-        if ( empty($rateableCollection) === TRUE )
-            throw $this->createNotFoundException('RateableCollection could not be found.');
-
+        $rateableCollection = $this->getRateableCollectionById($id);
         $rateables = $this->getRateablesWithAverageAndCount($rateableCollection->getRateables());
         $ratings = $this->getRatingsForRateables($rateableCollection->getRateables());
+        $collectionImageURL = $this->getImageURLForCollection($rateableCollection);
         
         return $this->render('AcmeRatingBundle:RateableCollection:publicProfile.html.twig', array(
             'rateableCollection' => $rateableCollection,
             'rateablesData' => $this->getRateablesWithAverageAndCount($rateableCollection->getRateables()),
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverage($ratings),
+            'collectionImageURL' => $collectionImageURL,
         ));
     }
 
@@ -58,17 +57,16 @@ class RateableCollectionController extends Controller
 
     public function profileAction($id)
     {
-        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
-        if ( empty($rateableCollection) === TRUE )
-            throw $this->createNotFoundException('RateableCollection could not be found.');
-
+        $rateableCollection = $this->getRateableCollectionById($id);
         $ratings = $this->getRatingsForRateables($rateableCollection->getRateables());
+        $collectionImageURL = $this->getImageURLForCollection($rateableCollection);
         
         return $this->render('AcmeRatingBundle:RateableCollection:profile.html.twig', array(
             'rateableCollection' => $rateableCollection,
             'ratings' => $ratings,
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverage($ratings),
+            'collectionImageURL' => $collectionImageURL,
         ));
     }
 

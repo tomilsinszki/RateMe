@@ -5,6 +5,7 @@ namespace Acme\UserBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Acme\UserBundle\Entity\User;
 use Acme\RatingBundle\Entity\Rating;
+use Acme\RatingBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -12,18 +13,61 @@ class DefaultController extends Controller
 {
     public function profileAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        if ( empty($user) === TRUE )
-            throw $this->createNotFoundException('Current user could not be found.');
-        
+        $user = $this->getUserFromContext();
+        $imageURL = $this->getImageURLForUser($user);
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findByRatingUser($user);
+        
+        $image = new Image();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
         return $this->render('AcmeUserBundle:Default:profile.html.twig', array(
             'user' => $user,
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverage($ratings),
             'ratings' => $ratings,
+            'imageUploadForm' => $imageUploadForm->createView(),
+            'imageURL' => $imageURL,
         ));
+    }
+
+    private function getImageURLForUser($user)
+    {
+        $imageURL = null;
+        $image = $user->getImage();
+        if ( empty($image) === FALSE )
+            $imageURL = $image->getWebPath();
+        
+        return $imageURL;
+    }
+
+    public function uploadImageAction()
+    {
+        $user = $this->getUserFromContext();
+        $image = new Image();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
+        
+        if ( $this->getRequest()->isMethod('POST') ) {
+            $imageUploadForm->bind($this->getRequest());
+
+            if ( $imageUploadForm->isValid() ) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $user->setImage($image);
+                $entityManager->persist($image);
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                return $this->redirect($this->generateUrl('acme_user_profile'));
+            }
+        }
+    }
+
+    private function getUserFromContext()
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ( empty($user) === TRUE )
+            throw $this->createNotFoundException('Current user could not be found.');
+
+        return $user;
     }
 
     private function getRatingsAverage($ratings)

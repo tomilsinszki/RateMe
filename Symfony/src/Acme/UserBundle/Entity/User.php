@@ -11,39 +11,45 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="Acme\UserBundle\Entity\UserRepository")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=25, unique=true, nullable=false)
      */
-    private $username;
+    protected $username;
 
     /**
      * @ORM\Column(type="string", length=32, nullable=false)
      */
-    private $salt;
+    protected $salt;
 
     /**
      * @ORM\Column(type="string", length=40, nullable=false)
      */
-    private $password;
+    protected $password;
 
     /**
      * @ORM\Column(type="string", length=60, unique=true, nullable=false)
      */
-    private $email;
+    protected $email;
 
     /**
      * @ORM\Column(name="is_active", type="boolean", nullable=false)
      */
-    private $isActive;
+    protected $isActive;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Acme\RatingBundle\Entity\Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+    protected $image;
 
     /**
      * @ORM\ManyToMany(targetEntity="Acme\UserBundle\Entity\Group", inversedBy="users")
@@ -52,7 +58,34 @@ class User implements UserInterface
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      *      )
      */
-    private $groups;
+    protected $groups;
+
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->salt,
+            $this->password,
+            $this->email,
+            $this->isActive,
+            $this->groups
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->username,
+            $this->salt,
+            $this->password,
+            $this->email,
+            $this->isActive,
+            $this->groups
+        ) = unserialize($serialized);
+    }
 
     public function __construct()
     {
@@ -72,6 +105,18 @@ class User implements UserInterface
     public function setPassword($password) { $this->password = $password; }
     public function setEmail($email) { $this->email = $email; }
     public function setIsActive($isActive) { $this->isActive = $isActive; }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
 
     public function addGroup($group)
     {

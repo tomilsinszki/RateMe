@@ -21,24 +21,24 @@ class Group implements RoleInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string $name
      *
      * @ORM\Column(name="name", type="string", length=30)
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(name="role", type="string", length=20, unique=true)
      */
-    private $role;
+    protected $role;
 
     /**
      * @ORM\ManyToMany(targetEntity="Acme\UserBundle\Entity\User", mappedBy="groups")
      */
-    private $users;
+    protected $users;
 
 
     public function __construct()
