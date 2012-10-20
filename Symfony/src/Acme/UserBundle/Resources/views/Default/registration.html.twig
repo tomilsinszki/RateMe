@@ -3,14 +3,36 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ asset('bundles/acmeuser/js/registration.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
     {{ parent() }}
 
-    <form action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }}>
-        {{ form_widget(form) }}
+    <form id="form_registration" action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }}>
+        <div style="margin-top:10px;">
+            {{ form_errors(form.username) }}
+            {{ form_widget(form.username) }}
+        </div>
 
-        <input type="submit" />
+        <div style="margin-top:10px;">
+            {{ form_errors(form.email) }}
+            {{ form_widget(form.email) }}
+        </div>
+
+        <div style="margin-top:10px;">
+            {{ form_errors(form.password) }}
+            {{ form_widget(form.password) }}
+        </div>
+
+        <div style="margin-top:10px;">
+            <input id="form_password_again" type="text" />
+        </div>
+
+        {{ form_rest(form) }}
+
+        <div style="margin-top:10px;">
+            <input id="form_submit" type="submit" value="regisztráció" disabled="true" />
+        </div>
     </form>
 {% endblock %}
