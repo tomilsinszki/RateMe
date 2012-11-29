@@ -18,9 +18,13 @@
             <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:none; width:150px;" />
 
             <div style="text-align:right;">
-                <a href="{{ path('acme_user_profile') }}">{{ app.user.username }}</a>
-                /
-                <a href="{{ path('logout') }}">kijelentkezés</a>
+                {% if app.user %}
+                    <a href="{{ path('acme_user_profile') }}">{{ app.user.username }}</a>
+                    /
+                    <a href="{{ path('logout') }}">kijelentkezés</a>
+                {% else %}
+                    <a href="{{ path('login') }}">bejelentkezés</a>
+                {% endif %}
             </div>
         {% endblock %}
     </body>

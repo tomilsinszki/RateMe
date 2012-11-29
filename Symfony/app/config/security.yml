@@ -21,8 +21,15 @@ security:
         login_firewall:
             pattern:    ^/login$
             anonymous:  ~
-        secured_area:
+        homepage:
             pattern:    ^/
+            anonymous:  ~
+            form_login:
+                login_path:  /login
+                check_path:  /login_check
+            logout: ~
+        secured_area:
+            pattern:    ^/azonosito
             form_login:
                 login_path:  /login
                 check_path:  /login_check

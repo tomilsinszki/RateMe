@@ -32,7 +32,16 @@ class IdentifierController extends Controller
 
             if ( $form->isValid() ) {
                 $alphanumericValue = $form->get('alphanumericValue')->getData();
+                if ( empty($alphanumericValue) === TRUE ) {
+                    $this->get('session')->setFlash('notice', 'Nem adtál meg kódot');
+                    return $this->redirect($this->generateUrl('_welcome'));
+                }
+
                 $identifier = $this->getDoctrine()->getRepository('AcmeRatingBundle:Identifier')->findOneByAlphanumericValue($alphanumericValue);
+                if ( empty($identifier) === TRUE ) {
+                    $this->get('session')->setFlash('notice', 'Az általad megadott kód nem létezik');
+                    return $this->redirect($this->generateUrl('_welcome'));
+                }
                 
                 $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByIdentifier($identifier);
                 if ( empty($rateable) === FALSE )
@@ -42,7 +51,8 @@ class IdentifierController extends Controller
                 if ( empty($collection) === FALSE )
                     return $this->redirect($this->generateUrl('rateable_collection_main', array('alphanumericValue' => $alphanumericValue)));
                 
-                return $this->redirect($this->generateUrl('identifier_not_found'));
+                $this->get('session')->setFlash('notice', 'Az általad megadott kód nem létezik');
+                return $this->redirect($this->generateUrl('_welcome'));
             }
         }
     }
