@@ -1,0 +1,12 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <div>Köszönjük, hogy szóltál!</div>
+    <div><a href="{{ path('_welcome') }}">Vissza a főoldal</a></div>
+{% endblock %}

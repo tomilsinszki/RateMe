@@ -10,6 +10,10 @@ rateable_main:
     pattern:   /azonosito/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:Rateable:index }
 
+rateable_mismatch:
+    pattern:   /azonosito/hibajelentes/{rateableId}
+    defaults: { _controller: AcmeRatingBundle:Rateable:mismatch }
+
 rateable_by_id_main:
     pattern:   /id/{id}
     defaults: { _controller: AcmeRatingBundle:Rateable:indexById }

@@ -31,4 +31,6 @@
         <input type="hidden" id="stars" name="stars" />
         <input type="submit" id="submitRating" disabled="true" value="OK" />
     </form>
+
+    <div><a href="{{ path('rateable_mismatch', {'rateableId': rateable.id}) }}">Nem ezt a személyt akartam értékelni</a></div>
 {% endblock %}
