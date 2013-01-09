@@ -1,0 +1,14 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <div>Köszönjük a regisztrációt!</div>
+    <div>Kérjük kattints a megerősítő email-ben küldött linkre a regisztrációd véglegesítéséhez.</div>
+    <div><a href="{{ path('_welcome') }}">Főoldal</a></div>
+{% endblock %}

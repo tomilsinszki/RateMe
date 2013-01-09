@@ -11,21 +11,22 @@
 
     <form id="form_registration" action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }}>
         <div style="margin-top:10px;">
+            <div id="username_ajax_error">
+            </div>
             {{ form_errors(form.username) }}
             {{ form_widget(form.username) }}
         </div>
 
         <div style="margin-top:10px;">
-            {{ form_errors(form.email) }}
-            {{ form_widget(form.email) }}
-        </div>
-
-        <div style="margin-top:10px;">
+            <div id="password_ajax_error">
+            </div>
             {{ form_errors(form.password) }}
             {{ form_widget(form.password) }}
         </div>
 
         <div style="margin-top:10px;">
+            <div id="password_again_ajax_error">
+            </div>
             <input id="form_password_again" type="text" />
         </div>
 

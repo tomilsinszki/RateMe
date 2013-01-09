@@ -7,6 +7,7 @@ use Acme\UserBundle\Entity\User;
 use Acme\RatingBundle\Entity\Rating;
 use Acme\RatingBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\SecurityContext;
 
 class DefaultController extends Controller
@@ -89,13 +90,17 @@ class DefaultController extends Controller
 
         $form = $this->createFormBuilder($user)
             ->add('username', 'text')
-            ->add('email', 'text')
             ->add('password', 'text')
             ->getForm();
         
         return $this->render('AcmeUserBundle:Default:registration.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+    
+    public function registrationDoneAction(Request $request)
+    {
+        return $this->render('AcmeUserBundle:Default:registration_done.html.twig', array());
     }
 
     public function newAction(Request $request)
@@ -104,7 +109,6 @@ class DefaultController extends Controller
         
         $form = $this->createFormBuilder($user)
             ->add('username', 'text')
-            ->add('email', 'text')
             ->add('password', 'text')
             ->getForm();
 
@@ -120,6 +124,8 @@ class DefaultController extends Controller
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
 
+                $user->setEmail($user->getUsername());
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
@@ -127,6 +133,19 @@ class DefaultController extends Controller
                 return $this->redirect($this->generateUrl('acme_user_registration'));
             }
         }
+    }
+
+    public function doesExistAction()
+    {
+        $request = $this->getRequest();
+        $username = $request->get('username');
+
+        $user = $this->getDoctrine()->getRepository('AcmeUserBundle:User')->findOneByUsername($username);
+
+        if ( empty($user) === FALSE )
+            return new Response(json_encode(TRUE));
+        else
+            return new Response(json_encode(FALSE));
     }
 
     public function loginAction()

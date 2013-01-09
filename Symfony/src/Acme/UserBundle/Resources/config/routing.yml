@@ -10,6 +10,14 @@ acme_user_registration:
     pattern:  /felhasznalo/regisztracio
     defaults: { _controller: AcmeUserBundle:Default:register }
 
+acme_user_registration_done:
+    pattern:  /felhasznalo/regisztracio/sikeres
+    defaults: { _controller: AcmeUserBundle:Default:registrationDone }
+
 acme_user_new:
     pattern:  /felhasznalo/uj
     defaults: { _controller: AcmeUserBundle:Default:new }
+
+acme_user_does_exist:
+    pattern:  /felhasznalo/letezike
+    defaults: { _controller: AcmeUserBundle:Default:doesExist }
