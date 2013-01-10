@@ -26,7 +26,7 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
 
         $user = new User();
 
-        $user->setUsername('test');
+        $user->setUsername('test@test.com');
         $user->setEmail('test@test.com');
 
         $user->setSalt(md5(time()));

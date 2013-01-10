@@ -16,7 +16,7 @@ class DefaultController extends Controller
     {
         $user = $this->getUserFromContext();
         $imageURL = $this->getImageURLForUser($user);
-        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findByRatingUser($user);
+        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('ratingUser' => $user), array('created' => 'DESC'));
         
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
@@ -24,7 +24,7 @@ class DefaultController extends Controller
         return $this->render('AcmeUserBundle:Default:profile.html.twig', array(
             'user' => $user,
             'ratingCount' => count($ratings),
-            'ratingAverage' => $this->getRatingsAverage($ratings),
+            'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
             'ratings' => $ratings,
             'imageUploadForm' => $imageUploadForm->createView(),
             'imageURL' => $imageURL,
@@ -39,6 +39,11 @@ class DefaultController extends Controller
             $imageURL = $image->getWebPath();
         
         return $imageURL;
+    }
+
+    public function profileEditAction(Request $request)
+    {
+        return $this->render('AcmeUserBundle:Default:profileEdit.html.twig', array());
     }
 
     public function uploadImageAction()
@@ -71,7 +76,7 @@ class DefaultController extends Controller
         return $user;
     }
 
-    private function getRatingsAverage($ratings)
+    private function getRatingsAverageWithTwoDecimals($ratings)
     {
         $ratingSum = 0.0;
 
@@ -81,7 +86,10 @@ class DefaultController extends Controller
         if ( count($ratings) == 0 )
             return 0.0;
 
-        return (float)$ratingSum / (float)count($ratings);
+        $average = (float)$ratingSum / (float)count($ratings);
+        $average = round($average, 2);
+        
+        return number_format($average, 2, ',', ' ');
     }
 
     public function registerAction(Request $request)
@@ -100,7 +108,7 @@ class DefaultController extends Controller
     
     public function registrationDoneAction(Request $request)
     {
-        return $this->render('AcmeUserBundle:Default:registration_done.html.twig', array());
+        return $this->render('AcmeUserBundle:Default:registrationDone.html.twig', array());
     }
 
     public function newAction(Request $request)
@@ -130,7 +138,7 @@ class DefaultController extends Controller
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirect($this->generateUrl('acme_user_registration'));
+                return $this->redirect($this->generateUrl('acme_user_registration_done'));
             }
         }
     }

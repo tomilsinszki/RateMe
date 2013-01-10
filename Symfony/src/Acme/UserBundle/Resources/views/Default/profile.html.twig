@@ -8,6 +8,10 @@
 {% block body %}
     {{ parent() }}
 
+    <div>
+        <a href="{{ path('acme_user_profile_edit') }}">szerkesztés</a>
+    </div>
+
     {% if imageURL %}
         <img src="{{ asset(imageURL) }}" />
     {% endif %}
@@ -19,7 +23,7 @@
     </form>
     
     <div>
-        <span style="font-weight:bold;">felhasználónév:</span> {{ user.username }}
+        <span style="font-weight:bold;">e-mail:</span> {{ user.username }}
     </div>
 
     <div>
@@ -48,7 +52,39 @@
             </div>
 
             <div>
-                pontszám: {{ rating.stars }}
+                szavazat ideje: {{ rating.updated|date("Y. m. d. G:i", "Europe/Budapest") }}
+            </div>
+
+            <div>
+                {% if 1 <= rating.stars %}
+                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+                {% else %}
+                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+                {% endif %}
+
+                {% if 2 <= rating.stars %}
+                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+                {% else %}
+                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+                {% endif %}
+
+                {% if 3 <= rating.stars %}
+                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+                {% else %}
+                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+                {% endif %}
+
+                {% if 4 <= rating.stars %}
+                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+                {% else %}
+                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+                {% endif %}
+
+                {% if 5 <= rating.stars %}
+                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
+                {% else %}
+                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

@@ -2,6 +2,10 @@ acme_user_upload_image:
     pattern:  /felhasznalo/profil/kepfeltoltes
     defaults: { _controller: AcmeUserBundle:Default:uploadImage }
 
+acme_user_profile_edit:
+    pattern:  /felhasznalo/profil/szerkesztes
+    defaults: { _controller: AcmeUserBundle:Default:profileEdit }
+
 acme_user_profile:
     pattern:  /felhasznalo/profil
     defaults: { _controller: AcmeUserBundle:Default:profile }
