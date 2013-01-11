@@ -1,0 +1,5 @@
+Acme\UserBundle\Entity\User:
+    properties:
+        username:
+            - Email:
+                message: A megadott e-mail cím formátuma hibásnak tűnik.

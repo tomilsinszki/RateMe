@@ -18,15 +18,11 @@ class DefaultController extends Controller
         $imageURL = $this->getImageURLForUser($user);
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('ratingUser' => $user), array('created' => 'DESC'));
         
-        $image = new Image();
-        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
-        
         return $this->render('AcmeUserBundle:Default:profile.html.twig', array(
             'user' => $user,
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
             'ratings' => $ratings,
-            'imageUploadForm' => $imageUploadForm->createView(),
             'imageURL' => $imageURL,
         ));
     }
@@ -43,7 +39,9 @@ class DefaultController extends Controller
 
     public function profileEditAction(Request $request)
     {
-        return $this->render('AcmeUserBundle:Default:profileEdit.html.twig', array());
+        $user = $this->getUserFromContext();
+        $emailForm = $this->createFormBuilder($user)->add('username', 'text', array('label'  => 'e-mail'))->getForm();
+        return $this->renderProfileEditView($emailForm);
     }
 
     public function uploadImageAction()
@@ -62,9 +60,47 @@ class DefaultController extends Controller
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirect($this->generateUrl('acme_user_profile'));
+                return $this->redirect($this->generateUrl('acme_user_profile_edit'));
             }
         }
+    }
+
+    public function updateUserDataAction()
+    {
+        $tmpUser = new User();
+        $emailForm = $this->createFormBuilder($tmpUser)->add('username', 'text', array('label'  => 'e-mail'))->getForm();
+
+        if ( $this->getRequest()->isMethod('POST') ) {
+            $emailForm->bind($this->getRequest());
+
+            if ( $emailForm->isValid() ) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $user = $this->getUserFromContext();
+                $tmpUser = $emailForm->getData();
+                $user->setUsername($tmpUser->getUsername());
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                return $this->redirect($this->generateUrl('acme_user_profile_edit'));
+            }
+        }
+        
+        return $this->renderProfileEditView($emailForm);
+    }
+
+    private function renderProfileEditView($emailForm) {
+        $user = $this->getUserFromContext();
+        $imageURL = $this->getImageURLForUser($user);
+
+        $image = new Image();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
+
+        return $this->render('AcmeUserBundle:Default:profileEdit.html.twig', array(
+            'user' => $user,
+            'imageUploadForm' => $imageUploadForm->createView(),
+            'emailForm' => $emailForm->createView(),
+            'imageURL' => $imageURL,
+        ));
     }
 
     private function getUserFromContext()

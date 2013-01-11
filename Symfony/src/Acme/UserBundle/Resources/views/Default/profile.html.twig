@@ -15,12 +15,6 @@
     {% if imageURL %}
         <img src="{{ asset(imageURL) }}" />
     {% endif %}
-
-    <form action="{{ path('acme_user_upload_image') }}" method="post" {{ form_enctype(imageUploadForm) }}>
-        {{ form_widget(imageUploadForm) }}
-
-        <input type="submit" value="Kép beállítása" />
-    </form>
     
     <div>
         <span style="font-weight:bold;">e-mail:</span> {{ user.username }}
