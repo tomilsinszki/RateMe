@@ -179,6 +179,11 @@ class DefaultController extends Controller
         }
     }
 
+    public function changePasswordAction()
+    {
+        return $this->render('AcmeUserBundle:Default:changePassword.html.twig', array());
+    }
+
     public function doesExistAction()
     {
         $request = $this->getRequest();

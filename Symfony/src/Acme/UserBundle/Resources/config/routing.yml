@@ -29,3 +29,7 @@ acme_user_new:
 acme_user_does_exist:
     pattern:  /felhasznalo/letezike
     defaults: { _controller: AcmeUserBundle:Default:doesExist }
+
+acme_user_password_change:
+    pattern:  /felhasznalo/jelszo/modositas
+    defaults: { _controller: AcmeUserBundle:Default:changePassword }

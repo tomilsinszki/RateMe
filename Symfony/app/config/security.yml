@@ -28,16 +28,14 @@ security:
                 login_path:  /login
                 check_path:  /login_check
             logout: ~
-        secured_area:
-            pattern:    ^/azonosito
-            form_login:
-                login_path:  /login
-                check_path:  /login_check
-            logout: ~
         ajax_calls:
             pattern:    ^/_wdt
             anonymous:  ~
 
     access_control:
+        - { path: ^/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
+        - { path: ^/hely/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
+        - { path: ^/ertekeles/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
+        - { path: ^/id, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
         - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }  
-        #- { path: ^/azonosito, roles: ROLE_RATER }
+        - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }  
