@@ -181,7 +181,45 @@ class DefaultController extends Controller
 
     public function changePasswordAction()
     {
-        return $this->render('AcmeUserBundle:Default:changePassword.html.twig', array());
+        $defaultData = array();
+        $form = $this->createFormBuilder($defaultData)
+                    ->add('oldPassword', 'password', array('label' => 'régi jelszó:'))
+                    ->add('newPassword1', 'password', array('label' => 'új jelszó:'))
+                    ->add('newPassword2', 'password', array('label' => 'új jelszó megerősítése:'))
+                    ->getForm();
+
+        return $this->render('AcmeUserBundle:Default:changePassword.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function updatePasswordAction()
+    {
+        $defaultData = array();
+        $form = $this->createFormBuilder($defaultData)
+                    ->add('oldPassword', 'password', array('label' => 'régi jelszó:'))
+                    ->add('newPassword1', 'password', array('label' => 'új jelszó:'))
+                    ->add('newPassword2', 'password', array('label' => 'új jelszó megerősítése:'))
+                    ->getForm();
+       
+        if ( $this->getRequest()->isMethod('POST') === TRUE ) {
+            $form->bind($this->getRequest());
+            $user = $this->getUserFromContext();
+            $data = $form->getData();
+
+            if ( ( $data['newPassword1'] === $data['newPassword1'] ) AND ( empty($data['newPassword1']) === FALSE ) ) {
+                $factory = $this->get('security.encoder_factory');
+                $encoder = $factory->getEncoder($user);
+                $password = $encoder->encodePassword($data['newPassword1'], $user->getSalt());
+                $user->setPassword($password);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+            }
+        }
+
+        return $this->redirect($this->generateUrl('acme_user_password_change'));
     }
 
     public function doesExistAction()

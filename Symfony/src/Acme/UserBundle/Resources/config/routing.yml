@@ -33,3 +33,7 @@ acme_user_does_exist:
 acme_user_password_change:
     pattern:  /felhasznalo/jelszo/modositas
     defaults: { _controller: AcmeUserBundle:Default:changePassword }
+
+acme_user_password_update:
+    pattern:  /felhasznalo/jelszo/mentes
+    defaults: { _controller: AcmeUserBundle:Default:updatePassword }
