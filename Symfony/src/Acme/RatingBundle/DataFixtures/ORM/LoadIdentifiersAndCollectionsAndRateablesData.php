@@ -7,14 +7,19 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Acme\RatingBundle\Entity\Identifier;
 use Acme\RatingBundle\Entity\RateableCollection;
 use Acme\RatingBundle\Entity\Rateable;
+use Doctrine\ORM\EntityRepository;
 
 class LoadIdentifierData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
+        $userRepository = $manager->getRepository("Acme\UserBundle\Entity\User");
+        $owner = $userRepository->find(2);
+
         $collection = $this->createCollectionWithIdentifier($manager, 
             'Kék Osztriga Bár', 
-            $this->createIdentifier($manager, 'http://www.one.com', '1111')
+            $this->createIdentifier($manager, 'http://www.one.com', '1111'),
+            $owner
         );
 
         $this->createRateableWithCollection($manager,
@@ -54,11 +59,12 @@ class LoadIdentifierData implements FixtureInterface
         return $identifier;
     }
 
-    private function createCollectionWithIdentifier($manager, $name, $identifier)
+    private function createCollectionWithIdentifier($manager, $name, $identifier, $ownerUser)
     {
         $collection = new RateableCollection();
         $collection->setName($name);
         $collection->setIdentifier($identifier);
+        $collection->addOwner($ownerUser);
 
         $manager->persist($collection);
         $manager->flush();

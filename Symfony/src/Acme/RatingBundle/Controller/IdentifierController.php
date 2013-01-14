@@ -10,6 +10,11 @@ class IdentifierController extends Controller
 {
     public function indexAction()
     {
+        $ownedCollection = $this->getCollectionIfUserIsOwner();
+        if ( empty($ownedCollection) === FALSE ) {
+            return $this->redirect($this->generateUrl('rateable_collection_profile_by_id', array('id' => $ownedCollection->getId())));
+        }
+        
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
             ->add('alphanumericValue', 'text')
@@ -18,6 +23,26 @@ class IdentifierController extends Controller
         return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    private function getCollectionIfUserIsOwner()
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+
+        if ( empty($user) != FALSE ) {
+            return null;
+        }
+
+        if ( $this->get('security.context')->isGranted('ROLE_MANAGER') != TRUE ) {
+            return null;
+        }
+
+        $ownedCollections = $user->getOwnedCollections()->toArray();
+        if ( count($ownedCollections) <= 0 ) {
+            return null;
+        }
+
+        return array_pop($ownedCollections);
     }
 
     public function searchAction(Request $request)

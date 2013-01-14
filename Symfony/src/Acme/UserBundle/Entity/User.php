@@ -60,6 +60,11 @@ class User implements UserInterface, \Serializable
      */
     protected $groups;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Acme\RatingBundle\Entity\RateableCollection", mappedBy="owners")
+     */
+    protected $ownedCollections;
+
 
     public function serialize()
     {
@@ -71,6 +76,7 @@ class User implements UserInterface, \Serializable
             $this->email,
             $this->isActive,
             $this->groups
+            //$this->ownedCollections
         ));
     }
 
@@ -84,6 +90,7 @@ class User implements UserInterface, \Serializable
             $this->email,
             $this->isActive,
             $this->groups
+            //$this->ownedCollections
         ) = unserialize($serialized);
     }
 
@@ -92,6 +99,7 @@ class User implements UserInterface, \Serializable
         $this->isActive = TRUE;
         $this->salt = md5(uniqid(null, TRUE));
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ownedCollections = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getUsername() { return $this->username; }
@@ -99,6 +107,7 @@ class User implements UserInterface, \Serializable
     public function getPassword() { return $this->password; }
     public function getEmail() { return $this->email; }
     public function isActive() { return $this->isActive; }
+    public function getOwnedCollections() { return $this->ownedCollections; }
 
     public function setUsername($username) { $this->username = $username; }
     public function setSalt($salt) { $this->salt = $salt; }

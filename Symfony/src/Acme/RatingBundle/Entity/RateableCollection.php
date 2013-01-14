@@ -67,7 +67,7 @@ class RateableCollection
     private $rateables;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Acme\UserBundle\Entity\User")
+     * @ORM\ManyToMany(targetEntity="Acme\UserBundle\Entity\User", inversedBy="ownedCollections")
      * @ORM\JoinTable(name="rateable_collection_owner",
      *      joinColumns={@ORM\JoinColumn(name="collection_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", unique=true)}

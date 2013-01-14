@@ -26,7 +26,7 @@ class RateableController extends Controller
         if ( empty($rateable) === TRUE )
             throw $this->createNotFoundException('Rateable could not be found.');
 
-        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findByRateable($rateable);
+        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('rateable' => $rateable), array('created' => 'DESC'));
 
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
@@ -34,7 +34,7 @@ class RateableController extends Controller
         return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
             'rateable' => $rateable,
             'ratingCount' => count($ratings),
-            'ratingAverage' => $this->getRatingsAverage($ratings),
+            'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
             'ratings' => $ratings,
             'imageURL' => $this->getImageURL($rateable),
             'imageUploadForm' => $imageUploadForm->createView(),
@@ -76,7 +76,7 @@ class RateableController extends Controller
         }
     }
 
-    private function getRatingsAverage($ratings)
+    private function getRatingsAverageWithTwoDecimals($ratings)
     {
         $ratingSum = 0.0;
 
@@ -86,7 +86,10 @@ class RateableController extends Controller
         if ( count($ratings) == 0 )
             return 0.0;
 
-        return (float)$ratingSum / (float)count($ratings);
+        $average = (float)$ratingSum / (float)count($ratings);
+        $average = round($average, 2);
+        
+        return number_format($average, 2, ',', ' ');
     }
 
     public function indexByIdAction($id)

@@ -20,25 +20,39 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
 
     public function load(ObjectManager $manager)
     {
-        $group = new Group();
-        $group->setName('rater');
-        $group->setRole('ROLE_RATER');
+        $raterGroup = $this->createRaterGroup($manager, 'rater', 'ROLE_RATER');
+        $managerGroup = $this->createRaterGroup($manager, 'manager', 'ROLE_MANAGER');
 
+        $raterUser = $this->createUserWithGroup($manager, 'rater@rater.com', 'rater', $raterGroup);
+        $raterUser = $this->createUserWithGroup($manager, 'manager@manager.com', 'manager', $managerGroup);
+    }
+
+    private function createRaterGroup(ObjectManager $manager, $name, $roleName) {
+        $group = new Group();
+        $group->setName($name);
+        $group->setRole($roleName);
+        $manager->persist($group);
+
+        return $group;
+    }
+
+    private function createUserWithGroup(ObjectManager $manager, $username, $password, $group) {
         $user = new User();
 
-        $user->setUsername('test@test.com');
-        $user->setEmail('test@test.com');
+        $user->setUsername($username);
+        $user->setEmail($username);
 
         $user->setSalt(md5(time()));
 
         $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
-        $password = $encoder->encodePassword('test', $user->getSalt());
+        $password = $encoder->encodePassword($password, $user->getSalt());
         $user->setPassword($password);
 
         $user->addGroup($group);
 
-        $manager->persist($group);
         $manager->persist($user);
         $manager->flush();
+
+        return $user;
     }
 }

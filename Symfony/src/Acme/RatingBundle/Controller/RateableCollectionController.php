@@ -37,7 +37,7 @@ class RateableCollectionController extends Controller
             'rateableCollection' => $rateableCollection,
             'rateablesData' => $this->getRateablesWithAverageAndCount($rateableCollection->getRateables()),
             'ratingCount' => count($ratings),
-            'ratingAverage' => $this->getRatingsAverage($ratings),
+            'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
             'collectionImageURL' => $collectionImageURL,
         ));
     }
@@ -50,7 +50,7 @@ class RateableCollectionController extends Controller
             $rateablesById[$rateable->getId()] = array();
             $rateablesById[$rateable->getId()]['rateable'] = $rateable;
             $rateablesById[$rateable->getId()]['ratingsCount'] = count($rateable->getRatings());
-            $rateablesById[$rateable->getId()]['ratingsAverage'] = $this->getRatingsAverage($rateable->getRatings());
+            $rateablesById[$rateable->getId()]['ratingsAverage'] = $this->getRatingsAverageWithTwoDecimals($rateable->getRatings());
         }
         
         return $rateablesById;
@@ -66,7 +66,7 @@ class RateableCollectionController extends Controller
             'rateableCollection' => $rateableCollection,
             'ratings' => $ratings,
             'ratingCount' => count($ratings),
-            'ratingAverage' => $this->getRatingsAverage($ratings),
+            'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
             'collectionImageURL' => $collectionImageURL,
         ));
     }
@@ -74,29 +74,36 @@ class RateableCollectionController extends Controller
     private function getRatingsForRateables($rateables)
     {
         $ratings = array();
-
+        
         foreach($rateables AS $rateable) {
             foreach($rateable->getRatings() AS $rating) {
-                array_push($ratings, $rating);
+                $ratings[$rating->getCreated()->getTimeStamp()] = $rating;
             }
         }
-
+        
+        if ( empty($ratings) === FALSE ) {
+            krsort($ratings, SORT_NUMERIC);
+        }
+        
         return $ratings;
     }
-    
-    private function getRatingsAverage($ratings)
+
+    private function getRatingsAverageWithTwoDecimals($ratings)
     {
         $ratingSum = 0.0;
 
         foreach($ratings AS $rating) 
             $ratingSum += $rating->getStars();
-
+        
         if ( count($ratings) == 0 )
             return 0.0;
 
-        return (float)$ratingSum / (float)count($ratings);
+        $average = (float)$ratingSum / (float)count($ratings);
+        $average = round($average, 2);
+        
+        return number_format($average, 2, ',', ' ');
     }
-
+    
     public function editAction($id)
     {
         $rateableCollection = $this->getRateableCollectionById($id);
