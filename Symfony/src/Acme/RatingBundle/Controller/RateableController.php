@@ -75,7 +75,7 @@ class RateableController extends Controller
             }
         }
     }
-
+    
     private function getRatingsAverageWithTwoDecimals($ratings)
     {
         $ratingSum = 0.0;

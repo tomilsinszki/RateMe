@@ -161,19 +161,19 @@ class DefaultController extends Controller
 
             if ( $form->isValid() ) {
                 $factory = $this->get('security.encoder_factory');
-                
                 $user = $form->getData();
-
+                $raterGroup = $this->getDoctrine()->getRepository('AcmeUserBundle:Group')->findOneByName('rater');
+                
                 $encoder = $factory->getEncoder($user);
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
-
                 $user->setEmail($user->getUsername());
-
+                $user->addGroup($raterGroup);
+                
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-
+                
                 return $this->redirect($this->generateUrl('acme_user_registration_done'));
             }
         }
