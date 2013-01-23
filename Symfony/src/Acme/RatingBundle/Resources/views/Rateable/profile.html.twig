@@ -38,7 +38,11 @@
     {% for rating in ratings %}
         <div style="margin-top:15px; border-top:1px solid gray;">
             <div>
-                szavazó neve: {{ rating.ratingUser.username }}
+                {% if rating.ratingUser.username is defined %}
+                    szavazó neve: {{ rating.ratingUser.username }}
+                {% else %}
+                    anonim felhasználó
+                {% endif %}
             </div>
 
             <div>

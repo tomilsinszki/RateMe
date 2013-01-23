@@ -19,8 +19,12 @@ class RatingController extends Controller
         $rating = new Rating();
         $rating->setStars($this->getStarsFromRequest());
         $rating->setRateable($rateable);
-        $rating->setRatingUser($this->getUserFromContext());
 
+        if ( $this->isUserRater() === TRUE ) {
+            $user = $this->getUserFromContext();
+            $rating->setRatingUser($user);
+        }
+        
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($rating);
         $entityManager->flush();
@@ -60,5 +64,14 @@ class RatingController extends Controller
             throw $this->createNotFoundException('Current user could not be found.');
 
         return $user;
+    }
+
+    private function isUserRater()
+    {
+        if ( $this->container->get('security.context')->isGranted('ROLE_RATER') === TRUE ) {
+            return TRUE;
+        }
+
+        return FALSE;
     }
 }
