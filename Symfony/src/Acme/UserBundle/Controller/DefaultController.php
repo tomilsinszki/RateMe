@@ -207,7 +207,13 @@ class DefaultController extends Controller
             $user = $this->getUserFromContext();
             $data = $form->getData();
 
-            if ( ( $data['newPassword1'] === $data['newPassword1'] ) AND ( empty($data['newPassword1']) === FALSE ) ) {
+            $isOldPasswordValid = ( $this->isPasswordValidForCurrentUser($data['oldPassword']) === TRUE );
+            $doNewPasswordsMatch = ( $data['newPassword1'] === $data['newPassword1'] );
+            $isNewPasswordNonEmpty = ( empty($data['newPassword1']) === FALSE );
+            $isNewPasswordString = ( is_string($data['newPassword1']) === TRUE );
+            $isNewPasswordLongEnough = ( 4 < strlen($data['newPassword1']) );
+
+            if ( $isOldPasswordValid AND $doNewPasswordsMatch AND $isNewPasswordNonEmpty AND $isNewPasswordString AND $isNewPasswordLongEnough ) {
                 $factory = $this->get('security.encoder_factory');
                 $encoder = $factory->getEncoder($user);
                 $password = $encoder->encodePassword($data['newPassword1'], $user->getSalt());
@@ -219,7 +225,7 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->redirect($this->generateUrl('acme_user_password_change'));
+        return $this->redirect($this->generateUrl('acme_user_profile'));
     }
 
     public function doesExistAction()
@@ -252,5 +258,35 @@ class DefaultController extends Controller
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
             'error'         => $error,
         ));
+    }
+    
+    public function isPasswordValidAction()
+    {
+        $isPasswordValid = FALSE;
+        $request = $this->getRequest();
+
+        if ( $request->isXmlHttpRequest() !== TRUE ) {
+            return new Response(json_encode($isPasswordValid), 200, array('Content-Type' => 'application/json'));
+        }
+        
+        if ( $this->isPasswordValidForCurrentUser($request->request->get('password')) === TRUE ) {
+            $isPasswordValid = TRUE;
+        }
+        
+        return new Response(json_encode($isPasswordValid), 200, array('Content-Type' => 'application/json'));
+    }
+
+    private function isPasswordValidForCurrentUser($possiblePassword)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $factory = $this->get('security.encoder_factory');
+        $encoder = $factory->getEncoder($user);
+        $possiblePasswordEncoded = $encoder->encodePassword($possiblePassword, $user->getSalt());
+
+        if ( $possiblePasswordEncoded === $user->getPassword() ) {
+            return TRUE;
+        }
+
+        return FALSE;
     }
 }

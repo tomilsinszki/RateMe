@@ -47,15 +47,15 @@ rateable_collection_upload_image:
     defaults: { _controller: AcmeRatingBundle:RateableCollection:uploadImage }
 
 update_collection:
-    pattern:   /hely/profile/szerkesztes/mentes
+    pattern:   /hely/profil/szerkesztes/mentes
     defaults: { _controller: AcmeRatingBundle:RateableCollection:update }
 
 new_rateable_for_collection:
-    pattern:   /hely/profile/szerkesztes/uj/elem
+    pattern:   /hely/profil/szerkesztes/uj/elem
     defaults: { _controller: AcmeRatingBundle:RateableCollection:newRateableForCollection }
 
 update_rateable_for_collection:
-    pattern:   /hely/profile/szerkesztes/uj/mentes
+    pattern:   /hely/profil/szerkesztes/uj/mentes
     defaults: { _controller: AcmeRatingBundle:RateableCollection:updateRateableForCollection }
 
 rating_new:

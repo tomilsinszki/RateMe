@@ -37,3 +37,8 @@ acme_user_password_change:
 acme_user_password_update:
     pattern:  /felhasznalo/jelszo/mentes
     defaults: { _controller: AcmeUserBundle:Default:updatePassword }
+
+acme_user_password_is_valid:
+    pattern:  /felhasznalo/jelszo/ervenyese
+    defaults: { _controller: AcmeUserBundle:Default:isPasswordValid }
+

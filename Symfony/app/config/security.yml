@@ -33,9 +33,18 @@ security:
             anonymous:  ~
 
     access_control:
-        - { path: ^/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
-        - { path: ^/hely/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
-        - { path: ^/ertekeles/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
-        - { path: ^/id, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
-        - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }  
-        - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }  
+        - { path: ^/felhasznalo/profil, roles: 'ROLE_RATER' }
+        - { path: ^/felhasznalo/regisztracio, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/felhasznalo/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/felhasznalo/letezike, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/felhasznalo/jelszo, roles: 'ROLE_RATER' }
+        - { path: ^/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/id, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/profil/kepfeltoltes/id, roles: 'ROLE_MANAGER' }
+        - { path: ^/hely/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/profil/id, roles: 'ROLE_MANAGER' }
+        - { path: ^/hely/profil/publikus/id, roles: '' }
+        - { path: ^/hely/profil, roles: 'ROLE_MANAGER' }
+        - { path: ^/ertekeles/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  
+        - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  
