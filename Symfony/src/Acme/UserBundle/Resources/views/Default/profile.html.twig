@@ -7,80 +7,79 @@
 
 {% block body %}
     {{ parent() }}
-
-    <div>
-        <a href="{{ path('acme_user_profile_edit') }}">szerkesztés</a>
-    </div>
-
-    {% if imageURL %}
-        <img src="{{ asset(imageURL) }}" />
-    {% endif %}
     
-    <div>
-        <span style="font-weight:bold;">e-mail:</span> {{ user.username }}
-    </div>
+    <div class="wrap rel">
+        <div class="floated_bg lister">
+            <div class="head">
+                {% if imageURL %}
+                    <img src="{{ asset(imageURL) }}" alt="head" />
+                {% endif %}
+            </div>
+            <h1 style="font-size:10px;">{{ user.username }}</h1>
+            <div class="btn_cont gray edit">
+                <a href="{{ path('acme_user_profile_edit') }}">
+                    <div class="button_bg">
+                        <div class="btn"><h3><div>Szerkesztés</div></h3></div>
+                    </div>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="slider_bg">
+                <div class="slider">
+                    <div class="slider_head">
+                        <h3>Értékelés: <span>{{ ratingCount }}</span></h3>
+                        <h3>Átlag: <span>{{ ratingAverage }}</span></h3>
+                    </div>
+                    {% for rating in ratings %}
+                        <div class="slide_elem">
+                            <div class="head">
+                                <!--
+                                <img src="assets/images/content/head.png" alt="head" />
+                                -->
+                            </div>
+                            <h1>{{ rating.rateable.name }}, {{ rating.rateable.typeName }}</h1>
+                            <h2>
+                                {% if rating.rateable.collection %}
+                                    {{ rating.rateable.collection.name }}
+                                {% endif %}
+                            </h2>
+                            <ul>
+                                {% if 1 <= rating.stars %}
+                                    <li class="on"><a href="#"></a></li>
+                                {% else %}
+                                    <li><a href="#"></a></li>
+                                {% endif %}
 
-    <div>
-        <span style="font-weight:bold;">értékelések száma:</span> {{ ratingCount }}
-    </div>
+                                {% if 2 <= rating.stars %}
+                                    <li class="on"><a href="#"></a></li>
+                                {% else %}
+                                    <li><a href="#"></a></li>
+                                {% endif %}
 
-    <div>
-        <span style="font-weight:bold;">átlag:</span> {{ ratingAverage }}
-    </div>
+                                {% if 3 <= rating.stars %}
+                                    <li class="on"><a href="#"></a></li>
+                                {% else %}
+                                    <li><a href="#"></a></li>
+                                {% endif %}
 
-    <div style="margin-top:15px;">
-    {% for rating in ratings %}
-        <div style="margin-top:15px; border-top:1px solid gray;">
-            {% if rating.rateable.collection %}
-                <div>
-                    hely neve: {{ rating.rateable.collection.name }}
+                                {% if 4 <= rating.stars %}
+                                    <li class="on"><a href="#"></a></li>
+                                {% else %}
+                                    <li><a href="#"></a></li>
+                                {% endif %}
+
+                                {% if 5 <= rating.stars %}
+                                    <li class="on"><a href="#"></a></li>
+                                {% else %}
+                                    <li><a href="#"></a></li>
+                                {% endif %}
+                            </ul>
+                            <h4>{{ rating.updated|date("Y. m. d.", "Europe/Budapest") }}</h4>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endif %}
-
-            <div>
-                alkalmazott neve: {{ rating.rateable.name }}
-            </div>
-
-            <div>
-                beosztása: {{ rating.rateable.typeName }}
-            </div>
-
-            <div>
-                szavazat ideje: {{ rating.updated|date("Y. m. d. G:i", "Europe/Budapest") }}
-            </div>
-
-            <div>
-                {% if 1 <= rating.stars %}
-                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-                {% else %}
-                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-                {% endif %}
-
-                {% if 2 <= rating.stars %}
-                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-                {% else %}
-                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-                {% endif %}
-
-                {% if 3 <= rating.stars %}
-                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-                {% else %}
-                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-                {% endif %}
-
-                {% if 4 <= rating.stars %}
-                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-                {% else %}
-                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-                {% endif %}
-
-                {% if 5 <= rating.stars %}
-                    <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-                {% else %}
-                    <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-                {% endif %}
             </div>
         </div>
-    {% endfor %}
     </div>
+
 {% endblock %}
