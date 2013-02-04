@@ -61,7 +61,7 @@ $(document).ready(function(){
         }
     });
 
-    $('#form_newPassword2').focus(function() {
+    $('#form_newPassword1').blur(function() {
         var password = $('#form_newPassword1').val();
 
         if ( password.length < 4 ) {

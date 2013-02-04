@@ -15,11 +15,11 @@
 
         <form action="{{ path('login_check') }}" method="post" class="form">
             <div>
-                <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="E-mail cím" />
+                <input type="email" id="username" name="_username" value="{{ last_username }}" placeholder="E-mail" autocomplete="off" autocapitalize="off" />
             </div>
 
             <div>
-                <input type="password" id="password" name="_password" placeholder="Jelszó" />
+                <input type="password" id="password" name="_password" placeholder="Jelszó" autocomplete="off" autocapitalize="off" />
             </div>
 
             {#
