@@ -6,30 +6,33 @@
 {% endblock %}
 
 {% block body %}
-    {% if error %}
-        <div>{{ error.message|trans({}, 'messages') }}</div>
-    {% endif %}
+    {{ parent() }}
+    
+    <div class="wrap">
+        {% if error %}
+            <h2 class="red">{{ error.message|trans({}, 'messages') }}</h2>
+        {% endif %}
 
-    <form action="{{ path('login_check') }}" method="post">
-        <div>
-            <label for="username">E-mail:</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}" />
+        <form action="{{ path('login_check') }}" method="post" class="form">
+            <div>
+                <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="E-mail cím" />
+            </div>
+
+            <div>
+                <input type="password" id="password" name="_password" placeholder="Jelszó" />
+            </div>
+
+            {#
+                If you want to control the URL the user is redirected to on success (more details below)
+                <input type="hidden" name="_target_path" value="/account" />
+            #}
+            <div class="btn_cont login yellow">
+                <button type="submit" class="btn"><h3><div>Bejelentkezem</div></h3></button>
+            </div>
+        </form>
+
+        <div style='margin-top:20px;'>
+            <a href="{{ path('acme_user_registration') }}">regisztrálok</a>
         </div>
-
-        <div>
-            <label for="password">Jelszó:</label>
-            <input type="password" id="password" name="_password" />
-        </div>
-
-        {#
-            If you want to control the URL the user is redirected to on success (more details below)
-            <input type="hidden" name="_target_path" value="/account" />
-        #}
-
-        <button type="submit">bejelentkezés</button>
-    </form>
-
-    <div style='margin-top:15px;'>
-        <a href="{{ path('acme_user_registration') }}">regisztrálok</a>
     </div>
 {% endblock %}

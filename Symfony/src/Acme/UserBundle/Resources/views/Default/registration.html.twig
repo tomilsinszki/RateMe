@@ -9,31 +9,28 @@
 {% block body %}
     {{ parent() }}
 
-    <form id="form_registration" action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }}>
-        <div style="margin-top:10px;">
-            <div id="username_ajax_error">
-            </div>
+    <form id="form_registration" action="{{ path('acme_user_new') }}" method="post" {{ form_enctype(form) }} class="form">
+        <div>
+            <h2 id="username_ajax_error" class="red" style="margin-bottom:0px;"></h2>
             {{ form_errors(form.username) }}
             {{ form_widget(form.username) }}
         </div>
 
-        <div style="margin-top:10px;">
-            <div id="password_ajax_error">
-            </div>
+        <div>
+            <h2 id="password_ajax_error" class="red" style="margin-bottom:0px;"></h2>
             {{ form_errors(form.password) }}
             {{ form_widget(form.password) }}
         </div>
 
-        <div style="margin-top:10px;">
-            <div id="password_again_ajax_error">
-            </div>
-            <input id="form_password_again" type="text" />
+        <div>
+            <h2 id="password_again_ajax_error" class="red" style="margin-bottom:0px;"></h2>
+            <input id="form_password_again" type="text" autocomplete="off" autocapitalize="off" />
         </div>
 
         {{ form_rest(form) }}
 
-        <div style="margin-top:10px;">
-            <input id="form_submit" type="submit" value="regisztráció" disabled="true" />
+        <div class="btn_cont reg yellow">
+            <input id="form_submit" type="submit" value="Regisztrálok" disabled="true" class="btn" />
         </div>
     </form>
 {% endblock %}

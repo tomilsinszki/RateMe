@@ -17,7 +17,7 @@ class IdentifierController extends Controller
         
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('alphanumericValue', 'text')
+            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => 'Add meg a 4 jegyű kódot', 'autocomplete' => 'off')))
             ->getForm();
 
         return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
@@ -49,7 +49,7 @@ class IdentifierController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('alphanumericValue', 'text')
+            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => 'Add meg a 4 jegyű kódot', 'autocomplete' => 'off')))
             ->getForm();
         
         if ( $request->isMethod('POST') ) {

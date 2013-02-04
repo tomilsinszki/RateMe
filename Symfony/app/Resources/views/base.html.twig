@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>RateMe</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
         
         {% block stylesheets %}
             <link href="{{ asset('css/global.css') }}" type="text/css" rel="stylesheet" />
@@ -13,19 +15,37 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:none; width:150px;"/>
-            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:none; width:150px;" />
-
-            <div style="text-align:right;">
-                {% if app.user %}
-                    <a href="{{ path('acme_user_profile') }}">{{ app.user.username }}</a>
-                    /
-                    <a href="{{ path('logout') }}">kijelentkezés</a>
-                {% else %}
-                    <a href="{{ path('login') }}">bejelentkezés</a>
-                {% endif %}
+        <div class="bg_grad">
+            <div class="header">
+                <div class="bg">
+                    <div class="wrap">
+                        <div class="menu">
+                            <div><a href="#" class="email on"></a></div>
+                            <div><a href="{{ path('acme_user_profile') }}" class="profile"></a></div>
+                            <div><a href="{{ path('_welcome') }}" class="home"></a></div>
+                            <div><a href="#" class="info"></a></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endblock %}
+            <div class="content">
+            {% block body %}
+                <!--
+                <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:none; width:150px;"/>
+                <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:none; width:150px;" />
+
+                <div style="text-align:right;">
+                    {% if app.user %}
+                        <a href="{{ path('acme_user_profile') }}">{{ app.user.username }}</a>
+                        /
+                        <a href="{{ path('logout') }}">kijelentkezés</a>
+                    {% else %}
+                        <a href="{{ path('login') }}">bejelentkezés</a>
+                    {% endif %}
+                </div>
+                -->
+            {% endblock %}
+            </div>
+        </div>
     </body>
 </html>

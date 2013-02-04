@@ -8,28 +8,41 @@
 {% block body %}
     {{ parent() }}
     
-    <div style="text-align:right;">
-        {% if app.user %}
-        {% else %}
-            <a href="{{ path('acme_user_registration') }}">regisztráció</a>
-        {% endif %}
-    </div>
-
-    <div>
+    <div class="wrap">
+        <div class="logo"></div>
         {% if app.session.hasFlash('notice') %}
-            {{ app.session.flash('notice') }}
+            <h2 class="red">{{ app.session.flash('notice') }}</h2>
         {% else %}
-            Értékelj, nálunk számít...
+            <h2>Értékelj, nálunk számít...</h2>
         {% endif %}
-    </div>
-    <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>
-        <div>
-            {{ form_errors(form.alphanumericValue) }}
-            {{ form_widget(form.alphanumericValue) }}
+        <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }} class="form">
+            <div>
+                {{ form_errors(form.alphanumericValue) }}
+                {{ form_widget(form.alphanumericValue) }}
+            </div>
+
+            {{ form_rest(form) }}
+
+            <div class="btn_cont yellow ok">
+                <input type="submit" value="OK" class="btn" />
+            </div>
+        </form>
+        <div class="buttons">
+            <div class="btn_cont gray left">
+                <a href="{{ path('login') }}">
+                    <div class="button_bg">
+                        <div class="btn"><h3><div>Belépés</div></h3></div>
+                    </div>
+                </a>
+            </div>
+            <div class="btn_cont gray right">
+                <a href="{{ path('acme_user_registration') }}">
+                    <div class="button_bg">
+                        <div class="btn"><h3><div>Regisztrálok</div></h3></div>
+                    </div>
+                </a>
+            </div>
+            <div class="clearfix"></div>
         </div>
-
-        {{ form_rest(form) }}
-
-        <input type="submit" value="OK" />
-    </form>
+    </div>
 {% endblock %}
