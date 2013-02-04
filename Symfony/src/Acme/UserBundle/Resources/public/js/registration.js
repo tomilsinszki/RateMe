@@ -10,22 +10,16 @@ function generateErrorMessageIfUsernameAlreadyExists(username) {
         dataType: "json",
         data: "username="+username
     }).done(function(doesUserExist) {
-        if ( doesUserExist == true )
+        if ( doesUserExist == true ) {
             $('#username_ajax_error').html('Az e-mail cím már foglalt.');
-        else
+        }
+        else {
             $('#username_ajax_error').empty();
+        }
     });
 }
 
 $(document).ready(function(){
-    var usernameLabel = 'Email cím';
-    var passwordLabel = 'Jelszó';
-    var passwordAgainLabel = 'Jelszó újra';
-
-    setUpInputLabel('form_username', usernameLabel);
-    setUpInputLabel('form_password', passwordLabel);
-    setUpInputLabel('form_password_again', passwordAgainLabel);
-
     $('#form_password').focus(function() {
         var username = $('#form_username').val();
 
@@ -41,42 +35,39 @@ $(document).ready(function(){
     $('#form_password_again').focus(function() {
         var password = $('#form_password').val();
 
-        if ( ( password.length < 4 ) || ( password == passwordLabel ) )
+        if ( ( password.length < 4 ) || ( password == '' ) ) {
             $('#password_ajax_error').html('Ez a jelszó túl rövid.');
-        else
+        }
+        else {
             $('#password_ajax_error').empty();
-    });
-
-    $('#form_registration').submit(function() {
-        if ( $('#form_username').attr('value') == usernameLabel )
-            $('#form_username').attr('value', '');
-        
-        if ( $('#form_password').attr('value') == passwordLabel )
-            $('#form_password').attr('value', '');
-        
-        if ( $('#form_password_again').attr('value') == passwordAgainLabel )
-            $('#form_password_again').attr('value', '');
+        }
     });
 
     $('#form_password').keyup(function() {
-        if ( $('#form_password').attr('value') == passwordLabel )
+        if ( $('#form_password').attr('value') == '' ) {
             return false;
+        }
 
-        if ( $('#form_password_again').attr('value') == passwordAgainLabel )
+        if ( $('#form_password_again').attr('value') == '' ) {
             return false;
+        }
 
-        if ( $('#form_password').attr('value') == $('#form_password_again').attr('value') )
+        if ( $('#form_password').attr('value') == $('#form_password_again').attr('value') ) {
             $('#form_submit').attr('disabled', false);
+        }
     });
 
     $('#form_password_again').keyup(function() {
-        if ( $('#form_password').attr('value') == passwordLabel )
+        if ( $('#form_password').attr('value') == '' ) {
             return false;
+        }
 
-        if ( $('#form_password_again').attr('value') == passwordAgainLabel )
+        if ( $('#form_password_again').attr('value') == '' ) {
             return false;
+        }
 
-        if ( $('#form_password').attr('value') == $('#form_password_again').attr('value') )
+        if ( $('#form_password').attr('value') == $('#form_password_again').attr('value') ) {
             $('#form_submit').attr('disabled', false);
+        }
     });
 });

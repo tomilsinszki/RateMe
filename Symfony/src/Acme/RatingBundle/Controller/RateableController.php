@@ -106,6 +106,7 @@ class RateableController extends Controller
         $content = $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
             'rateable' => $rateable,
             'collection' => $rateable->getCollection(),
+            'imageURL' => $this->getImageURL($rateable),
         ));
 
         return $content;

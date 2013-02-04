@@ -2,6 +2,7 @@ window.onload = function() {
     setTimeout(function() { window.scrollTo(0, 1) }, 100);
 };
 
+/*
 var setUpInputLabel = function(elementId, label) {
     $('#'+elementId).focus(function() {
         if ( $('#'+elementId).attr('value') == label ) {
@@ -22,4 +23,5 @@ var setUpInputLabel = function(elementId, label) {
         $('#'+elementId).css('color', '#666666');
     }
 }
+*/
 

@@ -33,6 +33,7 @@ class RatingController extends Controller
             'rating' => $rating,
             'rateable' => $rateable,
             'collection' => $rateable->getCollection(),
+            'rateableImageURL' => $this->getImageURL($rateable),
         ));
 
         return new Response($content);
@@ -73,5 +74,15 @@ class RatingController extends Controller
         }
 
         return FALSE;
+    }
+
+    private function getImageURL($rateable)
+    {
+        $imageURL = null;
+        $image = $rateable->getImage();
+        if ( empty($image) === FALSE )
+            $imageURL = $image->getWebPath();
+        
+        return $imageURL;
     }
 }

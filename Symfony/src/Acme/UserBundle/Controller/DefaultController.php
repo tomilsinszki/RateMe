@@ -133,8 +133,8 @@ class DefaultController extends Controller
         $user = new User();
 
         $form = $this->createFormBuilder($user)
-            ->add('username', 'email', array('attr' => array('autocomplete' => 'off', 'autocapitalize' => 'off')))
-            ->add('password', 'text', array('attr' => array('autocomplete' => 'off', 'autocapitalize' => 'off')))
+            ->add('username', 'email', array('attr' => array('placeholder' => 'E-mail', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
+            ->add('password', 'password', array('attr' => array('placeholder' => 'Jelszó', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
             ->getForm();
         
         return $this->render('AcmeUserBundle:Default:registration.html.twig', array(
@@ -152,8 +152,8 @@ class DefaultController extends Controller
         $user = new User();
         
         $form = $this->createFormBuilder($user)
-            ->add('username', 'email', array('attr' => array('autocomplete' => 'off', 'autocapitalize' => 'off')))
-            ->add('password', 'text', array('attr' => array('autocomplete' => 'off', 'autocapitalize' => 'off')))
+            ->add('username', 'email', array('attr' => array('placeholder' => 'E-mail', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
+            ->add('password', 'password', array('attr' => array('placeholder' => 'Jelszó', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
             ->getForm();
 
         if ( $request->isMethod('POST') ) {

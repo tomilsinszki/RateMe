@@ -9,28 +9,36 @@
 {% block body %}
     {{ parent() }}
 
-    {% if collection %}
-        <div>{{ collection.name }}</div>
-    {% endif %}
-
-    <div style="margin-top:20px;">
-        <div>{{ rateable.name }}</div>
-        <div>{{ rateable.typeName }}</div>
+    <div class="wrap">
+        <div class="head">
+            {% if imageURL %}
+                <img src="{{ asset(imageURL) }}" alt="head" />
+            {% endif %}
+        </div>
+        <div class="vote">
+            <h1>{{ rateable.name }}</h1>
+            <h2>{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName }}</h2>
+            <ul>
+                <li id="star0"><a href="#"></a></li>
+                <li id="star1"><a href="#"></a></li>
+                <li id="star2"><a href="#"></a></li>
+                <li id="star3"><a href="#"></a></li>
+                <li id="star4"><a href="#"></a></li>
+            </ul>
+            <form method="post" action="{{ path('rating_new') }}">
+                <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
+                <input type="hidden" id="stars" name="stars" />
+                <div class="btn_cont yellow ok">
+                    <input type="submit" id="submitRating" disabled="true" value="OK" class="btn" style="font-size: 30px;" />
+                </div>
+            </form>
+            <div class="btn_cont gray">
+                <a href="{{ path('rateable_mismatch', {'rateableId': rateable.id}) }}">
+                    <div class="button_bg">
+                        <div class="btn"><h3><div>Mást értékelek</div></h3></div>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <img id="star0" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star1" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star2" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star3" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        <img id="star4" src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-    </div>
-
-    <form method="post" action="{{ path('rating_new') }}">
-        <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
-        <input type="hidden" id="stars" name="stars" />
-        <input type="submit" id="submitRating" disabled="true" value="OK" />
-    </form>
-
-    <div><a href="{{ path('rateable_mismatch', {'rateableId': rateable.id}) }}">Nem ezt a személyt akartam értékelni</a></div>
 {% endblock %}

@@ -7,53 +7,50 @@
 
 {% block body %}
     {{ parent() }}
+    
+    <div class="wrap rel">
+        <div class="floated_bg">
+            <div class="head">
+                {% if rateableImageURL %}
+                    <img src="{{ asset(rateableImageURL) }}" alt="head" />
+                {% endif %}
+            </div>
+            <h1>{{ rateable.name }}</h1>
+            <h2>{% if collection %}{{ collection.name }},<br />{% endif %}{{ rateable.typeName }}</h2>
+            <div class="clearfix"></div>
+            <h3>Köszönjük az értékelést!</h3>
+            <h4>Az általad adott pontszám:</h4>
+            <ul>
+                {% if 1 <= rating.stars %}
+                    <li class="on"><a href="#"></a></li>
+                {% else %}
+                    <li><a href="#"></a></li>
+                {% endif %}
 
-    {% if collection %}
-        <div>{{ collection.name }}</div>
-    {% endif %}
+                {% if 2 <= rating.stars %}
+                    <li class="on"><a href="#"></a></li>
+                {% else %}
+                    <li><a href="#"></a></li>
+                {% endif %}
 
-    <div style="margin-top:20px;">
-        <div>{{ rateable.name }}</div>
-        <div>{{ rateable.typeName }}</div>
-    </div>
+                {% if 3 <= rating.stars %}
+                    <li class="on"><a href="#"></a></li>
+                {% else %}
+                    <li><a href="#"></a></li>
+                {% endif %}
 
-    <div>
-        Köszönjük az értékelést!
-    </div>
+                {% if 4 <= rating.stars %}
+                    <li class="on"><a href="#"></a></li>
+                {% else %}
+                    <li><a href="#"></a></li>
+                {% endif %}
 
-    <div>
-        Az általad adott pontszám
-    </div>
-
-    <div>
-        {% if 1 <= rating.stars %}
-            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-        {% else %}
-            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        {% endif %}
-
-        {% if 2 <= rating.stars %}
-            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-        {% else %}
-            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        {% endif %}
-
-        {% if 3 <= rating.stars %}
-            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-        {% else %}
-            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        {% endif %}
-
-        {% if 4 <= rating.stars %}
-            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-        {% else %}
-            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        {% endif %}
-
-        {% if 5 <= rating.stars %}
-            <img src="{{ asset('images/star_full_150px.png') }}" alt="Full Star" style="display:inline; width:150px;"/>
-        {% else %}
-            <img src="{{ asset('images/star_empty_150px.png') }}" alt="Empty Star" style="display:inline; width:150px;"/>
-        {% endif %}
+                {% if 5 <= rating.stars %}
+                    <li class="on"><a href="#"></a></li>
+                {% else %}
+                    <li><a href="#"></a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 {% endblock %}
