@@ -184,9 +184,9 @@ class DefaultController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-                    ->add('oldPassword', 'password', array('label' => 'régi jelszó:'))
-                    ->add('newPassword1', 'password', array('label' => 'új jelszó:'))
-                    ->add('newPassword2', 'password', array('label' => 'új jelszó megerősítése:'))
+                    ->add('oldPassword', 'password', array('attr' => array('placeholder' => 'Régi jelszó', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
+                    ->add('newPassword1', 'password', array('attr' => array('placeholder' => 'Új jelszó', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
+                    ->add('newPassword2', 'password', array('attr' => array('placeholder' => 'Új jelszó megerősítése', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
                     ->getForm();
 
         return $this->render('AcmeUserBundle:Default:changePassword.html.twig', array(
@@ -198,9 +198,9 @@ class DefaultController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-                    ->add('oldPassword', 'password', array('label' => 'régi jelszó:'))
-                    ->add('newPassword1', 'password', array('label' => 'új jelszó:'))
-                    ->add('newPassword2', 'password', array('label' => 'új jelszó megerősítése:'))
+                    ->add('oldPassword', 'password', array('attr' => array('placeholder' => 'Régi jelszó', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
+                    ->add('newPassword1', 'password', array('attr' => array('placeholder' => 'Új jelszó', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
+                    ->add('newPassword2', 'password', array('attr' => array('placeholder' => 'Új jelszó megerősítése', 'autocomplete' => 'off', 'autocapitalize' => 'off')))
                     ->getForm();
        
         if ( $this->getRequest()->isMethod('POST') === TRUE ) {
