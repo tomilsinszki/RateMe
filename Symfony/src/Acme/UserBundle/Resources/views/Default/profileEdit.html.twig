@@ -7,24 +7,55 @@
 
 {% block body %}
     {{ parent() }}
+    
+    <div class="wrap profiler">
+        <div class="head">
+            {% if imageURL %}
+                <img src="{{ asset(imageURL) }}" alt="head" />
+            {% endif %}
+        </div>
+        <h1>{{ user.username }}</h1>
+        <div class="btn_cont gray profilepic_edit small">
+            <div class="button_bg">
+                <div class="btn">Profilkép módosítás</div>
+            </div>
+        </div>
+        <div class="btn_cont gray password_edit small">
+            <div class="button_bg">
+                <a href="{{ path('acme_user_password_change') }}">
+                    <div class="btn">Jelszó módosítás</div>
+                </a>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <form action="{{ path('acme_user_data_update') }}" method="post" {{ form_enctype(emailForm) }} class="form">
+            {{ form_label(emailForm.username) }}
+            {{ form_widget(emailForm.username) }}
 
-    {% if imageURL %}
-        <img src="{{ asset(imageURL) }}" />
-    {% endif %}
+            {{ form_rest(emailForm) }}
 
-    <form action="{{ path('acme_user_upload_image') }}" method="post" {{ form_enctype(imageUploadForm) }}>
-        {{ form_widget(imageUploadForm) }}
-
-        <input type="submit" value="Kép beállítása" />
-    </form>
-
-    <form action="{{ path('acme_user_data_update') }}" method="post" {{ form_enctype(emailForm) }}>
-        {{ form_widget(emailForm) }}
-
-        <input type="submit" value="Mentés" />
-    </form>
-
-    <div>
-        <a href="{{ path('acme_user_password_change') }}">jelszó megváltoztatás</a>
+            <div class="btn_cont save yellow">
+                <input type="submit" class="btn" value="Mentés" />
+            </div>
+        </form>
+        <form action="{{ path('acme_user_upload_image') }}" method="post" {{ form_enctype(imageUploadForm) }}>
+            {{ form_widget(imageUploadForm) }}
+            <input type="submit" value="Kép beállítása" />
+        </form>
+        <div class="buttons">
+            <!--
+            <div class="btn_cont facebook">
+                <div class="button_bg">
+                    <div class="btn"><div class="table"><span></span>Facebook</div></div>
+                </div>
+            </div>
+            <div class="btn_cont google">
+                <div class="button_bg">
+                    <div class="btn"><div class="table"><span></span>Google</div></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            -->
+        </div>
     </div>
 {% endblock %}

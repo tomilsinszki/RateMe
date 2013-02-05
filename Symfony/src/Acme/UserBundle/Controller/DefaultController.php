@@ -40,7 +40,8 @@ class DefaultController extends Controller
     public function profileEditAction(Request $request)
     {
         $user = $this->getUserFromContext();
-        $emailForm = $this->createFormBuilder($user)->add('username', 'text', array('label'  => 'e-mail'))->getForm();
+
+        $emailForm = $this->createFormBuilder($user)->add('username', 'email', array('label'  => 'E-mail', 'attr' => array('autocomplete' => 'off', 'autocapitalize' => 'off')))->getForm();
         return $this->renderProfileEditView($emailForm);
     }
 
@@ -68,7 +69,7 @@ class DefaultController extends Controller
     public function updateUserDataAction()
     {
         $tmpUser = new User();
-        $emailForm = $this->createFormBuilder($tmpUser)->add('username', 'text', array('label'  => 'e-mail'))->getForm();
+        $emailForm = $this->createFormBuilder($tmpUser)->add('username', 'email', array('label'  => 'E-mail', 'attr' => array('autocomplete' => 'off', 'autocapitalize' => 'off')))->getForm();
 
         if ( $this->getRequest()->isMethod('POST') ) {
             $emailForm->bind($this->getRequest());
