@@ -46,6 +46,16 @@ class User implements UserInterface, \Serializable
     protected $isActive;
 
     /**
+     * @ORM\Column(name="first_name", type="string", length=255, unique=false, nullable=true)
+     */
+    protected $firstName;
+
+    /**
+     * @ORM\Column(name="last_name", type="string", length=255, unique=false, nullable=true)
+     */
+    protected $lastName;
+
+    /**
      * @ORM\OneToOne(targetEntity="Acme\RatingBundle\Entity\Image")
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
@@ -65,6 +75,11 @@ class User implements UserInterface, \Serializable
      */
     protected $ownedCollections;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ReadEmail", mappedBy="user")
+     */
+    protected $readEmails;
+
 
     public function serialize()
     {
@@ -77,6 +92,7 @@ class User implements UserInterface, \Serializable
             $this->isActive,
             $this->groups
             //$this->ownedCollections
+            //$this->readEmails
         ));
     }
 
@@ -91,6 +107,7 @@ class User implements UserInterface, \Serializable
             $this->isActive,
             $this->groups
             //$this->ownedCollections
+            //$this->readEmails
         ) = unserialize($serialized);
     }
 
@@ -100,6 +117,7 @@ class User implements UserInterface, \Serializable
         $this->salt = md5(uniqid(null, TRUE));
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ownedCollections = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->readEmails = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getUsername() { return $this->username; }
@@ -146,5 +164,24 @@ class User implements UserInterface, \Serializable
 
     public function eraseCredentials()
     {
+    }
+
+    public function getReadEmails()
+    {
+        return $this->readEmails;
+    }
+
+    public function addReadEmail($email)
+    {
+        if ( $this->readEmails->contains($email) === FALSE ) {
+            $this->readEmails[] = $email;
+        }
+    }
+
+    public function removeReadEmail($email)
+    {
+        if ( $this->readEmails->contains($email) === TRUE ) {
+            $this->readEmails->removeElement($email);
+        }
     }
 }

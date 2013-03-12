@@ -75,6 +75,12 @@ class RateableCollection
      */
     private $owners;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Company", inversedBy="rateableCollections")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     */
+    private $company;
+    
 
     public function __construct() 
     {
@@ -244,5 +250,20 @@ class RateableCollection
     {
         if ( $this->owners->contains($user) === TRUE )
             $this->owners->removeElement($user);
+    }
+
+    public function setCompany($company)
+    {
+        if ( empty($this->company) === FALSE ) {
+            $this->company->removeRateableCollection($this);
+        }
+
+        $company->addRateableCollection($this);
+        $this->company = $company;
+    }
+
+    public function getCompany()
+    {
+        return $this->company;
     }
 }
