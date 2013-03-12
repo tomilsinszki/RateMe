@@ -40,8 +40,6 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         $user = new User();
 
         $user->setUsername($username);
-        $user->setEmail($username);
-
         $user->setSalt(md5(time()));
 
         $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);

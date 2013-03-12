@@ -5,12 +5,12 @@ namespace Acme\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Acme\UserBundle\Entity\ReadEmail
+ * Acme\UserBundle\Entity\UsedEmailAddress
  *
- * @ORM\Table(name="read_email")
+ * @ORM\Table(name="used_email_address")
  * @ORM\Entity
  */
-class ReadEmail
+class UsedEmailAddress
 {
     /**
      * @var integer $id
@@ -22,14 +22,14 @@ class ReadEmail
     private $id;
 
     /**
-     * @var string $email
+     * @var string $emailAddress
      *
-     * @ORM\Column(name="email", type="string", length=511)
+     * @ORM\Column(name="email_address", type="string", length=511)
      */
-    private $email;
+    private $emailAddress;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="readEmails")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="usedEmailAddresses")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
@@ -46,14 +46,14 @@ class ReadEmail
     }
 
     /**
-     * Set email
+     * Set email address
      *
-     * @param string $email
-     * @return Email
+     * @param string $emailAddress
+     * @return UsedEmailAddress
      */
-    public function setEmail($email)
+    public function setEmailAddress($emailAddress)
     {
-        $this->email = $email;
+        $this->emailAddress = $emailAddress;
     
         return $this;
     }
@@ -63,18 +63,18 @@ class ReadEmail
      *
      * @return string 
      */
-    public function getEmail()
+    public function getEmailAddress()
     {
-        return $this->email;
+        return $this->emailAddress;
     }
 
     public function setUser($user)
     {
         if ( empty($this->user) === FALSE ) {
-            $this->user->removeReadEmail($this);
+            $this->user->removeUsedEmailAddress($this);
         }
    
-        $user->addReadEmail($this);
+        $user->addUsedEmailAddress($this);
         $this->user = $user;
     }
 

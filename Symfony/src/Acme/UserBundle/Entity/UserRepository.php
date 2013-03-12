@@ -17,9 +17,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ->createQueryBuilder('u')
             ->select('u, g')
             ->leftJoin('u.groups', 'g')
-            ->where('u.username = :username OR u.email = :email')
+            ->where('u.username = :username')
             ->setParameter('username', $username)
-            ->setParameter('email', $username)
             ->getQuery();
 
         try {

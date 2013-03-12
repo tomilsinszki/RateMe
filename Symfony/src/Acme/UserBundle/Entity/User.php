@@ -19,9 +19,9 @@ class User implements UserInterface, \Serializable
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
+    
     /**
-     * @ORM\Column(type="string", length=25, unique=true, nullable=false)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=false)
      */
     protected $username;
 
@@ -34,11 +34,6 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="string", length=40, nullable=false)
      */
     protected $password;
-
-    /**
-     * @ORM\Column(type="string", length=60, unique=true, nullable=false)
-     */
-    protected $email;
 
     /**
      * @ORM\Column(name="is_active", type="boolean", nullable=false)
@@ -76,23 +71,22 @@ class User implements UserInterface, \Serializable
     protected $ownedCollections;
 
     /**
-     * @ORM\OneToMany(targetEntity="ReadEmail", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="UsedEmailAddress", mappedBy="user")
      */
-    protected $readEmails;
+    protected $usedEmailAddresses;
 
 
     public function serialize()
     {
         return serialize(array(
             $this->id,
-            $this->username,
             $this->salt,
             $this->password,
-            $this->email,
+            $this->username,
             $this->isActive,
             $this->groups
             //$this->ownedCollections
-            //$this->readEmails
+            //$this->usedEmailAddresses
         ));
     }
 
@@ -100,14 +94,13 @@ class User implements UserInterface, \Serializable
     {
         list(
             $this->id,
-            $this->username,
             $this->salt,
             $this->password,
-            $this->email,
+            $this->username,
             $this->isActive,
             $this->groups
             //$this->ownedCollections
-            //$this->readEmails
+            //$this->usedEmailAddresses
         ) = unserialize($serialized);
     }
 
@@ -117,20 +110,18 @@ class User implements UserInterface, \Serializable
         $this->salt = md5(uniqid(null, TRUE));
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ownedCollections = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->readEmails = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->usedEmailAddresses = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getUsername() { return $this->username; }
     public function getSalt() { return $this->salt; }
     public function getPassword() { return $this->password; }
-    public function getEmail() { return $this->email; }
     public function isActive() { return $this->isActive; }
     public function getOwnedCollections() { return $this->ownedCollections; }
 
     public function setUsername($username) { $this->username = $username; }
     public function setSalt($salt) { $this->salt = $salt; }
     public function setPassword($password) { $this->password = $password; }
-    public function setEmail($email) { $this->email = $email; }
     public function setIsActive($isActive) { $this->isActive = $isActive; }
 
     public function setImage($image)
@@ -166,22 +157,22 @@ class User implements UserInterface, \Serializable
     {
     }
 
-    public function getReadEmails()
+    public function getUsedEmailAddresses()
     {
-        return $this->readEmails;
+        return $this->usedEmailAddresses;
     }
 
-    public function addReadEmail($email)
+    public function addUsedEmailAddress($email)
     {
-        if ( $this->readEmails->contains($email) === FALSE ) {
-            $this->readEmails[] = $email;
+        if ( $this->usedEmailAddresses->contains($email) === FALSE ) {
+            $this->usedEmailAddresses[] = $email;
         }
     }
 
-    public function removeReadEmail($email)
+    public function removeUsedEmailAddress($email)
     {
-        if ( $this->readEmails->contains($email) === TRUE ) {
-            $this->readEmails->removeElement($email);
+        if ( $this->usedEmailAddresses->contains($email) === TRUE ) {
+            $this->usedEmailAddresses->removeElement($email);
         }
     }
 }

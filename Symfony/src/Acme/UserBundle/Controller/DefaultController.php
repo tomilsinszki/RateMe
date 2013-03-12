@@ -168,7 +168,6 @@ class DefaultController extends Controller
                 $encoder = $factory->getEncoder($user);
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
-                $user->setEmail($user->getUsername());
                 $user->addGroup($raterGroup);
                 
                 $entityManager = $this->getDoctrine()->getManager();
