@@ -31,7 +31,7 @@ class Company
     /**
      * @var string $emailBodySchema
      *
-     * @ORM\Column(name="emailBodySchema", type="text")
+     * @ORM\Column(name="emailBodySchema", type="text", nullable=true)
      */
     private $emailBodySchema;
 
@@ -40,10 +40,16 @@ class Company
      */
     private $rateableCollections;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Client", mappedBy="company")
+     */
+    private $clients;
+    
 
     public function __construct() 
     {
         $this->rateableCollections = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->clients = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -118,5 +124,23 @@ class Company
     {
         if ( $this->rateableCollections->contains($rateableCollection) === TRUE )
             $this->rateableCollections->removeElement($rateableCollection);
+    }
+
+    public function getClients()
+    {
+        return $this->clients;
+    }
+
+    public function addClient($client)
+    {
+        if ( $this->clients->contains($client) === FALSE ) {
+            $this->clients[] = $client;
+        }
+    }
+
+    public function removeClient($client)
+    {
+        if ( $this->clients->contains($client) === TRUE )
+            $this->clients->removeElement($client);
     }
 }

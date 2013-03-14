@@ -75,6 +75,11 @@ class User implements UserInterface, \Serializable
      */
     protected $usedEmailAddresses;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Acme\RatingBundle\Entity\Client", mappedBy="user")
+     */
+    private $clients;
+
 
     public function serialize()
     {
@@ -87,6 +92,7 @@ class User implements UserInterface, \Serializable
             $this->groups
             //$this->ownedCollections
             //$this->usedEmailAddresses
+            //$this->clients
         ));
     }
 
@@ -101,6 +107,7 @@ class User implements UserInterface, \Serializable
             $this->groups
             //$this->ownedCollections
             //$this->usedEmailAddresses
+            //$this->clients
         ) = unserialize($serialized);
     }
 
@@ -111,6 +118,7 @@ class User implements UserInterface, \Serializable
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ownedCollections = new \Doctrine\Common\Collections\ArrayCollection();
         $this->usedEmailAddresses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->clients = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getUsername() { return $this->username; }
@@ -174,5 +182,23 @@ class User implements UserInterface, \Serializable
         if ( $this->usedEmailAddresses->contains($email) === TRUE ) {
             $this->usedEmailAddresses->removeElement($email);
         }
+    }
+
+    public function getClients()
+    {
+        return $this->clients;
+    }
+
+    public function addClient($client)
+    {
+        if ( $this->clients->contains($client) === FALSE ) {
+            $this->clients[] = $client;
+        }
+    }
+
+    public function removeClient($client)
+    {
+        if ( $this->clients->contains($client) === TRUE )
+            $this->clients->removeElement($client);
     }
 }

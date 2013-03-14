@@ -85,6 +85,11 @@ class Rateable
      */
     private $rateableUser;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Contact", mappedBy="client")
+     */
+    private $contacts;
+
 
     public function __construct() 
     {
@@ -92,6 +97,7 @@ class Rateable
         $this->updated = new \DateTime("now");
         $this->isActive = TRUE;
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contacts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -291,5 +297,23 @@ class Rateable
     public function getRateableUser()
     {
         return $this->rateableUser;
+    }
+
+    public function getContacts()
+    {
+        return $this->contacts;
+    }
+
+    public function addContact($contact)
+    {
+        if ( $this->contacts->contains($contact) === FALSE ) {
+            $this->contacts[] = $contact;
+        }
+    }
+
+    public function removeContact($contact)
+    {
+        if ( $this->contacts->contains($contact) === TRUE )
+            $this->contacts->removeElement($contact);
     }
 }
