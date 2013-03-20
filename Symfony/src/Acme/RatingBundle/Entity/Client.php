@@ -28,6 +28,16 @@ class Client
      * @ORM\Column(name="client_id", type="string", length=255)
      */
     private $clientId;
+    
+    /**
+     * @ORM\Column(name="first_name", type="string", length=255, unique=false, nullable=true)
+     */
+    private $firstName;
+    
+    /**
+     * @ORM\Column(name="last_name", type="string", length=255, unique=false, nullable=true)
+     */
+    private $lastName;
 
     /**
      * @ORM\ManyToOne(targetEntity="Company", inversedBy="clients")

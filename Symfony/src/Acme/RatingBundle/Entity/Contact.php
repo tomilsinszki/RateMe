@@ -22,6 +22,13 @@ class Contact
     private $id;
 
     /**
+     * @var string $emailAddress
+     *
+     * @ORM\Column(name="email_address", type="string", length=511)
+     */
+    private $emailAddress;
+
+    /**
      * @var datetime, $contactedAt
      *
      * @ORM\Column(name="contacted_at", type="datetime", nullable=false)
@@ -60,6 +67,12 @@ class Contact
      * @ORM\JoinColumn(name="rateable_id", referencedColumnName="id")
      */
     private $rateable;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Rating")
+     * @ORM\JoinColumn(name="rating_id", referencedColumnName="id")
+     */
+    protected $rating;
 
 
     /**
@@ -192,5 +205,17 @@ class Contact
     public function getRateable()
     {
         return $this->rateable;
+    }
+
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function getRating()
+    {
+        return $this->rating;
     }
 }

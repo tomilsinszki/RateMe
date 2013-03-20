@@ -71,11 +71,6 @@ class User implements UserInterface, \Serializable
     protected $ownedCollections;
 
     /**
-     * @ORM\OneToMany(targetEntity="UsedEmailAddress", mappedBy="user")
-     */
-    protected $usedEmailAddresses;
-
-    /**
      * @ORM\OneToMany(targetEntity="Acme\RatingBundle\Entity\Client", mappedBy="user")
      */
     private $clients;
@@ -91,7 +86,6 @@ class User implements UserInterface, \Serializable
             $this->isActive,
             $this->groups
             //$this->ownedCollections
-            //$this->usedEmailAddresses
             //$this->clients
         ));
     }
@@ -106,7 +100,6 @@ class User implements UserInterface, \Serializable
             $this->isActive,
             $this->groups
             //$this->ownedCollections
-            //$this->usedEmailAddresses
             //$this->clients
         ) = unserialize($serialized);
     }
@@ -117,7 +110,6 @@ class User implements UserInterface, \Serializable
         $this->salt = md5(uniqid(null, TRUE));
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ownedCollections = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usedEmailAddresses = new \Doctrine\Common\Collections\ArrayCollection();
         $this->clients = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -163,25 +155,6 @@ class User implements UserInterface, \Serializable
 
     public function eraseCredentials()
     {
-    }
-
-    public function getUsedEmailAddresses()
-    {
-        return $this->usedEmailAddresses;
-    }
-
-    public function addUsedEmailAddress($email)
-    {
-        if ( $this->usedEmailAddresses->contains($email) === FALSE ) {
-            $this->usedEmailAddresses[] = $email;
-        }
-    }
-
-    public function removeUsedEmailAddress($email)
-    {
-        if ( $this->usedEmailAddresses->contains($email) === TRUE ) {
-            $this->usedEmailAddresses->removeElement($email);
-        }
     }
 
     public function getClients()
