@@ -11,29 +11,32 @@ use Doctrine\ORM\EntityRepository;
 class LoadTestContactAndClientData implements FixtureInterface
 {
     public function load(ObjectManager $manager) {
-        //$this->generateRandomContacts(10000, $manager->getConnection());
+        //$this->generateRandomContacts(10, $manager->getConnection());
     }
 
     private function generateRandomContacts($contactCount, $connection) {
         for ($i=0; $i<$contactCount; $i++) {
-            $connection->insert('client', array(
+            $firstName = $this->generateRandomString(mt_rand(5, 15));
+            $lastName = $this->generateRandomString(mt_rand(5, 15));
+            $emailAddress = $this->generateRandomEmailAddress();
+            $contactedAt = $this->generateRandomDatetime();
+
+            $connection->insert('verified_client', array(
                 'client_id' => $this->generateRandomString(mt_rand(5, 15)),
-                'first_name' => $this->generateRandomString(mt_rand(5, 15)),
-                'last_name' => $this->generateRandomString(mt_rand(5, 15)),
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email_address' => $emailAddress,
             ));
 
             $clientId = $connection->lastInsertId();
-
-            $emailAddress = $this->generateRandomEmailAddress();
-            $contactedAt = $this->generateRandomDatetime();
             
             $connection->insert('contact', array(
                 'client_id' => $clientId,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
                 'email_address' => $emailAddress,
-                'contacted_at' => $contactedAt,
+                'contact_happened_at' => $contactedAt,
             ));
-
-            $contactId = $connection->lastInsertId();
         }
     }
 
