@@ -61,3 +61,15 @@ update_rateable_for_collection:
 rating_new:
     pattern:   /ertekeles/uj
     defaults: { _controller: AcmeRatingBundle:Rating:new }
+
+contact_index:
+    pattern:   /ugyfel/kontakt
+    defaults: { _controller: AcmeRatingBundle:Contact:index }
+
+update_contact:
+    pattern:   /ugyfel/kontakt/mentes
+    defaults: { _controller: AcmeRatingBundle:Contact:new }
+
+contact_autocomplete_by_email:
+    pattern:   /ugyfel/kontakt/email/autocomplete
+    defaults: { _controller: AcmeRatingBundle:Contact:autocompleteByEmailPrefix }

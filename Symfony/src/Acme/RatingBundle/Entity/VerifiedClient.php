@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Acme\RatingBundle\Entity\Client
+ * Acme\RatingBundle\Entity\VerifiedClient
  *
- * @ORM\Table(name="client", uniqueConstraints={@ORM\UniqueConstraint(columns={"client_id", "company_id"})})
+ * @ORM\Table(name="verified_client", uniqueConstraints={@ORM\UniqueConstraint(columns={"client_id", "company_id"})})
  * @ORM\Entity
  */
-class Client
+class VerifiedClient
 {
     /**
      * @var integer $id
@@ -25,7 +25,7 @@ class Client
     /**
      * @var string $clientId
      *
-     * @ORM\Column(name="client_id", type="string", length=255)
+     * @ORM\Column(name="client_id", type="string", length=255, nullable=false)
      */
     private $clientId;
     
@@ -35,9 +35,16 @@ class Client
     private $firstName;
     
     /**
-     * @ORM\Column(name="last_name", type="string", length=255, unique=false, nullable=true)
+     * @ORM\Column(name="last_name", type="string", length=255, unique=false, nullable=false)
      */
     private $lastName;
+
+    /**
+     * @var string $emailAddress
+     *
+     * @ORM\Column(name="email_address", type="string", length=255, unique=true, nullable=false)
+     */
+    private $emailAddress;
 
     /**
      * @ORM\ManyToOne(targetEntity="Company", inversedBy="clients")
@@ -93,6 +100,75 @@ class Client
     public function getClientId()
     {
         return $this->clientId;
+    }
+
+    /**
+     * Set firstName
+     *
+     * @param string $firstName
+     * @return VerifiedClient
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return VerifiedClient
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Set emailAddress
+     *
+     * @param string $emailAddress
+     * @return VerifiedClient
+     */
+    public function setEmailAddress($emailAddress)
+    {
+        $this->emailAddress = $emailAddress;
+    
+        return $this;
+    }
+
+    /**
+     * Get emailAddress
+     *
+     * @return string 
+     */
+    public function getEmailAddress()
+    {
+        return $this->emailAddress;
     }
 
     public function setCompany($company)

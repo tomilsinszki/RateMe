@@ -71,7 +71,7 @@ class User implements UserInterface, \Serializable
     protected $ownedCollections;
 
     /**
-     * @ORM\OneToMany(targetEntity="Acme\RatingBundle\Entity\Client", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Acme\RatingBundle\Entity\VerifiedClient", mappedBy="user")
      */
     private $clients;
 
@@ -157,19 +157,19 @@ class User implements UserInterface, \Serializable
     {
     }
 
-    public function getClients()
+    public function getVerifiedClients()
     {
         return $this->clients;
     }
 
-    public function addClient($client)
+    public function addVerifiedClient($client)
     {
         if ( $this->clients->contains($client) === FALSE ) {
             $this->clients[] = $client;
         }
     }
 
-    public function removeClient($client)
+    public function removeVerifiedClient($client)
     {
         if ( $this->clients->contains($client) === TRUE )
             $this->clients->removeElement($client);

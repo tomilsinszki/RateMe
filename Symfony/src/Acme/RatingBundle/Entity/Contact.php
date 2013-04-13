@@ -24,16 +24,26 @@ class Contact
     /**
      * @var string $emailAddress
      *
-     * @ORM\Column(name="email_address", type="string", length=511)
+     * @ORM\Column(name="email_address", type="string", length=255, nullable=false)
      */
     private $emailAddress;
+    
+    /**
+     * @ORM\Column(name="first_name", type="string", length=255, unique=false, nullable=true)
+     */
+    private $firstName;
+    
+    /**
+     * @ORM\Column(name="last_name", type="string", length=255, unique=false, nullable=false)
+     */
+    private $lastName;
 
     /**
-     * @var datetime, $contactedAt
+     * @var datetime, $contactHappenedAt
      *
-     * @ORM\Column(name="contacted_at", type="datetime", nullable=false)
+     * @ORM\Column(name="contact_happened_at", type="datetime", nullable=false)
      */
-    private $contactedAt;
+    private $contactHappenedAt;
 
     /**
      * @var datetime, $sentEmailAt
@@ -43,21 +53,14 @@ class Contact
     private $sentEmailAt;
 
     /**
-     * @var datetime, $clientVerifiedContactAt
+     * @var datetime, $clientFlaggedEmailAsFlawedAt
      *
-     * @ORM\Column(name="client_verified_contact_at", type="datetime", nullable=true)
+     * @ORM\Column(name="client_flagged_email_as_flawed_at", type="datetime", nullable=true)
      */
-    private $clientVerifiedContactAt;
+    private $clientFlaggedEmailAsFlawedAt;
 
     /**
-     * @var boolean $isValid
-     *
-     * @ORM\Column(name="is_valid", type="boolean", nullable=true)
-     */
-    private $isValid;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Client", inversedBy="contacts")
+     * @ORM\ManyToOne(targetEntity="VerifiedClient", inversedBy="contacts")
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      */
     private $client;
@@ -86,26 +89,95 @@ class Contact
     }
 
     /**
-     * Set contactedAt
+     * Set emailAddress
      *
-     * @param datetime, $contactedAt
+     * @param string $emailAddress
      * @return Contact
      */
-    public function setContactedAt(\datetime $contactedAt)
+    public function setEmailAddress($emailAddress)
     {
-        $this->contactedAt = $contactedAt;
+        $this->emailAddress = $emailAddress;
     
         return $this;
     }
 
     /**
-     * Get contactedAt
+     * Get emailAddress
+     *
+     * @return string 
+     */
+    public function getEmailAddress()
+    {
+        return $this->emailAddress;
+    }
+
+    /**
+     * Set firstName
+     *
+     * @param string $firstName
+     * @return Contact
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return Contact
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Set contactHappenedAt
+     *
+     * @param datetime, $contactHappenedAt
+     * @return Contact
+     */
+    public function setContactHappenedAt(\datetime $contactHappenedAt)
+    {
+        $this->contactHappenedAt = $contactHappenedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get contactHappenedAt
      *
      * @return datetime, 
      */
-    public function getContactedAt()
+    public function getContactHappenedAt()
     {
-        return $this->contactedAt;
+        return $this->contactHappenedAt;
     }
 
     /**
@@ -132,52 +204,29 @@ class Contact
     }
 
     /**
-     * Set clientVerifiedContactAt
+     * Set clientFlaggedEmailAsFlawedAt
      *
-     * @param datetime, $clientVerifiedContactAt
+     * @param datetime, $clientFlaggedEmailAsFlawedAt
      * @return Contact
      */
-    public function setClientVerifiedContactAt(\datetime $clientVerifiedContactAt)
+    public function setClientFlaggedEmailAsFlawedAt(\datetime $clientFlaggedEmailAsFlawedAt)
     {
-        $this->clientVerifiedContactAt = $clientVerifiedContactAt;
+        $this->clientFlaggedEmailAsFlawedAt = $clientFlaggedEmailAsFlawedAt;
     
         return $this;
     }
 
     /**
-     * Get clientVerifiedContactAt
+     * Get clientFlaggedEmailAsFlawedAt
      *
      * @return datetime, 
      */
-    public function getClientVerifiedContactAt()
+    public function getClientFlaggedEmailAsFlawedAt()
     {
-        return $this->clientVerifiedContactAt;
+        return $this->clientFlaggedEmailAsFlawedAt;
     }
 
-    /**
-     * Set isValid
-     *
-     * @param boolean $isValid
-     * @return Contact
-     */
-    public function setIsValid($isValid)
-    {
-        $this->isValid = $isValid;
-    
-        return $this;
-    }
-
-    /**
-     * Get isValid
-     *
-     * @return boolean 
-     */
-    public function getIsValid()
-    {
-        return $this->isValid;
-    }
-
-    public function setClient($client)
+    public function setVerifiedClient($client)
     {
         if ( empty($this->client) === FALSE ) {
             $this->client->removeContact($this);
@@ -187,7 +236,7 @@ class Contact
         $this->client = $client;
     }
 
-    public function getClient()
+    public function getVerifiedClient()
     {
         return $this->client;
     }

@@ -1,0 +1,63 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+   
+    <script src="{{ asset('bundles/acmerating/js/contact.js') }}" type="text/javascript"></script>
+    
+    <!-- 
+    <h2 class="red">nem megfelelő formátum</h2>
+    -->
+    <form action="{{ path('update_contact') }}" method="post" {{ form_enctype(form) }} class="form">
+        
+        <h3>E-mail</h3>
+        <div class="form_input">
+            {{ form_widget(form.email) }}
+            <div id="email_input_content" class="autocompl_input">
+            </div>
+            <div id="email_input_autocomplete_list" class="autocomp_list">
+                <!--
+                <ul id="email_input_autocomplete_list">
+                    <li>lorem ipsum</li>
+                    <li>low budget</li>
+                    <li>lochnessi szörny</li>
+                    <li>locsolócső</li>
+                </ul>
+                -->
+            </div>
+        </div>
+
+        <h3>Ügyfélszám</h3>
+        <div class="form_input">
+            {{ form_widget(form.clientId) }}
+            <div id="client_id_input_content" class="autocompl_input">
+            </div>
+        </div>
+
+        <h3>Vezetéknév</h3>
+        <div class="form_input">
+            {{ form_widget(form.lastName) }}
+            <div id="last_name_input_content" class="autocompl_input">
+            </div>
+        </div>
+
+        <h3>Keresztnév</h3>
+        <div class="form_input">
+            {{ form_widget(form.firstName) }}
+            <div id="first_name_input_content" class="autocompl_input">
+            </div>
+        </div>
+
+        {{ form_rest(form) }}
+
+        <div class="btn_cont save yellow">
+            <input type="submit" value="Mentés" />
+        </div>
+    </form>
+    
+{% endblock %}

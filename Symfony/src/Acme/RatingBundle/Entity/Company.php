@@ -41,7 +41,7 @@ class Company
     private $rateableCollections;
 
     /**
-     * @ORM\OneToMany(targetEntity="Client", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="VerifiedClient", mappedBy="company")
      */
     private $clients;
     
@@ -126,19 +126,19 @@ class Company
             $this->rateableCollections->removeElement($rateableCollection);
     }
 
-    public function getClients()
+    public function getVerifiedClients()
     {
         return $this->clients;
     }
 
-    public function addClient($client)
+    public function addVerifiedClient($client)
     {
         if ( $this->clients->contains($client) === FALSE ) {
             $this->clients[] = $client;
         }
     }
 
-    public function removeClient($client)
+    public function removeVerifiedClient($client)
     {
         if ( $this->clients->contains($client) === TRUE )
             $this->clients->removeElement($client);
