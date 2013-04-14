@@ -13,7 +13,6 @@ $(document).ready(function(){
             var selectedEmail = $(this).text();
             
             $("#form_email").val(selectedEmail);
-            $("#email_input_content").html('<span class="written">'+selectedEmail+'</span>');
             autocompleteListForEmail.html('');
             
             autocompleteData = autocompleteDataByEmail[selectedEmail];
@@ -21,20 +20,19 @@ $(document).ready(function(){
             var clientId = autocompleteData.clientId;
             if ( clientId != null ) {
                 $("#form_clientId").val(clientId);
-                $("#client_id_input_content").html('<span class="written">'+clientId+'</span>');
             }
 
             var lastName = autocompleteData.lastName;
             if ( lastName != null ) {
                 $("#form_lastName").val(lastName);
-                $("#last_name_input_content").html('<span class="written">'+lastName+'</span>');
             }
 
             var firstName = autocompleteData.firstName;
             if ( firstName != null ) {
                 $("#form_firstName").val(firstName);
-                $("#first_name_input_content").html('<span class="written">'+firstName+'</span>');
             }
+
+            $('#form_ajax_error_message').html('');
         });
     }
 
@@ -74,7 +72,6 @@ $(document).ready(function(){
 
     $("#form_email").keyup(function() {
         var content = $("#form_email").val();
-        $("#email_input_content").html('<span class="written">'+content+'</span>');
 
         var emailPrefix = content.substring(0, 3);
         
@@ -108,7 +105,6 @@ $(document).ready(function(){
             var selectedClientId = $(this).text();
             
             $("#form_clientId").val(selectedClientId);
-            $("#client_id_input_content").html('<span class="written">'+selectedClientId+'</span>');
             autocompleteListForClientId.html('');
             
             autocompleteData = autocompleteDataByClientId[selectedClientId];
@@ -116,20 +112,19 @@ $(document).ready(function(){
             var emailAddress = autocompleteData.emailAddress;
             if ( emailAddress != null ) {
                 $("#form_email").val(emailAddress);
-                $("#email_input_content").html('<span class="written">'+emailAddress+'</span>');
             }
 
             var lastName = autocompleteData.lastName;
             if ( lastName != null ) {
                 $("#form_lastName").val(lastName);
-                $("#last_name_input_content").html('<span class="written">'+lastName+'</span>');
             }
 
             var firstName = autocompleteData.firstName;
             if ( firstName != null ) {
                 $("#form_firstName").val(firstName);
-                $("#first_name_input_content").html('<span class="written">'+firstName+'</span>');
             }
+
+            $('#form_ajax_error_message').html('');
         });
     }
 
@@ -163,7 +158,6 @@ $(document).ready(function(){
 
     $("#form_clientId").keyup(function() {
         var content = $("#form_clientId").val();
-        $("#client_id_input_content").html('<span class="written">'+content+'</span>');
         
         $.ajax({
             url: "/ugyfel/kontakt/azonosito/autocomplete",
@@ -178,14 +172,31 @@ $(document).ready(function(){
         });
     });
 
-    $("#form_lastName").keyup(function() {
-        var content = $("#form_lastName").val();
-        $("#last_name_input_content").html('<span class="written">'+content+'</span>');
+    $('#form_clientId').focus(function() {
+        var email = $('#form_email').val();
+        showErrorMessageIfEmailInvalid(email);
     });
 
-    $("#form_firstName").keyup(function() {
-        var content = $("#form_firstName").val();
-        $("#first_name_input_content").html('<span class="written">'+content+'</span>');
-    });
+    function showErrorMessageIfEmailInvalid(email) {
+        if ( email == '' ) {
+            $('#form_ajax_error_message').html('');
+        }
+
+        if ( email == null ) {
+            $('#form_ajax_error_message').html('');
+        }
+
+        if ( isEmailValid(email) == false ) {
+            $('#form_ajax_error_message').html('Az e-mail cím nem tűnik érvényesnek!');
+        }
+        else {
+            $('#form_ajax_error_message').html('');
+        }
+    }
+
+    function isEmailValid(email) {
+        var emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+        return ( email.search(emailRegExp) != -1 );
+    }
 
 });

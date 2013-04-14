@@ -5,6 +5,7 @@ namespace Acme\RatingBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormError;
 
 class ContactController extends Controller
 {
@@ -46,10 +47,10 @@ class ContactController extends Controller
     {
         $defaultData = array();
         $contactForm = $this->createFormBuilder($defaultData)
-            ->add('email', 'email', array('attr' => array('autocomplete' => 'off')))
-            ->add('clientId', 'text')
-            ->add('lastName', 'text')
-            ->add('firstName', 'text')
+            ->add('email', 'email', array('required' => true, 'attr' => array('autocomplete' => 'off')))
+            ->add('clientId', 'text', array('required' => false, 'attr' => array('autocomplete' => 'off')))
+            ->add('lastName', 'text', array('required' => true, 'attr' => array('autocomplete' => 'off')))
+            ->add('firstName', 'text', array('required' => false, 'attr' => array('autocomplete' => 'off')))
             ->getForm();
 
         return $this->render('AcmeRatingBundle:Contact:index.html.twig', array(
@@ -57,8 +58,46 @@ class ContactController extends Controller
         ));
     }
     
-    public function newAction()
+    public function newAction(Request $request)
     {
+        $defaultData = array();
+        $contactForm = $this->createFormBuilder($defaultData)
+            ->add('email', 'email', array('required' => true, 'attr' => array('autocomplete' => 'off')))
+            ->add('clientId', 'text', array('required' => false, 'attr' => array('autocomplete' => 'off')))
+            ->add('lastName', 'text', array('required' => true, 'attr' => array('autocomplete' => 'off')))
+            ->add('firstName', 'text', array('required' => false, 'attr' => array('autocomplete' => 'off')))
+            ->getForm();
+        
+        if ( $request->isMethod('POST') ) {
+            $contactForm->bind($request);
+            //$isContactFormValid = FALSE;
+            
+            //if () {
+            //}
+            /*   
+            if ( $contactForm->isValid() ) {
+                $contactFormData = $contactForm->getData();
+
+                $entityManager = $this->getDoctrine()->getEntityManager();
+                $connection = $entityManager->getConnection();
+
+                $connection->insert('contact', array(
+                    'first_name' => $contactFormData['firstName'],
+                    'last_name' => $contactFormData['lastName'],
+                    'email_address' => $contactFormData['email'],
+                    'contact_happened_at' => date('Y-m-d H:i:s'),
+                ));
+            }
+            */
+        }
+
+        $contactForm->get('email')->addError(new FormError('error message'));
+
+        return $this->render('AcmeRatingBundle:Contact:index.html.twig', array(
+            'form' => $contactForm->createView(),
+        ));
+//
+ //       return $this->redirect($this->generateUrl('contact_index'));
     }
 
     public function autocompleteByEmailPrefixAction(Request $request)
@@ -154,7 +193,7 @@ class ContactController extends Controller
         $this->autocompleteDataByClientId[$clientId] = array(
             'firstName' => $row['firstName'],
             'lastName' => $row['lastName'],
-            'emailAddress' => $row['emailAddress'],
+            'emailAddress' => strtolower($row['emailAddress']),
         );
 
         $this->addToAutocompleteForClientId($clientId);
@@ -162,5 +201,11 @@ class ContactController extends Controller
 
     private function addToAutocompleteForClientId($clientId) {
         array_push($this->autocompleteForClientIds, $clientId);
+    }
+
+    public function voteAction(Request $request)
+    {
+        return $this->render('AcmeRatingBundle:Contact:vote.html.twig', array(
+        ));
     }
 }

@@ -99,7 +99,6 @@ body {
 	background: transparent url('/images/repeater_bg.png') top left repeat;
 	min-height: 100%;
 	height: 100%;
-	overflow: hidden;
 	width: 100%;
 }
 
@@ -121,10 +120,120 @@ body {
 	top: 0px;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	min-height: 100%;
 }
 
-.content h2 {
+.main {
+	background: rgb(219,196,224); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(219,196,224,1) 0%, rgba(255,255,255,1) 78%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(219,196,224,1)), color-stop(78%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(219,196,224,1) 0%,rgba(255,255,255,1) 78%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(219,196,224,1) 0%,rgba(255,255,255,1) 78%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(219,196,224,1) 0%,rgba(255,255,255,1) 78%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(219,196,224,1) 0%,rgba(255,255,255,1) 78%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbc4e0', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+	border-radius: 10px;
+	box-shadow: inset 0px 3px 3px rgba(0, 0, 0, 0.65), 0px 2px 2px rgba(255, 255, 255, 0.3);
+	margin-bottom: 10px;
+	padding: 30px 25px;
+}
+
+.main h2 {
+	color: #791f7e;
+	font-family: 'DINProH-Bold';
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 30px;
+}
+
+.main h3 {
+	color: #791f7e;
+	font-family: 'DINProH-Regular';
+	font-size: 18px;
+	font-weight: normal;
+	margin-bottom: 20px;
+}
+
+.main h4 {
+	color: #fff;
+	font-family: 'DINProH-Medium';
+	font-size: 37px;
+	font-weight: normal;
+	text-align: center;
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+	margin-bottom: 20px;
+}
+
+.main h5 {
+	color: #791f7e;
+	font-family: 'DINProH-Regular';
+	font-size: 18px;
+	font-weight: normal;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.main h6 {
+	color: #f9a350;
+	font-family: 'DINProH-Regular';
+	font-size: 18px;
+	font-weight: normal;
+	text-align: center;
+}
+
+.head_bg {
+	background: transparent url('/images/head_bg.png') center center no-repeat;
+	margin: 0 auto 25px auto;
+	height: 192px;
+	padding-top: 10px;
+	text-align: center;
+	width: 202px;
+}
+
+.head_bg img {
+	border-radius: 91px;
+	height: 182px;
+	width: 182px;
+}
+
+.main ul {
+	list-style: none;
+	overflow: hidden;
+	margin: 0 auto;
+	width: 400px;
+	margin-bottom: 15px;
+}
+
+.main ul li {
+	background: transparent url('/images/star.png') center center no-repeat;
+	float: left;
+	height: 72px;
+	margin-right: 4px;
+	width: 76px;
+}
+
+p {
+	color: #fff;
+	font-family: 'DINProH-Regular';
+	font-size: 14px;
+	font-weight: normal;
+	margin-bottom: 15px;
+	text-align: center;
+}
+
+.main + p {
+	line-height: 27px;
+}
+
+.main + p img {
+	display: inline-block;
+	margin-left: 10px;
+	position: relative;
+	top: 5px;
+}
+
+
+.content .red {
 	color: #fa4040;
 	font-family: 'DINProH-Regular';
 	font-size: 100%;
@@ -160,9 +269,7 @@ body {
 	border: none;
 	border-radius: 4px;
 	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.76), 0px 1px 1px #dfff58;
-	color: #4c4c4c;
-	font-family: 'DINProH-Light';
-	font-size: 20px;
+	
 	height: 40px;
 	margin-bottom: 15px;
 	position: relative;
@@ -172,7 +279,9 @@ body {
 
 .form .form_input input {
 	background-color: transparent;
-	color: transparent;
+	color: #4c4c4c;
+	font-family: 'DINProH-Light';
+	font-size: 20px;
 	height: 40px;
 	padding: 0 2%;
 	position: relative;

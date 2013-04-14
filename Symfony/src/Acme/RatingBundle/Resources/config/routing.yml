@@ -77,3 +77,7 @@ contact_autocomplete_by_email:
 client_autocomplete_by_client_id:
     pattern:   /ugyfel/kontakt/azonosito/autocomplete
     defaults: { _controller: AcmeRatingBundle:Contact:autocompleteByClientId }
+
+vote_after_contact:
+    pattern:   /ugyfel/kontakt/ertekeles
+    defaults: { _controller: AcmeRatingBundle:Contact:vote }

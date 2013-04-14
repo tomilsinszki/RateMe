@@ -1,0 +1,30 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <div class="main">
+        <h2>Tisztelt [UGYFEL NEV]!</h2>
+        <h3>Koszonjuk, hogy ertekelte [ALKALMAZOTT NEVE] es vissza-jelzesvel hozzajarult a kiszolgalasunkszinvonalanak javitasahoz!</h3>
+        <h4>Pop Simon</h4>
+        <div class="head_bg">
+            <img src="{{ asset('images/content/head.png') }}" />
+        </div>
+        <h5>Az Ön ertekelese:</h5>
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <h6>5=kitűnő</h6>
+    </div>
+    <p>Az ertekeles technikai tamogatoja a RateMe <img src="{{ asset('images/logo.png') }}" /></p>
+    <p>Az On uzletenek is fontos a fogyasztoi velemenye? Irjon nekunk az info@rate.me.uk<br />cimre.</p>
+{% endblock %}
