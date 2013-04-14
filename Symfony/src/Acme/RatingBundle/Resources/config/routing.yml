@@ -73,3 +73,7 @@ update_contact:
 contact_autocomplete_by_email:
     pattern:   /ugyfel/kontakt/email/autocomplete
     defaults: { _controller: AcmeRatingBundle:Contact:autocompleteByEmailPrefix }
+
+client_autocomplete_by_client_id:
+    pattern:   /ugyfel/kontakt/azonosito/autocomplete
+    defaults: { _controller: AcmeRatingBundle:Contact:autocompleteByClientId }
