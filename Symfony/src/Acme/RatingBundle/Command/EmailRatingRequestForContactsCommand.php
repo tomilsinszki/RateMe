@@ -10,6 +10,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 {
+    private $contactsQueryText =
+        "SELECT
+            id AS contactId,
+            email_address AS emailAddress,
+            first_name AS firstName,
+            last_name AS lastName,
+            contact_happened_at AS contactHappenedAt
+        FROM 
+            contact
+        WHERE
+            sent_email_at IS NULL
+        ORDER BY
+            contact_happened_at ASC";
+
+    private $contactStatement = null;
+    private $contactsDataToSendEmailsTo = null;
+
     protected function configure()
     {
         $this->setName('email:rating_request_for_contacts');
@@ -18,20 +35,56 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->loadContactsDataToSendEmailsTo();
+        $this->addEmailsToQueue();
+        $this->sendAllEmailsInQueue();
+    }
+
+    private function addEmailsToQueue() {
+        foreach($this->contactsDataToSendEmailsTo AS $contactData) {
+            $this->addEmailToQueue($contactData);
+            $this->setSentEmailFlagForContact($contactData);
+        }
+    }
+
+    private function addEmailToQueue($contactData) {
         $message = \Swift_Message::newInstance();
-        $message->setSubject('Hello Email');
+        $message->setCharset('UTF-8');
+        $message->setContentType('text/html');
+        $message->setSubject('Értékelje ügyintézőnk munkáját');
         $message->setFrom(array('vidanet@rate.me.uk' => 'Vidanet'));
-        $message->setTo('ilsinszkitamas@gmail.com');
-        $message->setBody('mizu?');
+        $message->setTo($contactData['emailAddress']);
+        $message->setBody($this->getContainer()->get('templating')->render(
+            'AcmeRatingBundle:Contact:requestRatingEmail.html.twig', 
+            array('contactData' => $contactData)
+        ));
+        $this->getContainer()->get('mailer')->send($message);
+    }
 
-        $container = $this->getContainer();
-        $mailer = $container->get('mailer');
+    private function setSentEmailFlagForContact($contactData) {
+        $connection = $this->getContainer()->get('database_connection');
 
-        $mailer->send($message);
+        $connection->update(
+            'contact', 
+            array(
+                'sent_email_at' => date('Y-m-d H:i:s')
+            ),
+            array(
+                'id' => $contactData['contactId']
+            )
+        );
+    }
 
-        $spool = $mailer->getTransport()->getSpool();
-        $transport = $container->get('swiftmailer.transport.real');
+    private function loadContactsDataToSendEmailsTo() {
+        $connection = $this->getContainer()->get('database_connection');
+        $this->contactStatement = $connection->executeQuery($this->contactsQueryText);
+        $this->contactStatement->execute();
+        $this->contactsDataToSendEmailsTo = $this->contactStatement->fetchAll();
+    }
 
+    private function sendAllEmailsInQueue() {
+        $spool = $this->getContainer()->get('mailer')->getTransport()->getSpool();
+        $transport = $this->getContainer()->get('swiftmailer.transport.real');
         $spool->flushQueue($transport);
     }
 }

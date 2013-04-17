@@ -82,9 +82,7 @@ class ContactController extends Controller
                 $contactForm->get('email')->addError(new FormError('Kötelező e-mailt megadni.'));
                 $isContactFormValid = FALSE;
             }
-
-            // TODO: check if email's format is valid
-
+            
             if ( empty($contactFormData['lastName']) === TRUE ) {
                 $contactForm->get('lastName')->addError(new FormError('Kötelező vezetéknevet megadni.'));
                 $isContactFormValid = FALSE;

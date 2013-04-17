@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityRepository;
 class LoadTestContactAndClientData implements FixtureInterface
 {
     public function load(ObjectManager $manager) {
-        $this->generateRandomContacts(10, $manager->getConnection());
+        //$this->generateRandomContacts(10, $manager->getConnection());
     }
 
     private function generateRandomContacts($contactCount, $connection) {

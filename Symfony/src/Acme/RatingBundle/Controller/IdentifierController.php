@@ -10,6 +10,10 @@ class IdentifierController extends Controller
 {
     public function indexAction()
     {
+        if ( $this->isUserCustomerServiceWorker() === TRUE ) {
+            return $this->redirect($this->generateUrl('contact_index'));
+        }
+
         $ownedCollection = $this->getCollectionIfUserIsOwner();
         if ( empty($ownedCollection) === FALSE ) {
             return $this->redirect($this->generateUrl('rateable_collection_profile_by_id', array('id' => $ownedCollection->getId())));
@@ -43,6 +47,15 @@ class IdentifierController extends Controller
         }
 
         return array_pop($ownedCollections);
+    }
+
+    private function isUserCustomerServiceWorker()
+    {
+        if ( $this->get('security.context')->isGranted('ROLE_CUSTOMERSERVICE') != TRUE ) {
+            return TRUE;
+        }
+
+        return FALSE;
     }
 
     public function searchAction(Request $request)

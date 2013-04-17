@@ -46,5 +46,10 @@ security:
         - { path: ^/hely/profil/publikus/id, roles: '' }
         - { path: ^/hely/profil, roles: 'ROLE_MANAGER' }
         - { path: ^/ertekeles/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/ugyfel/kontakt/ertekeles, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/ugyfel/kontakt/azonosito/autocomplete, roles: 'ROLE_CUSTOMERSERVICE' }
+        - { path: ^/ugyfel/kontakt/email/autocomplete, roles: 'ROLE_CUSTOMERSERVICE' }
+        - { path: ^/ugyfel/kontakt/mentes, roles: 'ROLE_CUSTOMERSERVICE' }
+        - { path: ^/ugyfel/kontakt, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  
         - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  

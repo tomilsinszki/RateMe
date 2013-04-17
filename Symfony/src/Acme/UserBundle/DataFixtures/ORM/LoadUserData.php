@@ -22,9 +22,11 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
     {
         $raterGroup = $this->createRaterGroup($manager, 'rater', 'ROLE_RATER');
         $managerGroup = $this->createRaterGroup($manager, 'manager', 'ROLE_MANAGER');
+        $customerServiceGroup = $this->createRaterGroup($manager, 'customerservice', 'ROLE_CUSTOMERSERVICE');
 
-        $raterUser = $this->createUserWithGroup($manager, 'rater@rater.com', 'rater', $raterGroup);
-        $raterUser = $this->createUserWithGroup($manager, 'manager@manager.com', 'manager', $managerGroup);
+        $this->createUserWithGroup($manager, 'rater@rater.com', 'rater', $raterGroup);
+        $this->createUserWithGroup($manager, 'manager@manager.com', 'manager', $managerGroup);
+        $this->createUserWithGroup($manager, 'cs@cs.com', 'cuse', $customerServiceGroup);
     }
 
     private function createRaterGroup(ObjectManager $manager, $name, $roleName) {
