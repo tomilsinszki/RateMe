@@ -43,6 +43,11 @@ class ContactController extends Controller
     private $autocompleteForClientIds = array();
     private $autocompleteDataByClientId = array();
 
+    private $contactFormData = array();
+    private $verifiedClientWithClientId = null;
+    private $verifiedClientWithEmail = null;
+    private $lastInsertedOrUpdatedVerifiedClientId = null;
+
     public function indexAction(Request $request)
     {
         $defaultData = array();
@@ -70,34 +75,193 @@ class ContactController extends Controller
         
         if ( $request->isMethod('POST') ) {
             $contactForm->bind($request);
-            //$isContactFormValid = FALSE;
-            
-            //if () {
-            //}
-            /*   
-            if ( $contactForm->isValid() ) {
-                $contactFormData = $contactForm->getData();
+            $contactFormData = $contactForm->getData();
+            $isContactFormValid = TRUE;
 
-                $entityManager = $this->getDoctrine()->getEntityManager();
-                $connection = $entityManager->getConnection();
-
-                $connection->insert('contact', array(
-                    'first_name' => $contactFormData['firstName'],
-                    'last_name' => $contactFormData['lastName'],
-                    'email_address' => $contactFormData['email'],
-                    'contact_happened_at' => date('Y-m-d H:i:s'),
-                ));
+            if ( empty($contactFormData['email']) === TRUE ) {
+                $contactForm->get('email')->addError(new FormError('Kötelező e-mailt megadni.'));
+                $isContactFormValid = FALSE;
             }
-            */
+
+            // TODO: check if email's format is valid
+
+            if ( empty($contactFormData['lastName']) === TRUE ) {
+                $contactForm->get('lastName')->addError(new FormError('Kötelező vezetéknevet megadni.'));
+                $isContactFormValid = FALSE;
+            }
+
+            if ( $isContactFormValid === TRUE ) {
+                $this->contactFormData = $contactFormData;
+                $this->saveContactForm();
+                return $this->redirect($this->generateUrl('contact_index'));
+            }
         }
-
-        $contactForm->get('email')->addError(new FormError('error message'));
-
+        
         return $this->render('AcmeRatingBundle:Contact:index.html.twig', array(
             'form' => $contactForm->createView(),
         ));
-//
- //       return $this->redirect($this->generateUrl('contact_index'));
+    }
+
+    private function saveContactForm() {
+        if ( $this->shouldBeSavedAsVerifiedClient() === TRUE ) {
+            $this->saveAsVerifiedClient();
+        }
+        else if ( $this->shouldBeSevedAsContact() === TRUE ) {
+            $this->saveAsContact();
+        }
+    }
+
+    private function shouldBeSavedAsVerifiedClient() {
+        $isEmailSet = ( empty($this->contactFormData['email']) === FALSE );
+        $isClientIdSet = ( empty($this->contactFormData['clientId']) === FALSE );
+        $isLastNameSet = ( empty($this->contactFormData['lastName']) === FALSE );
+
+        return ( $isEmailSet AND $isClientIdSet AND $isLastNameSet );
+    }
+
+    private function shouldBeSevedAsContact() {
+        $isEmailSet = ( empty($this->contactFormData['email']) === FALSE );
+        $isClientIdNotSet = ( empty($this->contactFormData['clientId']) === TRUE );
+        $isLastNameSet = ( empty($this->contactFormData['lastName']) === FALSE );
+
+        return ( $isEmailSet AND $isClientIdNotSet AND $isLastNameSet );
+    }
+
+    private function saveAsVerifiedClient() {
+        $this->verifiedClientWithClientId = $this->getDoctrine()->getRepository('AcmeRatingBundle:VerifiedClient')->findOneByClientId($this->contactFormData['clientId']);
+        $this->verifiedClientWithEmail = $this->getDoctrine()->getRepository('AcmeRatingBundle:VerifiedClient')->findOneByEmailAddress($this->contactFormData['email']);
+
+        $clientIdExists = ( empty($this->verifiedClientWithClientId) === FALSE );
+        $emailExists = ( empty($this->verifiedClientWithEmail) === FALSE );
+
+        if ( ( $clientIdExists === TRUE ) AND ( $emailExists === TRUE ) ) {
+            if ( $this->verifiedClientWithClientId->getId() === $this->verifiedClientWithEmail->getId() ) {
+                $this->saveAsVerifiedClientIfBothClientIdAndEmailExistAndMatch();
+            }
+            else {
+                $this->saveAsVerifiedClientIfBothClientIdAndEmailExistAndMismatch();
+            }
+        }
+        else if ( ( $clientIdExists === TRUE ) AND ( $emailExists === FALSE ) ) {
+            $this->saveAsVerifiedClientIfOnlyClientIdExists();
+        }
+        else if ( ( $clientIdExists === FALSE ) AND ( $emailExists === TRUE ) ) {
+            $this->saveAsVerifiedClientIfOnlyEmailExists();
+        }
+        else if ( ( $clientIdExists === FALSE ) AND ( $emailExists === FALSE ) ) {
+            $this->saveAsVerifiedClientIfNeitherClientIdOrEmailExists();
+        }
+
+        $this->createContactForVerifiedClient();
+    }
+
+    private function saveAsVerifiedClientIfBothClientIdAndEmailExistAndMatch() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+
+        $connection->update(
+            'verified_client', 
+            array(
+                'client_id' => $this->contactFormData['clientId'],
+                'first_name' => $this->contactFormData['firstName'],
+                'last_name' => $this->contactFormData['lastName'],
+                'email_address' => $this->contactFormData['email'],
+            ),
+            array(
+                'id' => $this->verifiedClientWithClientId->getId()
+            )
+        );
+
+        $this->lastInsertedOrUpdatedVerifiedClientId = $this->verifiedClientWithClientId->getId();
+    }
+
+    private function saveAsVerifiedClientIfBothClientIdAndEmailExistAndMismatch() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+
+        $connection->delete('verified_client', array('id' => $this->verifiedClientWithClientId->getId()));
+        $connection->delete('verified_client', array('id' => $this->verifiedClientWithEmail->getId()));
+
+        $connection->insert('verified_client', array(
+            'client_id' => $this->contactFormData['clientId'],
+            'first_name' => $this->contactFormData['firstName'],
+            'last_name' => $this->contactFormData['lastName'],
+            'email_address' => $this->contactFormData['email'],
+        ));
+
+        $this->lastInsertedOrUpdatedVerifiedClientId = $connection->lastInsertId();
+    }
+
+    private function saveAsVerifiedClientIfOnlyClientIdExists() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+
+        $connection->update(
+            'verified_client', 
+            array(
+                'client_id' => $this->contactFormData['clientId'],
+                'first_name' => $this->contactFormData['firstName'],
+                'last_name' => $this->contactFormData['lastName'],
+                'email_address' => $this->contactFormData['email'],
+            ),
+            array(
+                'id' => $this->verifiedClientWithClientId->getId()
+            )
+        );
+
+        $this->lastInsertedOrUpdatedVerifiedClientId = $this->verifiedClientWithClientId->getId();
+    }
+
+    private function saveAsVerifiedClientIfOnlyEmailExists() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+
+        $connection->update(
+            'verified_client', 
+            array(
+                'client_id' => $this->contactFormData['clientId'],
+                'first_name' => $this->contactFormData['firstName'],
+                'last_name' => $this->contactFormData['lastName'],
+                'email_address' => $this->contactFormData['email'],
+            ),
+            array(
+                'id' => $this->verifiedClientWithEmail->getId()
+            )
+        );
+
+        $this->lastInsertedOrUpdatedVerifiedClientId = $this->verifiedClientWithEmail->getId();
+    }
+
+    private function saveAsVerifiedClientIfNeitherClientIdOrEmailExists() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+        
+        $connection->insert('verified_client', array(
+            'client_id' => $this->contactFormData['clientId'],
+            'first_name' => $this->contactFormData['firstName'],
+            'last_name' => $this->contactFormData['lastName'],
+            'email_address' => $this->contactFormData['email'],
+        ));
+
+        $this->lastInsertedOrUpdatedVerifiedClientId = $connection->lastInsertId();
+    }
+
+    private function createContactForVerifiedClient() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+        
+        $connection->insert('contact', array(
+            'first_name' => $this->contactFormData['firstName'],
+            'last_name' => $this->contactFormData['lastName'],
+            'email_address' => $this->contactFormData['email'],
+            'contact_happened_at' => date('Y-m-d H:i:s'),
+            'client_id' => $this->lastInsertedOrUpdatedVerifiedClientId,
+        ));
+    }
+
+    private function saveAsContact() {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+        
+        $connection->insert('contact', array(
+            'first_name' => $this->contactFormData['firstName'],
+            'last_name' => $this->contactFormData['lastName'],
+            'email_address' => $this->contactFormData['email'],
+            'contact_happened_at' => date('Y-m-d H:i:s'),
+        ));
     }
 
     public function autocompleteByEmailPrefixAction(Request $request)
@@ -159,7 +323,11 @@ class ContactController extends Controller
     }
 
     private function addToAutocompleteForEmails($email) {
-        array_push($this->autocompleteForEmails, strtolower($email));
+        $email = strtolower($email);
+
+        if ( in_array($email, $this->autocompleteForEmails) === FALSE ) {
+            array_push($this->autocompleteForEmails, $email);
+        }
     }
 
     public function autocompleteByClientIdAction(Request $request)

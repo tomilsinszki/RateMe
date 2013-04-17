@@ -81,7 +81,7 @@ $(document).ready(function(){
         var emailDataEmpty = ( (3<content.length) && (autocompleteDataByEmail==null) );
         var randomReload = ( (3<content.length) && (Math.random()<0.2) );
         var hasEmailPrefixChanged = ( (3<=content.length) && (emailPrefix!=emailPrefixLastLoaded) );
-
+        
         var shouldAutocompleteReload = ( emailListEmpty || emailDataEmpty || randomReload || hasEmailPrefixChanged );
         if ( shouldAutocompleteReload ) {
             emailPrefixLastLoaded = emailPrefix;
