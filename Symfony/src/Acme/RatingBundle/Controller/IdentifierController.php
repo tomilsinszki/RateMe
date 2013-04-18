@@ -51,7 +51,7 @@ class IdentifierController extends Controller
 
     private function isUserCustomerServiceWorker()
     {
-        if ( $this->get('security.context')->isGranted('ROLE_CUSTOMERSERVICE') != TRUE ) {
+        if ( $this->get('security.context')->isGranted('ROLE_CUSTOMERSERVICE') === TRUE ) {
             return TRUE;
         }
 

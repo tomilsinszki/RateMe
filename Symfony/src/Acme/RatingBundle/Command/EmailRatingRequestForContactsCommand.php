@@ -12,17 +12,19 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 {
     private $contactsQueryText =
         "SELECT
-            id AS contactId,
-            email_address AS emailAddress,
-            first_name AS firstName,
-            last_name AS lastName,
-            contact_happened_at AS contactHappenedAt
-        FROM 
-            contact
-        WHERE
-            sent_email_at IS NULL
-        ORDER BY
-            contact_happened_at ASC";
+            c.id AS contactId,
+            c.email_address AS emailAddress,
+            c.first_name AS firstName,
+            c.last_name AS lastName,
+            c.contact_happened_at AS contactHappenedAt,
+            r.name AS rateableName,
+            i.id AS imageFileName,
+            i.path AS imageFileExtension
+        FROM contact c
+        LEFT JOIN rateable r ON c.rateable_id=r.id
+        LEFT JOIN image i ON r.image_id=i.id
+        WHERE sent_email_at IS NULL
+        ORDER BY contact_happened_at ASC";
 
     private $contactStatement = null;
     private $contactsDataToSendEmailsTo = null;
@@ -54,11 +56,28 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $message->setSubject('Értékelje ügyintézőnk munkáját');
         $message->setFrom(array('vidanet@rate.me.uk' => 'Vidanet'));
         $message->setTo($contactData['emailAddress']);
+        $embeddedImages = $this->embedImagesIntoMessage($contactData, $message);
         $message->setBody($this->getContainer()->get('templating')->render(
             'AcmeRatingBundle:Contact:requestRatingEmail.html.twig', 
-            array('contactData' => $contactData)
+            array('contactData' => $contactData, 'images' => $embeddedImages)
         ));
         $this->getContainer()->get('mailer')->send($message);
+    }
+
+    private function embedImagesIntoMessage($contactData, $message) {
+        $webRootPath = $this->getContainer()->get('kernel')->getRootDir()."/../web";
+        
+        $images = array(
+            'profile' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$contactData['imageFileName']}.{$contactData['imageFileExtension']}")),
+            'logo' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailLogo.png")),
+            'star1' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailStar1.png")),
+            'star2' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailStar2.png")),
+            'star3' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailStar3.png")),
+            'star4' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailStar4.png")),
+            'star5' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailStar5.png")),
+        );
+
+        return $images;
     }
 
     private function setSentEmailFlagForContact($contactData) {

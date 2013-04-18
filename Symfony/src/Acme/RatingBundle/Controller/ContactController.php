@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormError;
 
 class ContactController extends Controller
 {
+    private $rateableForUser = null;
+
     private $autocompleteByEmailPrefixQueryText = 
         'SELECT
             co.email_address AS contactEmailAddress,
@@ -72,6 +74,8 @@ class ContactController extends Controller
             ->add('lastName', 'text', array('required' => true, 'attr' => array('autocomplete' => 'off')))
             ->add('firstName', 'text', array('required' => false, 'attr' => array('autocomplete' => 'off')))
             ->getForm();
+
+        $this->loadRateableForCurrentUser();
         
         if ( $request->isMethod('POST') ) {
             $contactForm->bind($request);
@@ -98,6 +102,11 @@ class ContactController extends Controller
         return $this->render('AcmeRatingBundle:Contact:index.html.twig', array(
             'form' => $contactForm->createView(),
         ));
+    }
+
+    private function loadRateableForCurrentUser() {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $this->rateableForUser = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
     }
 
     private function saveContactForm() {
@@ -248,6 +257,7 @@ class ContactController extends Controller
             'email_address' => $this->contactFormData['email'],
             'contact_happened_at' => date('Y-m-d H:i:s'),
             'client_id' => $this->lastInsertedOrUpdatedVerifiedClientId,
+            'rateable_id' => $this->rateableForUser->getId(),
         ));
     }
 
@@ -259,6 +269,7 @@ class ContactController extends Controller
             'last_name' => $this->contactFormData['lastName'],
             'email_address' => $this->contactFormData['email'],
             'contact_happened_at' => date('Y-m-d H:i:s'),
+            'rateable_id' => $this->rateableForUser->getId(),
         ));
     }
 
