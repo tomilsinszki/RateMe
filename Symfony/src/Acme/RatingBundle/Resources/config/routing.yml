@@ -81,3 +81,7 @@ client_autocomplete_by_client_id:
 vote_after_contact:
     pattern:   /ugyfel/kontakt/ertekeles/{token}/{stars}
     defaults: { _controller: AcmeRatingBundle:Contact:vote }
+
+flag_email_for_contact_as_flawed:
+    pattern:   /ugyfel/kontakt/hibajelzes/{token}
+    defaults: { _controller: AcmeRatingBundle:Contact:flagEmailAsFlawed }

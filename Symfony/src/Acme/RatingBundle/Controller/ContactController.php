@@ -394,13 +394,13 @@ class ContactController extends Controller
             throw $this->createNotFoundException('Invalid rating!');
         }
         
-        $isEmailValid = ( $this->daysPassedSince($contact->getSentEmailAt()) < 3.0 );
+        $isEmailNonExpired = ( $this->daysPassedSince($contact->getSentEmailAt()) < 3.0 );
 
         $rating = $contact->getRating();
-        if ( ( empty($rating) === TRUE ) AND ( $isEmailValid === TRUE ) ) {
+        if ( ( empty($rating) === TRUE ) AND ( $isEmailNonExpired === TRUE ) ) {
             $this->createRatingForContact($contact, $stars);
         }
-        else if( ($this->minsPassedSince($rating->getCreated()) < 21.0) AND ( $isEmailValid === TRUE ) ) {
+        else if( ($this->minsPassedSince($rating->getCreated()) < 10.0) AND ( $isEmailNonExpired === TRUE ) ) {
             $this->updateRating($rating, $stars);
         }
         else {
@@ -464,5 +464,30 @@ class ContactController extends Controller
             $imageURL = $image->getWebPath();
         
         return $imageURL;
+    }
+
+    public function flagEmailAsFlawedAction($token) {
+        $contact = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRateToken($token);
+        if ( empty($contact) === TRUE ) {
+            throw $this->createNotFoundException('Invalid token!');
+        }
+        
+        $isEmailNonExpired = ( $this->daysPassedSince($contact->getSentEmailAt()) < 3.0 );
+
+        $rating = $contact->getRating();
+        if ( empty($rating) === FALSE ) {
+            if ( 10.0 <= $this->minsPassedSince($rating->getCreated()) ) {
+                $isEmailNonExpired = FALSE;
+            }
+        }
+
+        if ( $isEmailNonExpired === TRUE ) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $contact->setClientFlaggedEmailAsFlawedAt(new \DateTime());
+            $entityManager->persist($contact);
+            $entityManager->flush();
+        }
+
+        return new Response('Visszajelzését rögzítettük. Köszönjük!');
     }
 }

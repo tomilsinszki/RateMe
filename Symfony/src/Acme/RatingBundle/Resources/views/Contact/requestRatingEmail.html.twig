@@ -17,11 +17,11 @@
 					<h4 style="color: #791f7e; font-size: 14px; font-weight: bold; margin: 0 0 10px 0; text-align: center;">Az On ertekelese a kiszolgalasrol (kerjuk, hasznalja a csillagokat):</h4>
 					<table style="width: 445px; border-collapse: collapse; border-spacing: 0; table-layout: fixed; margin: 0 auto 35px auto;">
 						<tr>
-							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':1}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star1 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':2}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star2 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':3}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star3 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':4}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star4 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':5}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star5 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':1}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star1 }}" style="border: none; width: 79px; height: 75px;" alt="1" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':2}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star2 }}" style="border: none; width: 79px; height: 75px;" alt="2" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':3}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star3 }}" style="border: none; width: 79px; height: 75px;" alt="3" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':4}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star4 }}" style="border: none; width: 79px; height: 75px;" alt="4" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':5}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star5 }}" style="border: none; width: 79px; height: 75px;" alt="5" /></a></td>
 						</tr>
 					</table>
 					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Koszonjuk a visszajelzeset!</p>
@@ -31,7 +31,7 @@
 				<td style="height: 10px; background-color: #fff;"></td>
 			</tr>
 			<tr>
-				<td style="padding: 10px 20px; color: #791f7e; font-size: 14px; font-weight: normal;">Nem lepett kapcsolatba Vidanet ugyfelszolgalattal? Kerjuk jelezze <a href="#" style="color: #f9a350; text-decoration: none; text-transform: uppercase;">ITT</a>, hogy eltavolithassuk emailcimet a rendszerunkbol.</td>
+				<td style="padding: 10px 20px; color: #791f7e; font-size: 14px; font-weight: normal;">Nem lepett kapcsolatba Vidanet ugyfelszolgalattal? Kerjuk jelezze <a href="{{ url('flag_email_for_contact_as_flawed', {'token':rateToken}) }}" style="color: #f9a350; text-decoration: none; text-transform: uppercase;">ITT</a>, hogy eltavolithassuk emailcimet a rendszerunkbol.</td>
 			</tr>
 			<tr>
 				<td style="height: 10px; background-color: #fff;"></td>

@@ -47,6 +47,7 @@ security:
         - { path: ^/hely/profil, roles: 'ROLE_MANAGER' }
         - { path: ^/ertekeles/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/ugyfel/kontakt/ertekeles, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/ugyfel/kontakt/hibajelzes, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/ugyfel/kontakt/azonosito/autocomplete, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/ugyfel/kontakt/email/autocomplete, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/ugyfel/kontakt/mentes, roles: 'ROLE_CUSTOMERSERVICE' }
