@@ -393,16 +393,22 @@ class ContactController extends Controller
         if ( empty($contact) === TRUE ) {
             throw $this->createNotFoundException('Invalid rating!');
         }
+        
+        $isEmailValid = ( $this->daysPassedSince($contact->getSentEmailAt()) < 3.0 );
 
         $rating = $contact->getRating();
-        if ( empty($rating) === TRUE ) {
+        if ( ( empty($rating) === TRUE ) AND ( $isEmailValid === TRUE ) ) {
             $this->createRatingForContact($contact, $stars);
         }
-        else if( $this->minsPassedSince($rating->getCreated()) < 21.0 ) {
+        else if( ($this->minsPassedSince($rating->getCreated()) < 21.0) AND ( $isEmailValid === TRUE ) ) {
             $this->updateRating($rating, $stars);
         }
         else {
             $stars = $contact->getRating()->getStars();
+        }
+
+        if ( empty($stars) === TRUE ) {
+            throw $this->createNotFoundException('Email has expired, no rating was given!');
         }
         
         return $this->render('AcmeRatingBundle:Contact:vote.html.twig', array(
@@ -410,6 +416,13 @@ class ContactController extends Controller
             'contact' => $contact,
             'profileURL' => $this->getImageURL($contact->getRateable()),
         ));
+    }
+    
+    private static function daysPassedSince($pastDatetime) {
+        $currentDateTime = new \DateTime('now');
+        $diff = $currentDateTime->getTimestamp() - $pastDatetime->getTimestamp();
+        $diffInMins = (float)$diff/(float)(60.0*60.0*24.0);
+        return $diffInMins;
     }
     
     private function createRatingForContact($contact, $stars) {
@@ -444,8 +457,7 @@ class ContactController extends Controller
         );
     }
 
-    private function getImageURL($rateable)
-    {
+    private function getImageURL($rateable) {
         $imageURL = null;
         $image = $rateable->getImage();
         if ( empty($image) === FALSE )
