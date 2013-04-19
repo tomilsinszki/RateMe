@@ -37,6 +37,8 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->getContainer()->get('router')->getContext()->setHost('test.rate.me.uk');
+
         $this->loadContactsDataToSendEmailsTo();
         $this->addEmailsToQueue();
         $this->sendAllEmailsInQueue();
@@ -44,12 +46,13 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 
     private function addEmailsToQueue() {
         foreach($this->contactsDataToSendEmailsTo AS $contactData) {
-            $this->addEmailToQueue($contactData);
-            $this->setSentEmailFlagForContact($contactData);
+            $rateToken = $this->generateRandomRateToken($contactData);
+            $this->addEmailToQueue($contactData, $rateToken);
+            $this->setSentEmailFlagForContact($contactData, $rateToken);
         }
     }
 
-    private function addEmailToQueue($contactData) {
+    private function addEmailToQueue($contactData, $rateToken) {
         $message = \Swift_Message::newInstance();
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
@@ -59,7 +62,7 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $embeddedImages = $this->embedImagesIntoMessage($contactData, $message);
         $message->setBody($this->getContainer()->get('templating')->render(
             'AcmeRatingBundle:Contact:requestRatingEmail.html.twig', 
-            array('contactData' => $contactData, 'images' => $embeddedImages)
+            array('contactData' => $contactData, 'images' => $embeddedImages, 'rateToken' => $rateToken)
         ));
         $this->getContainer()->get('mailer')->send($message);
     }
@@ -80,18 +83,32 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         return $images;
     }
 
-    private function setSentEmailFlagForContact($contactData) {
+    private function setSentEmailFlagForContact($contactData, $rateToken) {
         $connection = $this->getContainer()->get('database_connection');
 
         $connection->update(
             'contact', 
             array(
-                'sent_email_at' => date('Y-m-d H:i:s')
+                'sent_email_at' => date('Y-m-d H:i:s'),
+                'rate_token' => $rateToken,
             ),
             array(
                 'id' => $contactData['contactId']
             )
         );
+    }
+
+    private function generateRandomRateToken($contactData) {
+        $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $rateToken = '';
+
+        for ($i=0; $i<10; $i++) {
+            $rateToken .= $characters[mt_rand(0, strlen($characters) - 1)];
+        }
+
+        $rateToken .= $contactData['contactId'];
+
+        return $rateToken;
     }
 
     private function loadContactsDataToSendEmailsTo() {

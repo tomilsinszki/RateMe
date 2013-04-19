@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
+use Acme\RatingBundle\Entity\Rating;
 
 class ContactController extends Controller
 {
@@ -380,9 +381,76 @@ class ContactController extends Controller
         array_push($this->autocompleteForClientIds, $clientId);
     }
 
-    public function voteAction(Request $request)
+    public function voteAction($token, $stars)
     {
+        $stars = intval($stars);
+
+        if ( ( $stars < 1 ) OR ( 5 < $stars ) ) {
+            throw $this->createNotFoundException('Invalid rating!');
+        }
+
+        $contact = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRateToken($token);
+        if ( empty($contact) === TRUE ) {
+            throw $this->createNotFoundException('Invalid rating!');
+        }
+
+        $rating = $contact->getRating();
+        if ( empty($rating) === TRUE ) {
+            $this->createRatingForContact($contact, $stars);
+        }
+        else if( $this->minsPassedSince($rating->getCreated()) < 21.0 ) {
+            $this->updateRating($rating, $stars);
+        }
+        else {
+            $stars = $contact->getRating()->getStars();
+        }
+        
         return $this->render('AcmeRatingBundle:Contact:vote.html.twig', array(
+            'stars' => $stars,
+            'contact' => $contact,
+            'profileURL' => $this->getImageURL($contact->getRateable()),
         ));
+    }
+    
+    private function createRatingForContact($contact, $stars) {
+        $entityManager = $this->getDoctrine()->getManager();
+        $rating = new Rating();
+        $rating->setRateable($contact->getRateable());
+        $rating->setStars($stars);
+        $rating->setCreated(new \DateTime());
+        $rating->setUpdated(new \DateTime());
+        $entityManager->persist($rating);
+        $entityManager->flush();
+        
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+        $connection->update('contact',
+            array('rating_id' => $rating->getId()),
+            array('id' => $contact->getId())
+        );
+    }
+    
+    private static function minsPassedSince($pastDatetime) {
+        $currentDateTime = new \DateTime('now');
+        $diff = $currentDateTime->getTimestamp() - $pastDatetime->getTimestamp();
+        $diffInMins = (float)$diff/(float)60.0;
+        return $diffInMins;
+    }
+
+    private function updateRating($rating, $stars) {
+        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+        $connection->update('rating',
+            array('stars' => $stars, 'updated' => date('Y-m-d H:i:s')),
+            array('id' => $rating->getId())
+        );
+    }
+
+    private function getImageURL($rateable)
+    {
+        $imageURL = null;
+        $image = $rateable->getImage();
+        if ( empty($image) === FALSE )
+            $imageURL = $image->getWebPath();
+        
+        return $imageURL;
     }
 }

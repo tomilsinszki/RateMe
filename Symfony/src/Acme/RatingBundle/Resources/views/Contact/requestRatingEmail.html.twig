@@ -17,11 +17,11 @@
 					<h4 style="color: #791f7e; font-size: 14px; font-weight: bold; margin: 0 0 10px 0; text-align: center;">Az On ertekelese a kiszolgalasrol (kerjuk, hasznalja a csillagokat):</h4>
 					<table style="width: 445px; border-collapse: collapse; border-spacing: 0; table-layout: fixed; margin: 0 auto 35px auto;">
 						<tr>
-							<td style="height: 75px;"><a href="http://index.hu" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star1 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="http://cnn.com" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star2 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="#" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star3 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="#" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star4 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
-							<td style="height: 75px;"><a href="#" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star5 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':1}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star1 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':2}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star2 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':3}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star3 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':4}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star4 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
+							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':5}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star5 }}" style="border: none; width: 79px; height: 75px;" /></a></td>
 						</tr>
 					</table>
 					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Koszonjuk a visszajelzeset!</p>

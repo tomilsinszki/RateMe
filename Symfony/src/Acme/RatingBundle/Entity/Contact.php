@@ -37,6 +37,11 @@ class Contact
      * @ORM\Column(name="last_name", type="string", length=255, unique=false, nullable=false)
      */
     private $lastName;
+    
+    /**
+     * @ORM\Column(name="rate_token", type="string", length=255, unique=true, nullable=true)
+     */
+    private $rateToken;
 
     /**
      * @var datetime, $contactHappenedAt
@@ -155,6 +160,29 @@ class Contact
     public function getLastName()
     {
         return $this->lastName;
+    }
+    
+    /**
+     * Set rateToken
+     *
+     * @param string $rateToken
+     * @return Contact
+     */
+    public function setRateToken($rateToken)
+    {
+        $this->rateToken = $rateToken;
+    
+        return $this;
+    }
+
+    /**
+     * Get rateToken
+     *
+     * @return string 
+     */
+    public function getRateToken()
+    {
+        return $this->rateToken;
     }
 
     /**

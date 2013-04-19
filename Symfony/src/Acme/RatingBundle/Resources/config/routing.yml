@@ -79,5 +79,5 @@ client_autocomplete_by_client_id:
     defaults: { _controller: AcmeRatingBundle:Contact:autocompleteByClientId }
 
 vote_after_contact:
-    pattern:   /ugyfel/kontakt/ertekeles
+    pattern:   /ugyfel/kontakt/ertekeles/{token}/{stars}
     defaults: { _controller: AcmeRatingBundle:Contact:vote }
