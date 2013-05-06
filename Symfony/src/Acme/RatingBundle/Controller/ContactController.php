@@ -13,20 +13,33 @@ class ContactController extends Controller
     private $rateableForUser = null;
 
     private $autocompleteByEmailPrefixQueryText = 
-        'SELECT
-            co.email_address AS contactEmailAddress,
-            co.first_name AS contactFirstName,
-            co.last_name AS contactLastName,
-            cl.client_id AS clientClientId,
-            cl.email_address AS clientEmailAddress,
-            cl.first_name AS clientFirstName,
-            cl.last_name AS clientLastName
-        FROM contact co 
-        LEFT JOIN verified_client cl ON co.client_id=cl.id 
-        WHERE 
-            co.email_address LIKE "%1$s%%"
-            OR cl.email_address LIKE "%1$s%%"
-        ORDER BY contact_happened_at DESC';
+        '( 
+            SELECT
+                co.email_address AS emailAddress,
+                co.first_name AS firstName,
+                co.last_name AS lastName,
+                NULL AS clientId,
+                co.contact_happened_at AS contactHappenedAt
+            FROM contact co
+            WHERE 
+                co.email_address LIKE "%1$s%%" 
+        )
+        
+        UNION DISTINCT
+        
+        ( 
+            SELECT
+                cl.email_address AS emailAddress,
+                cl.first_name AS firstName,
+                cl.last_name AS lastName,
+                cl.client_id AS clientId,
+                NULL AS contactHappenedAt
+            FROM verified_client cl
+            WHERE 
+                cl.email_address LIKE "%1$s%%" 
+        )
+            
+        ORDER BY clientId DESC, contactHappenedAt DESC';
     
     private $autocompleteByEmailPrefixStatement = null;
     private $autocompleteForEmails = array();
@@ -281,7 +294,7 @@ class ContactController extends Controller
         $this->loadAutocompleteByEmailPrefixStatement($request->request->get('emailPrefix'));
         
         foreach($this->autocompleteByEmailPrefixStatement->fetchAll() AS $row) {
-            if ( empty($row['clientClientId']) == FALSE ) {
+            if ( empty($row['clientId']) == FALSE ) {
                 $this->addClientDataToAutocompleteForEmails($row);
             }
             else {
@@ -305,19 +318,19 @@ class ContactController extends Controller
     }
 
     private function addClientDataToAutocompleteForEmails($row) {
-        $email = strtolower($row['clientEmailAddress']);
-            
+        $email = strtolower($row['emailAddress']);
+
         $this->autocompleteDataByEmail[$email] = array(
-            'clientId' => $row['clientClientId'],
-            'firstName' => $row['clientFirstName'],
-            'lastName' => $row['clientLastName'],
+            'clientId' => $row['clientId'],
+            'firstName' => $row['firstName'],
+            'lastName' => $row['lastName'],
         );
 
         $this->addToAutocompleteForEmails($email);
     }
 
     private function addContactDataToAutocompleteForEmails($row) {
-        $email = strtolower($row['contactEmailAddress']);
+        $email = strtolower($row['emailAddress']);
 
         if ( empty($this->autocompleteDataByEmail[$email]) == FALSE ) {
             return;
@@ -325,8 +338,8 @@ class ContactController extends Controller
         
         $this->autocompleteDataByEmail[$email] = array(
             'clientId' => '',
-            'firstName' => $row['contactFirstName'],
-            'lastName' => $row['contactLastName'],
+            'firstName' => $row['firstName'],
+            'lastName' => $row['lastName'],
         );
 
         $this->addToAutocompleteForEmails($email);
