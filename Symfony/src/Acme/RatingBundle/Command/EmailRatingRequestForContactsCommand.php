@@ -42,7 +42,7 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 
         $this->loadContactsDataToSendEmailsTo();
         $this->addEmailsToQueue();
-        $this->sendAllEmailsInQueue();
+        //$this->sendAllEmailsInQueue();
     }
 
     private function addEmailsToQueue() {

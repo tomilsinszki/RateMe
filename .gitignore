@@ -3,6 +3,7 @@
 /Symfony/app/bootstrap*
 /Symfony/app/cache/*
 /Symfony/app/logs/*
+/Symfony/app/spool/*
 /Symfony/vendor/
 Symfony/web/uploads/
 /Symfony/app/config/parameters.yml
