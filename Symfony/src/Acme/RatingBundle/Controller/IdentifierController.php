@@ -18,6 +18,8 @@ class IdentifierController extends Controller
         if ( empty($ownedCollection) === FALSE ) {
             return $this->redirect($this->generateUrl('rateable_collection_profile_by_id', array('id' => $ownedCollection->getId())));
         }
+
+        return $this->redirect($this->generateUrl('contact_index'));
         
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
