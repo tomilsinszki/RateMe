@@ -11,6 +11,8 @@ use Acme\RatingBundle\Entity\Rating;
 class ContactController extends Controller
 {
     private $rateableForUser = null;
+    private $companyForUser = null;
+    private $companyIdForUser = null;
 
     private $autocompleteByEmailPrefixQueryText = 
         '( 
@@ -36,7 +38,8 @@ class ContactController extends Controller
                 NULL AS contactHappenedAt
             FROM verified_client cl
             WHERE 
-                cl.email_address LIKE "%1$s%%" 
+                cl.email_address LIKE "%1$s%%"
+                AND cl.company_id=%2$d
         )
             
         ORDER BY clientId DESC, contactHappenedAt DESC';
@@ -53,7 +56,8 @@ class ContactController extends Controller
             email_address AS emailAddress
         FROM verified_client
         WHERE 
-            client_id="%1$s"';
+            client_id="%1$s"
+            AND company_id=%2$d';
     
     private $autocompleteByClientIdStatement = null;
     private $autocompleteForClientIds = array();
@@ -149,8 +153,17 @@ class ContactController extends Controller
     }
 
     private function saveAsVerifiedClient() {
-        $this->verifiedClientWithClientId = $this->getDoctrine()->getRepository('AcmeRatingBundle:VerifiedClient')->findOneByClientId($this->contactFormData['clientId']);
-        $this->verifiedClientWithEmail = $this->getDoctrine()->getRepository('AcmeRatingBundle:VerifiedClient')->findOneByEmailAddress($this->contactFormData['email']);
+        $this->loadCompanyAndCompanyIdForUser();
+
+        $this->verifiedClientWithClientId = $this->getDoctrine()->getRepository('AcmeRatingBundle:VerifiedClient')->findOneBy(array(
+            'company' => $this->companyForUser,
+            'clientId' => $this->contactFormData['clientId'],
+        ));
+
+        $this->verifiedClientWithEmail = $this->getDoctrine()->getRepository('AcmeRatingBundle:VerifiedClient')->findOneBy(array(
+            'company' => $this->companyForUser,
+            'emailAddress' => $this->contactFormData['email'],
+        ));
 
         $clientIdExists = ( empty($this->verifiedClientWithClientId) === FALSE );
         $emailExists = ( empty($this->verifiedClientWithEmail) === FALSE );
@@ -176,12 +189,31 @@ class ContactController extends Controller
         $this->createContactForVerifiedClient();
     }
 
+    private function loadCompanyAndCompanyIdForUser() {
+        $this->loadRateableForCurrentUser();
+
+        $rateableCollectionForUser = $this->rateableForUser->getCollection();
+        if ( empty($rateableCollectionForUser) === TRUE ) {
+            throw $this->createNotFoundException('Rateable collection not found for current user!');
+        }
+
+        $this->companyForUser = $rateableCollectionForUser->getCompany();
+        if ( empty($this->companyForUser) === TRUE ) {
+            throw $this->createNotFoundException('Company not found for current user!');
+        }
+
+        $this->companyIdForUser = $this->companyForUser->getId();
+
+        return $this->companyIdForUser;
+    }
+    
     private function saveAsVerifiedClientIfBothClientIdAndEmailExistAndMatch() {
         $connection = $this->getDoctrine()->getEntityManager()->getConnection();
 
         $connection->update(
             'verified_client', 
             array(
+                'company_id' => $this->loadCompanyAndCompanyIdForUser(),
                 'client_id' => $this->contactFormData['clientId'],
                 'first_name' => $this->contactFormData['firstName'],
                 'last_name' => $this->contactFormData['lastName'],
@@ -202,6 +234,7 @@ class ContactController extends Controller
         $connection->delete('verified_client', array('id' => $this->verifiedClientWithEmail->getId()));
 
         $connection->insert('verified_client', array(
+            'company_id' => $this->loadCompanyAndCompanyIdForUser(),
             'client_id' => $this->contactFormData['clientId'],
             'first_name' => $this->contactFormData['firstName'],
             'last_name' => $this->contactFormData['lastName'],
@@ -217,6 +250,7 @@ class ContactController extends Controller
         $connection->update(
             'verified_client', 
             array(
+                'company_id' => $this->loadCompanyAndCompanyIdForUser(),
                 'client_id' => $this->contactFormData['clientId'],
                 'first_name' => $this->contactFormData['firstName'],
                 'last_name' => $this->contactFormData['lastName'],
@@ -236,6 +270,7 @@ class ContactController extends Controller
         $connection->update(
             'verified_client', 
             array(
+                'company_id' => $this->loadCompanyAndCompanyIdForUser(),
                 'client_id' => $this->contactFormData['clientId'],
                 'first_name' => $this->contactFormData['firstName'],
                 'last_name' => $this->contactFormData['lastName'],
@@ -253,6 +288,7 @@ class ContactController extends Controller
         $connection = $this->getDoctrine()->getEntityManager()->getConnection();
         
         $connection->insert('verified_client', array(
+            'company_id' => $this->loadCompanyAndCompanyIdForUser(),
             'client_id' => $this->contactFormData['clientId'],
             'first_name' => $this->contactFormData['firstName'],
             'last_name' => $this->contactFormData['lastName'],
@@ -312,7 +348,7 @@ class ContactController extends Controller
 
     private function loadAutocompleteByEmailPrefixStatement($emailPrefix) {
         $connection = $this->get('database_connection');
-        $queryText = sprintf($this->autocompleteByEmailPrefixQueryText, $emailPrefix);
+        $queryText = sprintf($this->autocompleteByEmailPrefixQueryText, $emailPrefix, $this->loadCompanyAndCompanyIdForUser());
         $this->autocompleteByEmailPrefixStatement = $connection->executeQuery($queryText);
         $this->autocompleteByEmailPrefixStatement->execute();
     }
@@ -373,7 +409,7 @@ class ContactController extends Controller
 
     private function loadAutocompleteByClientIdStatement($clientId) {
         $connection = $this->get('database_connection');
-        $queryText = sprintf($this->autocompleteByClientIdQueryText, $clientId);
+        $queryText = sprintf($this->autocompleteByClientIdQueryText, $clientId, $this->loadCompanyAndCompanyIdForUser());
         $this->autocompleteByClientIdStatement = $connection->executeQuery($queryText);
         $this->autocompleteByClientIdStatement->execute();
     }
