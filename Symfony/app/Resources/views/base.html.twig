@@ -18,6 +18,12 @@
         <div class="bg_grad">
             <div class="content">
                 <div class="wrap">
+                {% if app.user %}
+                    <div>
+                        <a style='text-align:right;' href="{{ path('logout') }}">{{ app.user.username }} – kijelentkezés</a>
+                    </div>
+                {% endif %}
+                
                 {% block body %}
                 {% endblock %}
                 </div>
