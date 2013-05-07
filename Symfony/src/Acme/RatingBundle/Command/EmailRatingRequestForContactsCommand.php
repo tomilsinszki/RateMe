@@ -38,11 +38,8 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getContainer()->get('router')->getContext()->setHost('test.rate.me.uk');
-
         $this->loadContactsDataToSendEmailsTo();
         $this->addEmailsToQueue();
-        //$this->sendAllEmailsInQueue();
     }
 
     private function addEmailsToQueue() {
@@ -117,12 +114,6 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $this->contactStatement = $connection->executeQuery($this->contactsQueryText);
         $this->contactStatement->execute();
         $this->contactsDataToSendEmailsTo = $this->contactStatement->fetchAll();
-    }
-
-    private function sendAllEmailsInQueue() {
-        $spool = $this->getContainer()->get('mailer')->getTransport()->getSpool();
-        $transport = $this->getContainer()->get('swiftmailer.transport.real');
-        $spool->flushQueue($transport);
     }
 }
 
