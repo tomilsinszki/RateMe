@@ -18,6 +18,7 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
             c.last_name AS lastName,
             c.contact_happened_at AS contactHappenedAt,
             r.name AS rateableName,
+            r.is_reachable_via_telephone AS rateableIsReachableViaTelephone,
             i.id AS imageFileName,
             i.path AS imageFileExtension
         FROM contact c

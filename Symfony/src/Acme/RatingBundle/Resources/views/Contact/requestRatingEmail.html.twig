@@ -8,7 +8,7 @@
 					<h2 style="color: #791f7e; font-size: 16px; font-weight: bold; margin: 0 0 20px 0; text-transform:capitalize;">Tisztelt {{ contactData.lastName }} {{ contactData.firstName }}!</h2>
 					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Köszönjük, hogy a közelmúltban felkereste a Vidanet ügyfélszolgálatát! Reméljük, meg tudtuk válaszolni kérdéseit.</p>
 					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Fontosnak tartjuk, hogy ügyfeleink a lehető legjobb kiszolgálásban részesüljenek az ügyintézés során. Munkánk minőségének folyamatos javításában számítunk az Ön véleményére is!</p>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Kérjük, értékelje az Önt [HELYSZIN-en/TELEFON-on] kiszolgáló kollégánk munkáját és a kiszolgálás színvonalát.</p>
+					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Kérjük, értékelje az Önt {% if contactData.rateableIsReachableViaTelephone %}telefonon {% endif %}kiszolgáló kollégánk munkáját és a kiszolgálás színvonalát.</p>
 					<h3 style="color: #791f7e; font-size: 16px; font-weight: bold; margin: 0 0 7px 0; text-align: center; text-transform:capitalize;">{{ contactData.rateableName }}</h3>
 					<div style="height: 120px; margin: 0 auto 30px auto; text-align: center;">
 						<img src="{{ images.profile }}" style="width: 120px; height: 120px; border-radius: 120px;" alt="{{ contactData.rateableName }}" />

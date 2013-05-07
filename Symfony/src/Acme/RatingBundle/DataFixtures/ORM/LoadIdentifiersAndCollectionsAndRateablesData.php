@@ -13,37 +13,166 @@ class LoadIdentifierData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $userRepository = $manager->getRepository("Acme\UserBundle\Entity\User");
-        $owner = $userRepository->find(2);
+        $company = $manager->getRepository("Acme\RatingBundle\Entity\Company")->findOneBy(array('name' => 'Vidanet'));
+        $owner = $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'manager@manager.com'));
 
         $collection = $this->createCollectionWithIdentifier($manager, 
-            'Kék Osztriga Bár', 
-            $this->createIdentifier($manager, 'http://www.one.com', '1111'),
-            $owner
+            'Somtel', 
+            $this->createIdentifier($manager, 'http://www.somtel.hu', '1111'),
+            $owner,
+            $company
         );
 
         $this->createRateableWithCollection($manager,
-            'Érték Elek',
-            'Felszolgáló',
-            $collection
+            'Barkó Renáta',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'barko.renata')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
         );
 
         $this->createRateableWithCollection($manager,
-            'Jó Áron',
-            'Üzletvezető',
-            $collection
+            'Gőző Viktória',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'gozo.viktoria')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
         );
 
         $this->createRateableWithCollection($manager,
-            'Mézga Géza',
-            'Konyhafőnök',
-            $collection
+            'Járfás Nóra',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'jarfas.nora')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
         );
 
-        $this->createRateableWithIdentifier($manager,
-            'Kovács Béla',
-            'Felszolgáló',
-            $this->createIdentifier($manager, 'http://www.two.com', '2222')
+        $this->createRateableWithCollection($manager,
+            'Jordanics Julianna',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'jordanics.julianna')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Kocsis Zsuzsanna',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'kocsis.zsuzsanna')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Kovács Márta',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'kovacs.marta')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Kutasi Krisztina',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'kutasi.krisztina')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Lapat Krisztina',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'lapat.krisztina')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Megla Dóra',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'megla.dora')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Mócsán Dea',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'mocsan.dea')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Molnár Edina',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'molnar.edina')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Molnár Tímea',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'molnar.timea')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Nagyné Balogh Tünde',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'nagyne.balogh.tunde')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Némethné Kámán Mária',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'nemethne.kaman.maria')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Révészné Borsos Anita',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'reveszne.borsos.anita')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Szűcs Ágnes',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'szucs.agnes')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Válint Sarolt',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'valint.sarolt')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Siposné Deák Tímea',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'siposne.deak.timea')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
+        );
+
+        $this->createRateableWithCollection($manager,
+            'Kotfás Judit',
+            $manager->getRepository("Acme\UserBundle\Entity\User")->findOneBy(array('username' => 'kotfas.judit')),
+            'Telefonos ügyfélszolgálatos',
+            $collection,
+            TRUE
         );
     }
 
@@ -59,12 +188,13 @@ class LoadIdentifierData implements FixtureInterface
         return $identifier;
     }
 
-    private function createCollectionWithIdentifier($manager, $name, $identifier, $ownerUser)
+    private function createCollectionWithIdentifier($manager, $name, $identifier, $ownerUser, $company)
     {
         $collection = new RateableCollection();
         $collection->setName($name);
         $collection->setIdentifier($identifier);
         $collection->addOwner($ownerUser);
+        $collection->setCompany($company);
 
         $manager->persist($collection);
         $manager->flush();
@@ -83,12 +213,14 @@ class LoadIdentifierData implements FixtureInterface
         $manager->flush();
     }
 
-    private function createRateableWithCollection($manager, $name, $typeName, $collection)
+    private function createRateableWithCollection($manager, $name, $rateableUser, $typeName, $collection, $isReachableViaTelephone)
     {
         $rateable = new Rateable();
         $rateable->setName($name);
+        $rateable->setRateableUser($rateableUser);
         $rateable->setTypeName($typeName);
         $rateable->setCollection($collection);
+        $rateable->setIsReachableViaTelephone($isReachableViaTelephone);
 
         $manager->persist($rateable);
         $manager->flush();

@@ -36,6 +36,13 @@ class Rateable
     private $typeName;
 
     /**
+     * @var boolean $isReachableViaTelephone
+     *
+     * @ORM\Column(name="is_reachable_via_telephone", type="boolean", nullable=false)
+     */
+    private $isReachableViaTelephone;
+
+    /**
      * @var boolean $isActive
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=false)
@@ -96,6 +103,7 @@ class Rateable
         $this->created = new \DateTime("now");
         $this->updated = new \DateTime("now");
         $this->isActive = TRUE;
+        $this->isReachableViaTelephone = FALSE;
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
         $this->contacts = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -154,6 +162,29 @@ class Rateable
     public function getTypeName()
     {
         return $this->typeName;
+    }
+
+    /**
+     * Set isReachableViaTelephone
+     *
+     * @param boolean $isReachableViaTelephone
+     * @return Rateable
+     */
+    public function setIsReachableViaTelephone($isReachableViaTelephone)
+    {
+        $this->isReachableViaTelephone = $isReachableViaTelephone;
+    
+        return $this;
+    }
+
+    /**
+     * Get isReachableViaTelephone
+     *
+     * @return boolean 
+     */
+    public function getIsReachableViaTelephone()
+    {
+        return $this->isReachableViaTelephone;
     }
 
     /**

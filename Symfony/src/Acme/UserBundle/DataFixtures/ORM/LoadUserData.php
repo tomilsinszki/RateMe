@@ -23,10 +23,30 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         $raterGroup = $this->createRaterGroup($manager, 'rater', 'ROLE_RATER');
         $managerGroup = $this->createRaterGroup($manager, 'manager', 'ROLE_MANAGER');
         $customerServiceGroup = $this->createRaterGroup($manager, 'customerservice', 'ROLE_CUSTOMERSERVICE');
-
-        $this->createUserWithGroup($manager, 'rater@rater.com', 'rater', $raterGroup);
+        
+        //$this->createUserWithGroup($manager, 'rater@rater.com', 'rater', $raterGroup);
         $this->createUserWithGroup($manager, 'manager@manager.com', 'manager', $managerGroup);
-        $this->createUserWithGroup($manager, 'cs@cs.com', 'cuse', $customerServiceGroup);
+        //$this->createUserWithGroup($manager, 'cs@cs.com', 'cuse', $customerServiceGroup);
+        
+        $this->createUserWithGroup($manager, 'barko.renata', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'gozo.viktoria', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'jarfas.nora', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'jordanics.julianna', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'kocsis.zsuzsanna', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'kovacs.marta', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'kutasi.krisztina', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'lapat.krisztina', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'megla.dora', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'mocsan.dea', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'molnar.edina', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'molnar.timea', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'nagyne.balogh.tunde', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'nemethne.kaman.maria', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'reveszne.borsos.anita', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'szucs.agnes', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'valint.sarolt', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'siposne.deak.timea', 'somtel123', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'kotfas.judit', 'somtel123', $customerServiceGroup);
     }
 
     private function createRaterGroup(ObjectManager $manager, $name, $roleName) {
