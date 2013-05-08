@@ -101,12 +101,12 @@ class ContactController extends Controller
             $isContactFormValid = TRUE;
 
             if ( empty($contactFormData['email']) === TRUE ) {
-                $contactForm->get('email')->addError(new FormError('Kötelező e-mailt megadni.'));
+                $contactForm->get('email')->addError(new FormError('Kötelező e-mail címet megadni!'));
                 $isContactFormValid = FALSE;
             }
             
             if ( empty($contactFormData['lastName']) === TRUE ) {
-                $contactForm->get('lastName')->addError(new FormError('Kötelező vezetéknevet megadni.'));
+                $contactForm->get('lastName')->addError(new FormError('Kötelező vezetéknevet megadni!'));
                 $isContactFormValid = FALSE;
             }
 

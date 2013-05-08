@@ -13,6 +13,8 @@ $(document).ready(function(){
             var selectedEmail = $(this).text();
             
             $("#form_email").val(selectedEmail);
+            autocompleteListForEmail.css('display', 'none');
+            autocompleteListForClientId.css('display', 'none');
             autocompleteListForEmail.html('');
             
             autocompleteData = autocompleteDataByEmail[selectedEmail];
@@ -40,11 +42,15 @@ $(document).ready(function(){
         var content = $("#form_email").val();
 
         if ( content.length < 3 ) {
+            autocompleteListForEmail.css('display', 'none');
+            autocompleteListForClientId.css('display', 'none');
             autocompleteListForEmail.html('');
             return;
         }
         
         if ( autocompleteForEmail.length == 0 ) {
+            autocompleteListForEmail.css('display', 'none');
+            autocompleteListForClientId.css('display', 'none');
             autocompleteListForEmail.html('');
             return;
         }
@@ -65,6 +71,8 @@ $(document).ready(function(){
             }
         }
         
+        autocompleteListForEmail.css('display', 'block');
+        autocompleteListForClientId.css('display', 'none');
         autocompleteListForEmail.html('<ul>'+autocompleteListForEmailInnerHTML+'</ul>');
 
         setUpSelectEmailEvent();
@@ -105,6 +113,8 @@ $(document).ready(function(){
             var selectedClientId = $(this).text();
             
             $("#form_clientId").val(selectedClientId);
+            autocompleteListForEmail.css('display', 'none');
+            autocompleteListForClientId.css('display', 'none');
             autocompleteListForClientId.html('');
             
             autocompleteData = autocompleteDataByClientId[selectedClientId];
@@ -132,6 +142,8 @@ $(document).ready(function(){
         var content = $("#form_clientId").val();
         
         if ( autocompleteListForClientId.length == 0 ) {
+            autocompleteListForEmail.css('display', 'none');
+            autocompleteListForClientId.css('display', 'none');
             autocompleteListForClientId.html('');
             return;
         }
@@ -151,6 +163,8 @@ $(document).ready(function(){
             }
         }
         
+        autocompleteListForEmail.css('display', 'none');
+        autocompleteListForClientId.css('display', 'block');
         autocompleteListForClientId.html('<ul>'+autocompleteListForClientIdInnerHTML+'</ul>');
 
         setUpSelectClientIdEvent();
