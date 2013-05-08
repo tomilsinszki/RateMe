@@ -111,6 +111,8 @@ class ContactController extends Controller
             }
 
             if ( $isContactFormValid === TRUE ) {
+                $contactFormData['lastName'] = mb_convert_case($contactFormData['lastName'], MB_CASE_TITLE, "UTF-8");
+                $contactFormData['firstName'] = mb_convert_case($contactFormData['firstName'], MB_CASE_TITLE, "UTF-8");
                 $this->contactFormData = $contactFormData;
                 $this->saveContactForm();
                 return $this->redirect($this->generateUrl('contact_index'));
