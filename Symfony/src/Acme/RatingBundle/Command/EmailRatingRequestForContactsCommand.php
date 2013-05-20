@@ -57,6 +57,7 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $message->setSubject('Értékelje ügyintézőnk munkáját');
         $message->setFrom(array('vidanet@rate.me.uk' => 'Vidanet'));
         $message->setTo($contactData['emailAddress']);
+        $message->addBcc('rateme.archive@gmail.com');
         $embeddedImages = $this->embedImagesIntoMessage($contactData, $message);
         $message->setBody($this->getContainer()->get('templating')->render(
             'AcmeRatingBundle:Contact:requestRatingEmail.html.twig', 

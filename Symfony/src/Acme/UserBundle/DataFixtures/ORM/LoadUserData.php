@@ -24,29 +24,61 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         $managerGroup = $this->createRaterGroup($manager, 'manager', 'ROLE_MANAGER');
         $customerServiceGroup = $this->createRaterGroup($manager, 'customerservice', 'ROLE_CUSTOMERSERVICE');
         
-        //$this->createUserWithGroup($manager, 'rater@rater.com', 'rater', $raterGroup);
-        $this->createUserWithGroup($manager, 'manager@manager.com', 'manager', $managerGroup);
-        //$this->createUserWithGroup($manager, 'cs@cs.com', 'cuse', $customerServiceGroup);
+        $this->createUserWithGroup($manager, 'somtel.manager', 'manager', $managerGroup);
+        $this->createUserWithGroup($manager, 'kspartner.manager', 'manager', $managerGroup);
         
-        $this->createUserWithGroup($manager, 'barko.renata', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'gozo.viktoria', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'jarfas.nora', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'jordanics.julianna', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'kocsis.zsuzsanna', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'kovacs.marta', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'kutasi.krisztina', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'lapat.krisztina', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'megla.dora', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'mocsan.dea', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'molnar.edina', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'molnar.timea', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'nagyne.balogh.tunde', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'nemethne.kaman.maria', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'reveszne.borsos.anita', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'szucs.agnes', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'valint.sarolt', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'siposne.deak.timea', 'somtel123', $customerServiceGroup);
-        $this->createUserWithGroup($manager, 'kotfas.judit', 'somtel123', $customerServiceGroup);
+        $userNamesForSomtel = array(
+            'barko.renata',
+            'gozo.viktoria',
+            'jarfas.nora',
+            'jordanics.julianna',
+            'kocsis.zsuzsanna',
+            'kovacs.marta',
+            'kutasi.krisztina',
+            'lapat.krisztina',
+            'megla.dora',
+            'mocsan.dea',
+            'molnar.edina',
+            'molnar.timea',
+            'nagyne.balogh.tunde',
+            'nemethne.kaman.maria',
+            'reveszne.borsos.anita',
+            'szucs.agnes',
+            'valint.sarolt',
+            'siposne.deak.timea',
+            'kotfas.judit',
+        );
+
+        $this->createUsersForSomtel($manager, $customerServiceGroup, $userNamesForSomtel, 'somtel123');
+
+        $userNamesForKsPartner = array(
+            'acs-gergely.zita',
+            'adamecz.eva',
+            'bekesi.alexandra',
+            'fisli.tiborne',
+            'juhasz.katalin',
+            'kovacs.gyula',
+            'menyhart.janos',
+            'szatmari.dora',
+            'szilvas.aniko',
+            'vrabel.mihaly',
+            'bertha.viktoria',
+            'major.edith',
+        );
+        
+        $this->createUsersForKsPartner($manager, $customerServiceGroup, $userNamesForKsPartner, 'kspartner123');
+    }
+
+    private function createUsersForSomtel($manager, $customerServiceGroup, $userNames, $defaultPassword) {
+        foreach( $userNames AS $userName ) {
+            $this->createUserWithGroup($manager, $userName, $defaultPassword, $customerServiceGroup);
+        }
+    }
+
+    private function createUsersForKsPartner($manager, $customerServiceGroup, $userNames, $defaultPassword) {
+        foreach( $userNames AS $userName ) {
+            $this->createUserWithGroup($manager, $userName, $defaultPassword, $customerServiceGroup);
+        }
     }
 
     private function createRaterGroup(ObjectManager $manager, $name, $roleName) {
