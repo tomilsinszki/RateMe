@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
 use Acme\RatingBundle\Entity\Rating;
+use Acme\RatingBundle\Utility\Validator;
 
 class ContactController extends Controller
 {
@@ -102,6 +103,11 @@ class ContactController extends Controller
 
             if ( empty($contactFormData['email']) === TRUE ) {
                 $contactForm->get('email')->addError(new FormError('Kötelező e-mail címet megadni!'));
+                $isContactFormValid = FALSE;
+            }
+
+            if ( Validator::isEmailAddressValid($contactFormData['email']) === FALSE ) {
+                $contactForm->get('email')->addError(new FormError('Az e-mail cím formátuma hibás!'));
                 $isContactFormValid = FALSE;
             }
             

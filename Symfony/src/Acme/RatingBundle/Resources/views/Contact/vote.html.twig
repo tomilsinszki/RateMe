@@ -10,12 +10,12 @@
 
     <div class="main">
         <h2>Tisztelt {{ contact.lastName }} {{ contact.firstName }}!</h2>
-        <h3>Köszönjük értékelését és, hogy hozzájárult kiszolgálásunk színvonalának javításához!</h3>
+        <h3>Köszönjük értékelését és hogy hozzájárult kiszolgálásunk színvonalának javításához!</h3>
         <h4>{{ contact.rateable.name }}</h4>
         <div class="head_bg">
             <img src="{{ asset(profileURL) }}" />
         </div>
-        <h5>Az Ön ertekelese:</h5>
+        <h5>Az Ön értékelése:</h5>
         <ul>
             {% if 1 <= stars %}<li></li>{% endif %}
             {% if 2 <= stars %}<li></li>{% endif %}

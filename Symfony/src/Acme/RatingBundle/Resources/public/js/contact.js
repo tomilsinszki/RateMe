@@ -8,11 +8,27 @@ $(document).ready(function(){
     var autocompleteDataByClientId = null;
     var autocompleteListForClientId = $("#client_id_input_autocomplete_list");
 
+    var inputFieldFocus = {
+        NONE: 0,
+        EMAIL: 1,
+        CLIENTID: 2,
+        LASTNAME: 3,
+        FIRSTNAME: 4
+    }
+
+    var currentFieldFocus = inputFieldFocus.NONE;
+
+    function hideAllAutocompleteContainers() {
+        autocompleteListForEmail.css('display', 'none');
+        autocompleteListForClientId.css('display', 'none');
+    }
+    
     function setUpSelectEmailEvent() {
         $(".emailInputAutocompleteListItem").click(function() {
             var selectedEmail = $(this).text();
             
             $("#form_email").val(selectedEmail);
+            hideAllAutocompleteContainers();
             autocompleteListForEmail.html('');
             
             autocompleteData = autocompleteDataByEmail[selectedEmail];
@@ -37,14 +53,20 @@ $(document).ready(function(){
     }
 
     function updateEmailAutocompleteList() {
+        if ( currentFieldFocus != inputFieldFocus.EMAIL ) {
+            return;
+        }
+
         var content = $("#form_email").val();
 
         if ( content.length < 3 ) {
+            hideAllAutocompleteContainers();
             autocompleteListForEmail.html('');
             return;
         }
         
         if ( autocompleteForEmail.length == 0 ) {
+            hideAllAutocompleteContainers();
             autocompleteListForEmail.html('');
             return;
         }
@@ -64,10 +86,15 @@ $(document).ready(function(){
                 autocompleteListForEmailInnerHTML += '<li class="emailInputAutocompleteListItem">'+autocompleteForEmail[i]+'</li>';
             }
         }
-        
-        autocompleteListForEmail.css('display', 'block');
-        autocompleteListForClientId.css('display', 'none');
-        autocompleteListForEmail.html('<ul>'+autocompleteListForEmailInnerHTML+'</ul>');
+
+        if ( autocompleteListForEmailInnerHTML == '' ) {
+            hideAllAutocompleteContainers();
+        }
+        else {
+            autocompleteListForEmail.css('display', 'block');
+            autocompleteListForClientId.css('display', 'none');
+            autocompleteListForEmail.html('<ul>'+autocompleteListForEmailInnerHTML+'</ul>');
+        }
 
         setUpSelectEmailEvent();
     }
@@ -102,11 +129,17 @@ $(document).ready(function(){
         }
     });
 
+    $("#form_email").focus(function() {
+        currentFieldFocus = inputFieldFocus.EMAIL;
+        hideAllAutocompleteContainers();
+    });
+    
     function setUpSelectClientIdEvent() {
         $(".clientIdInputAutocompleteListItem").click(function() {
             var selectedClientId = $(this).text();
             
             $("#form_clientId").val(selectedClientId);
+            hideAllAutocompleteContainers();
             autocompleteListForClientId.html('');
             
             autocompleteData = autocompleteDataByClientId[selectedClientId];
@@ -131,9 +164,14 @@ $(document).ready(function(){
     }
 
     function updateClientIdAutocompleteList() {
+        if ( currentFieldFocus != inputFieldFocus.CLIENTID ) {
+            return;
+        }
+
         var content = $("#form_clientId").val();
         
         if ( autocompleteListForClientId.length == 0 ) {
+            hideAllAutocompleteContainers();
             autocompleteListForClientId.html('');
             return;
         }
@@ -152,10 +190,15 @@ $(document).ready(function(){
                 autocompleteListForClientIdInnerHTML += '<li class="clientIdInputAutocompleteListItem">'+autocompleteForClientId[i]+'</li>';
             }
         }
-        
-        autocompleteListForEmail.css('display', 'none');
-        autocompleteListForClientId.css('display', 'block');
-        autocompleteListForClientId.html('<ul>'+autocompleteListForClientIdInnerHTML+'</ul>');
+
+        if ( autocompleteListForClientIdInnerHTML == '' ) {
+            hideAllAutocompleteContainers();
+        }
+        else {
+            autocompleteListForEmail.css('display', 'none');
+            autocompleteListForClientId.css('display', 'block');
+            autocompleteListForClientId.html('<ul>'+autocompleteListForClientIdInnerHTML+'</ul>');
+        }
 
         setUpSelectClientIdEvent();
     }
@@ -177,6 +220,9 @@ $(document).ready(function(){
     });
 
     $('#form_clientId').focus(function() {
+        currentFieldFocus = inputFieldFocus.CLIENTID;
+        hideAllAutocompleteContainers();
+        
         var email = $('#form_email').val();
         showErrorMessageIfEmailInvalid(email);
     });
@@ -203,4 +249,13 @@ $(document).ready(function(){
         return ( email.search(emailRegExp) != -1 );
     }
 
+    $('#form_lastName').focus(function() {
+        currentFieldFocus = inputFieldFocus.LASTNAME;
+        hideAllAutocompleteContainers();
+    });
+
+    $('#form_firstName').focus(function() {
+        currentFieldFocus = inputFieldFocus.FIRSTNAME;
+        hideAllAutocompleteContainers();
+    });
 });
