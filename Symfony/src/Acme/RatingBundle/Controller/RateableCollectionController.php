@@ -58,6 +58,10 @@ class RateableCollectionController extends Controller
     private $rateableReportsData = array();
     private $rateableAveragesChartData = array();
     private $overallRatingAverageByDayChartData = array();
+    private $overallContactsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
+    private $overallRatingsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
+    private $overallRatingsSum = array('currentPeriod' => 0, 'previousPeriod' => 0);
+    private $overallRatingsAvg = array('currentPeriod' => 0, 'previousPeriod' => 0);
     
     public function indexAction($alphanumericValue)
     {
@@ -323,6 +327,9 @@ class RateableCollectionController extends Controller
             'rateableReportsData' => $this->rateableReportsData,
             'rateableAveragesChartData' => $this->rateableAveragesChartData,
             'overallRatingAverageByDayChartData' => $this->overallRatingAverageByDayChartData,
+            'overallContactsCount' => $this->overallContactsCount,
+            'overallRatingsCount' => $this->overallRatingsCount,
+            'overallRatingsAvg' => $this->overallRatingsAvg,
         ));
     }
 
@@ -419,9 +426,11 @@ class RateableCollectionController extends Controller
 
             if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
                 ++$this->rateableReportsData[$id]['previousPeriod']['contactCount'];
+                ++$this->overallContactsCount['previousPeriod'];
             }
             elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
                 ++$this->rateableReportsData[$id]['currentPeriod']['contactCount'];
+                ++$this->overallContactsCount['currentPeriod'];
             }
         }
     }
@@ -445,6 +454,9 @@ class RateableCollectionController extends Controller
             if ( $this->isTimestampInPreviousPeriod($ratingTimestamp) ) {
                 $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] += $record['stars'];
                 ++$this->rateableReportsData[$id]['previousPeriod']['ratingCount'];
+
+                $this->overallRatingsSum['previousPeriod'] += $record['stars'];
+                ++$this->overallRatingsCount['previousPeriod'];
             }
             elseif ( $this->isTimestampInCurrentPeriod($ratingTimestamp) ) {
                 $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] += $record['stars'];
@@ -454,6 +466,9 @@ class RateableCollectionController extends Controller
                 $ratingDateTime->setTimestamp($ratingTimestamp);
                 $this->overallRatingAverageByDayChartData["{$ratingDateTime->format('Y-m-d')} 0:00AM"]['sum'] += $record['stars'];
                 ++$this->overallRatingAverageByDayChartData["{$ratingDateTime->format('Y-m-d')} 0:00AM"]['count'];
+
+                $this->overallRatingsSum['currentPeriod'] += $record['stars'];
+                ++$this->overallRatingsCount['currentPeriod'];
             }
         }
     }
@@ -481,6 +496,15 @@ class RateableCollectionController extends Controller
             }
             else {
                 $this->overallRatingAverageByDayChartData[$date]['avg'] = $statistics['sum'] / $statistics['count'];
+            }
+        }
+
+        foreach(array('currentPeriod', 'previousPeriod') AS $periodName) {
+            if ( empty($this->overallRatingsCount[$periodName]) === TRUE ) {
+                $this->overallRatingsAvg[$periodName] = 0;
+            }
+            else {
+                $this->overallRatingsAvg[$periodName] = $this->overallRatingsSum[$periodName] / $this->overallRatingsCount[$periodName];
             }
         }
     }

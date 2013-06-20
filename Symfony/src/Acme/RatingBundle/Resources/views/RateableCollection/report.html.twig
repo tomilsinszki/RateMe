@@ -418,8 +418,8 @@
 				</div>
 				<div class="graph_3_list">
 					<div class="cell_1">Kiküldött értékelők</div>
-					<div class="cell_2" id="smallChart_2"><span>745 </span><span class="measure">db</span></div>
-					<div class="cell_3 up"><div class="pic"></div>345 <span>db</span></div>
+					<div class="cell_2" id="smallChart_2"><span>{{overallContactsCount.currentPeriod}} </span><span class="measure">db</span></div>
+					<div class="cell_3 {% if overallContactsCount.previousPeriod < overallContactsCount.currentPeriod %}up{% else %}down{% endif %}"><div class="pic"></div>{{ (overallContactsCount.currentPeriod - overallContactsCount.previousPeriod) }} <span>db</span></div>
 				</div>
 				<div class="graph_3_list">
 					<div class="cell_1">Kiküldési arány</div>
@@ -428,15 +428,15 @@
 				</div>
 				<div class="graph_3_list">
 					<div class="cell_1">Értékelések száma</div>
-					<div class="cell_2" id="smallChart_4"><span>145 </span><span class="measure">db</span></div>
-					<div class="cell_3 up"><div class="pic"></div>345 <span>db</span></div>
+					<div class="cell_2" id="smallChart_4"><span>{{overallRatingsCount.currentPeriod}} </span><span class="measure">db</span></div>
+					<div class="cell_3 {% if overallRatingsCount.previousPeriod < overallRatingsCount.currentPeriod %}up{% else %}down{% endif %}"><div class="pic"></div>{{ (overallRatingsCount.currentPeriod - overallRatingsCount.previousPeriod) }} <span>db</span></div>
 				</div>
 			</div>
 			<div class="graph">
 				<div class="graph_3_list purple">
 					<div class="cell_1">Értékelések átlaga</div>
-					<div class="cell_2" id="smallChart_5"><span class="avg">4,56</span></div>
-					<div class="cell_3 down"><div class="pic"></div>2<span>%</span></div>
+					<div class="cell_2" id="smallChart_5"><span class="avg">{{ overallRatingsAvg.currentPeriod|number_format(2, ',', ' ') }}</span></div>
+					<div class="cell_3 {% if overallRatingsAvg.previousPeriod < overallRatingsAvg.currentPeriod %}up{% else %}down{% endif %}"><div class="pic"></div>{% if overallRatingsAvg.previousPeriod == 0 %}100{% else %}{{ ( (overallRatingsAvg.currentPeriod-overallRatingsAvg.previousPeriod) * (100/overallRatingsAvg.previousPeriod) )|number_format(0, ',', ' ') }}{% endif %}<span>%</span></div>
 				</div>
 
 				</div>
