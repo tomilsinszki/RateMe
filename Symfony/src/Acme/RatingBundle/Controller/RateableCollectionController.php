@@ -54,7 +54,6 @@ class RateableCollectionController extends Controller
     private $reportCurrentPeriod = null;
     private $reportPreviousPeriod = null;
     private $reportCollection = null;
-
     private $rateableReportsData = array();
     private $rateableAveragesChartData = array();
     private $overallRatingAverageByDayChartData = array();
@@ -62,6 +61,20 @@ class RateableCollectionController extends Controller
     private $overallRatingsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsSum = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsAvg = array('currentPeriod' => 0, 'previousPeriod' => 0);
+    private $ratingsByStarsChartData = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
+    private $ratingsByStarsChartConfig = array(
+        'width' => '100',
+        'height' => '350px',
+        'paddingTop' => 20,
+        'paddingBottom' => 20,
+        'borderHeight' => 1,
+        'lineColor' => '#F59450',
+        'nameColor' => '#815C87',
+        'valueColor' => '#78287D',
+        'lineHeight' => '',
+        'lineHeightStyle' => '',
+        'maxEvalValue' => 0,
+    );
     
     public function indexAction($alphanumericValue)
     {
@@ -330,6 +343,8 @@ class RateableCollectionController extends Controller
             'overallContactsCount' => $this->overallContactsCount,
             'overallRatingsCount' => $this->overallRatingsCount,
             'overallRatingsAvg' => $this->overallRatingsAvg,
+            'ratingsByStarsChartConfig' => $this->ratingsByStarsChartConfig,
+            'ratingsByStarsChartData' => $this->ratingsByStarsChartData,
         ));
     }
 
@@ -359,6 +374,8 @@ class RateableCollectionController extends Controller
         $this->loadGetRatingsForCollectionStatement();
         $this->processGetRatingsForCollectionStatement();
         $this->postProcessGetRatingsForCollectionStatement();
+        
+        $this->calcRatingsByStarsChartConfig();
     }
 
     private function initOverallRatingAverageByDayChartData() {
@@ -469,6 +486,8 @@ class RateableCollectionController extends Controller
 
                 $this->overallRatingsSum['currentPeriod'] += $record['stars'];
                 ++$this->overallRatingsCount['currentPeriod'];
+
+                ++$this->ratingsByStarsChartData[$record['stars']];
             }
         }
     }
@@ -524,4 +543,33 @@ class RateableCollectionController extends Controller
 
         return FALSE;
     }
+
+    private function calcRatingsByStarsChartConfig() {
+        $this->ratingsByStarsChartConfig['style'] = sprintf('background-color: #ffffff;%1$s%2$s',
+            empty($this->ratingsByStarsChartConfig['height']) ? '' : "height: {$this->ratingsByStarsChartConfig['height']};",
+            empty($this->ratingsByStarsChartConfig['width']) ? '' : "width: {$this->ratingsByStarsChartConfig['width']};"
+        );
+
+        $this->ratingsByStarsChartConfig['height'] = (int) filter_var($this->ratingsByStarsChartConfig['height'], FILTER_SANITIZE_NUMBER_INT);
+        
+        $this->ratingsByStarsChartConfig['lineHeight'] = floor(
+            (
+                $this->ratingsByStarsChartConfig['height'] 
+                - $this->ratingsByStarsChartConfig['paddingTop'] 
+                - $this->ratingsByStarsChartConfig['paddingBottom'] 
+                - (4*$this->ratingsByStarsChartConfig['borderHeight'])
+            ) 
+            / count($this->ratingsByStarsChartData)
+        );
+
+        $this->ratingsByStarsChartConfig['lineHeightStyle'] = 'height: '.$this->ratingsByStarsChartConfig['lineHeight'].'px; line-height: '.$this->ratingsByStarsChartConfig['lineHeight'].'px';
+
+        $this->ratingsByStarsChartConfig['maxEvalValue'] = 0;
+        foreach ($this->ratingsByStarsChartData AS $star => $count) {
+            if ($count > $this->ratingsByStarsChartConfig['maxEvalValue']) {
+                $this->ratingsByStarsChartConfig['maxEvalValue'] = $count;
+            }
+        }
+    }
 }
+
