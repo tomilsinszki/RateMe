@@ -58,7 +58,8 @@
                 }
             }
 
-            data = [['2008-08-12 4:00PM',4], ['2008-09-12 4:00PM',6.5], ['2008-10-12 4:00PM',5.7], ['2008-11-12 4:00PM',9], ['2008-12-12 4:00PM',8.2]];
+            //data = [['2008-08-12 4:00PM',4], ['2008-09-12 4:00PM',6.5], ['2008-10-12 4:00PM',5.7], ['2008-11-12 4:00PM',9], ['2008-12-12 4:00PM',8.2]];
+            data = [{% for dateString, stats in overallRatingAverageByDayChartData %}['{{dateString}}',{{stats.avg}}], {% endfor %}];
             createDateChart('dateChart', data, '#F7A053', '#815C87');
 
             data = [{% for name, avg in rateableAveragesChartData %}{{avg}}, {% endfor %}];

@@ -22,20 +22,34 @@ class RateableCollectionController extends Controller
         WHERE 
             r.is_active=1 AND 
             r.collection_id=%1$d';
+    private $getRateablesForCollectionStatement = null;
     
-    private $getRatingsForCollectionQueryText =
+    private $getContactsForCollectionQueryText =
         'SELECT
             rb.id AS rateableId,
-            c.contact_happened_at AS contactHappenedAt,
-            ri.updated AS ratingReceivedAt,
-            ri.stars AS stars
+            c.contact_happened_at AS contactHappenedAt
         FROM contact c
-        LEFT OUTER JOIN rating ri ON c.rating_id=ri.id
         LEFT JOIN rateable rb ON c.rateable_id=rb.id
         WHERE 
             rb.collection_id=%1$d AND
             c.contact_happened_at between "%2$s%%" AND "%3$s%%"
         ORDER BY c.contact_happened_at';
+    private $getContactsForCollectionStatement = null;
+
+    private $getRatingsForCollectionQueryText =
+        'SELECT 
+            rb.id AS rateableId, 
+            r.stars AS stars,
+            r.updated AS ratingReceivedAt
+        FROM rateable_collection rc 
+        LEFT JOIN rateable rb ON rc.id=rb.collection_id 
+        LEFT JOIN rating r ON rb.id=r.rateable_id 
+        WHERE 
+            r.stars IS NOT NULL AND 
+            rc.id=%1$d AND
+            r.updated between "%2$s%%" AND "%3$s%%"
+        ORDER BY r.updated;';
+    private $getRatingsForCollectionStatement = null;
     
     private $reportCurrentPeriod = null;
     private $reportPreviousPeriod = null;
@@ -43,6 +57,7 @@ class RateableCollectionController extends Controller
 
     private $rateableReportsData = array();
     private $rateableAveragesChartData = array();
+    private $overallRatingAverageByDayChartData = array();
     
     public function indexAction($alphanumericValue)
     {
@@ -307,6 +322,7 @@ class RateableCollectionController extends Controller
             'title' => $this->reportCurrentPeriod['startDate']->format("Y.m.d.")." – ".$this->reportCurrentPeriod['endDate']->format("Y.m.d."),
             'rateableReportsData' => $this->rateableReportsData,
             'rateableAveragesChartData' => $this->rateableAveragesChartData,
+            'overallRatingAverageByDayChartData' => $this->overallRatingAverageByDayChartData,
         ));
     }
 
@@ -325,12 +341,33 @@ class RateableCollectionController extends Controller
 
         $this->rateableReportsData = array();
         
+        $this->initOverallRatingAverageByDayChartData();
+
         $this->loadGetRateablesForCollectionStatement();
         $this->processGetRateablesForCollectionStatement();
+
+        $this->loadGetContactsForCollectionStatement();
+        $this->processGetContactsForCollectionStatement();
 
         $this->loadGetRatingsForCollectionStatement();
         $this->processGetRatingsForCollectionStatement();
         $this->postProcessGetRatingsForCollectionStatement();
+    }
+
+    private function initOverallRatingAverageByDayChartData() {
+        $currentDay = new \DateTime();
+        $currentDay->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp());
+        $this->overallRatingAverageByDayChartData = array();
+
+        while( $currentDay->getTimestamp() < $this->reportCurrentPeriod['endDate']->getTimestamp() ) {
+            $this->overallRatingAverageByDayChartData["{$currentDay->format('Y-m-d')} 0:00AM"] = array(
+                'sum' => 0,
+                'count' => 0,
+                'avg' => 0,
+            );
+            
+            $currentDay->modify('+1 day');
+        }
     }
     
     private function loadGetRateablesForCollectionStatement() {
@@ -347,7 +384,7 @@ class RateableCollectionController extends Controller
             
             $this->rateableReportsData[$id]['name'] = $name;
             $this->rateableReportsData[$id]['profilePictureURL'] = '';
-
+            
             $this->rateableReportsData[$id]['previousPeriod']['contactCount'] = 0;
             $this->rateableReportsData[$id]['previousPeriod']['ratingCount'] = 0;
             $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] = 0;
@@ -364,10 +401,35 @@ class RateableCollectionController extends Controller
         }
     }
     
+    private function loadGetContactsForCollectionStatement() {
+        $connection = $this->get('database_connection');
+        $queryText = sprintf($this->getContactsForCollectionQueryText, 
+            $this->reportCollection->getId(), 
+            $this->reportPreviousPeriod['startDate']->format("Y-m-d H:i:s"),
+            $this->reportCurrentPeriod['endDate']->format("Y-m-d H:i:s")
+        );
+        $this->getContactsForCollectionStatement = $connection->executeQuery($queryText);
+        $this->getContactsForCollectionStatement->execute();
+    }
+
+    private function processGetContactsForCollectionStatement() {
+        foreach($this->getContactsForCollectionStatement->fetchAll() AS $record) {
+            $id = $record['rateableId'];
+            $contactTimestamp = strtotime($record['contactHappenedAt']);
+
+            if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
+                ++$this->rateableReportsData[$id]['previousPeriod']['contactCount'];
+            }
+            elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
+                ++$this->rateableReportsData[$id]['currentPeriod']['contactCount'];
+            }
+        }
+    }
+
     private function loadGetRatingsForCollectionStatement() {
         $connection = $this->get('database_connection');
         $queryText = sprintf($this->getRatingsForCollectionQueryText, 
-            $this->reportCollection->getId(), 
+            $this->reportCollection->getId(),
             $this->reportPreviousPeriod['startDate']->format("Y-m-d H:i:s"),
             $this->reportCurrentPeriod['endDate']->format("Y-m-d H:i:s")
         );
@@ -378,42 +440,22 @@ class RateableCollectionController extends Controller
     private function processGetRatingsForCollectionStatement() {
         foreach($this->getRatingsForCollectionStatement->fetchAll() AS $record) {
             $id = $record['rateableId'];
-            $contactTimestamp = strtotime($record['contactHappenedAt']);
+            $ratingTimestamp = strtotime($record['ratingReceivedAt']);
 
-            if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
-                ++$this->rateableReportsData[$id]['previousPeriod']['contactCount'];
+            if ( $this->isTimestampInPreviousPeriod($ratingTimestamp) ) {
+                $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] += $record['stars'];
+                ++$this->rateableReportsData[$id]['previousPeriod']['ratingCount'];
             }
-            elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
-                ++$this->rateableReportsData[$id]['currentPeriod']['contactCount'];
-            }
+            elseif ( $this->isTimestampInCurrentPeriod($ratingTimestamp) ) {
+                $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] += $record['stars'];
+                ++$this->rateableReportsData[$id]['currentPeriod']['ratingCount'];
 
-            if ( empty($record['stars']) == FALSE ) {
-                if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
-                    $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] += $record['stars'];
-                    ++$this->rateableReportsData[$id]['previousPeriod']['ratingCount'];
-                }
-                elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
-                    $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] += $record['stars'];
-                    ++$this->rateableReportsData[$id]['currentPeriod']['ratingCount'];
-                }
+                $ratingDateTime = new \DateTime();
+                $ratingDateTime->setTimestamp($ratingTimestamp);
+                $this->overallRatingAverageByDayChartData["{$ratingDateTime->format('Y-m-d')} 0:00AM"]['sum'] += $record['stars'];
+                ++$this->overallRatingAverageByDayChartData["{$ratingDateTime->format('Y-m-d')} 0:00AM"]['count'];
             }
         }
-    }
-
-    private function isTimestampInPreviousPeriod($timestamp) {
-        if ( ( $this->reportPreviousPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportPreviousPeriod['endDate']->getTimestamp() ) ) {
-            return TRUE;
-        }
-
-        return FALSE;
-    }
-
-    private function isTimestampInCurrentPeriod($timestamp) {
-        if ( ( $this->reportCurrentPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportCurrentPeriod['endDate']->getTimestamp() ) ) {
-            return TRUE;
-        }
-
-        return FALSE;
     }
 
     private function postProcessGetRatingsForCollectionStatement() {
@@ -432,5 +474,30 @@ class RateableCollectionController extends Controller
                 }
             }
         }
+
+        foreach($this->overallRatingAverageByDayChartData AS $date => $statistics) {
+            if ( empty($statistics['count']) === TRUE ) {
+                $this->overallRatingAverageByDayChartData[$date]['avg'] = 0;
+            }
+            else {
+                $this->overallRatingAverageByDayChartData[$date]['avg'] = $statistics['sum'] / $statistics['count'];
+            }
+        }
+    }
+
+    private function isTimestampInPreviousPeriod($timestamp) {
+        if ( ( $this->reportPreviousPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportPreviousPeriod['endDate']->getTimestamp() ) ) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    private function isTimestampInCurrentPeriod($timestamp) {
+        if ( ( $this->reportCurrentPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportCurrentPeriod['endDate']->getTimestamp() ) ) {
+            return TRUE;
+        }
+
+        return FALSE;
     }
 }
