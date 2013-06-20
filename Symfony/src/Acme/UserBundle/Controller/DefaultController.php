@@ -9,6 +9,7 @@ use Acme\RatingBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\SecurityContext;
+use Acme\UserBundle\Utility\CurrentUser;
 
 class DefaultController extends Controller
 {
@@ -288,5 +289,24 @@ class DefaultController extends Controller
         }
 
         return FALSE;
+    }
+
+    public function loadWelcomePageAction()
+    {
+        $securityContext = $this->get('security.context');
+
+        if ( CurrentUser::isOfRole($securityContext, 'ROLE_CUSTOMERSERVICE') ) {
+            return $this->redirect($this->generateUrl('contact_index'));
+        }
+        
+        $ownedCollection = CurrentUser::getCollectionIfOwner($securityContext);
+        if ( empty($ownedCollection) === FALSE ) {
+            return $this->redirect($this->generateUrl('report', array(
+                'startDateString' => date("Y-m-d", strtotime("-1 months")),
+                'endDateString' => date("Y-m-d"),
+            )));
+        }
+    
+        return $this->redirect($this->generateUrl('identifier_main'));
     }
 }

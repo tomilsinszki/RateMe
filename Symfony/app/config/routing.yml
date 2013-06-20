@@ -17,8 +17,8 @@ acme_user:
     prefix:   /
 
 _welcome:
-    pattern:   /
-    defaults:  { _controller: AcmeRatingBundle:Identifier:index }
+    pattern:  /
+    defaults:  { _controller: AcmeUserBundle:Default:loadWelcomePage }
 
 # Internal routing configuration to handle ESI
 #_internal:

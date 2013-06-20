@@ -6,9 +6,44 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Entity\Image;
+use Acme\RatingBundle\Utility\Validator;
+use Acme\UserBundle\Utility\CurrentUser;
 
 class RateableCollectionController extends Controller
 {
+    private $getRateablesForCollectionQueryText =
+        'SELECT 
+            r.id AS rateableId,
+            r.name AS rateableName, 
+            i.id AS imageFileName,
+            i.path AS imageFileExtension
+        FROM rateable r 
+        LEFT JOIN image i ON r.image_id=i.id 
+        WHERE 
+            r.is_active=1 AND 
+            r.collection_id=%1$d';
+    
+    private $getRatingsForCollectionQueryText =
+        'SELECT
+            rb.id AS rateableId,
+            c.contact_happened_at AS contactHappenedAt,
+            ri.updated AS ratingReceivedAt,
+            ri.stars AS stars
+        FROM contact c
+        LEFT OUTER JOIN rating ri ON c.rating_id=ri.id
+        LEFT JOIN rateable rb ON c.rateable_id=rb.id
+        WHERE 
+            rb.collection_id=%1$d AND
+            c.contact_happened_at between "%2$s%%" AND "%3$s%%"
+        ORDER BY c.contact_happened_at';
+    
+    private $reportCurrentPeriod = null;
+    private $reportPreviousPeriod = null;
+    private $reportCollection = null;
+
+    private $rateableReportsData = array();
+    private $rateableAveragesChartData = array();
+    
     public function indexAction($alphanumericValue)
     {
         $identifier = $this->getDoctrine()->getRepository('AcmeRatingBundle:Identifier')->findOneByAlphanumericValue($alphanumericValue);
@@ -252,5 +287,150 @@ class RateableCollectionController extends Controller
             throw $this->createNotFoundException('The rateable does not exists.');
 
         return $rateable;
+    }
+
+    public function reportAction($startDateString, $endDateString)
+    {
+        $this->reportCurrentPeriod = array(
+            'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "$startDateString 00:00:00"),
+            'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "$endDateString 00:00:00"),
+        );
+
+        if ( Validator::isEndDateLaterThanStartDateByAtLeastOneDay($this->reportCurrentPeriod['startDate'], $this->reportCurrentPeriod['endDate']) === FALSE ) {
+            return new Response('<html><body>Hibás kezdő és vég dátumok!</body></html>');
+        }
+        
+        $this->calcPreviousPeriodWithSameLength();
+        $this->loadReportDataForPeriod();
+        
+        return $this->render('AcmeRatingBundle:RateableCollection:report.html.twig', array(
+            'title' => $this->reportCurrentPeriod['startDate']->format("Y.m.d.")." – ".$this->reportCurrentPeriod['endDate']->format("Y.m.d."),
+            'rateableReportsData' => $this->rateableReportsData,
+            'rateableAveragesChartData' => $this->rateableAveragesChartData,
+        ));
+    }
+
+    private function calcPreviousPeriodWithSameLength() {
+        $diffTimestamp = $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp();
+        $this->reportPreviousPeriod['startDate'] = new \DateTime();
+        $this->reportPreviousPeriod['startDate']->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp() - $diffTimestamp);
+        $this->reportPreviousPeriod['endDate'] = $this->reportCurrentPeriod['startDate'];
+    }
+
+    private function loadReportDataForPeriod() {
+        $this->reportCollection = CurrentUser::getCollectionIfOwner($this->get('security.context'));
+        if ( empty($this->reportCollection) === TRUE ) {
+            throw $this->createNotFoundException('Rateable collection not found for current user!');
+        }
+
+        $this->rateableReportsData = array();
+        
+        $this->loadGetRateablesForCollectionStatement();
+        $this->processGetRateablesForCollectionStatement();
+
+        $this->loadGetRatingsForCollectionStatement();
+        $this->processGetRatingsForCollectionStatement();
+        $this->postProcessGetRatingsForCollectionStatement();
+    }
+    
+    private function loadGetRateablesForCollectionStatement() {
+        $connection = $this->get('database_connection');
+        $queryText = sprintf($this->getRateablesForCollectionQueryText, $this->reportCollection->getId());
+        $this->getRateablesForCollectionStatement = $connection->executeQuery($queryText);
+        $this->getRateablesForCollectionStatement->execute();
+    }
+    
+    private function processGetRateablesForCollectionStatement() {
+        foreach($this->getRateablesForCollectionStatement->fetchAll() AS $record) {
+            $id = $record['rateableId'];
+            $name = $record['rateableName'];
+            
+            $this->rateableReportsData[$id]['name'] = $name;
+            $this->rateableReportsData[$id]['profilePictureURL'] = '';
+
+            $this->rateableReportsData[$id]['previousPeriod']['contactCount'] = 0;
+            $this->rateableReportsData[$id]['previousPeriod']['ratingCount'] = 0;
+            $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] = 0;
+            $this->rateableReportsData[$id]['previousPeriod']['ratingsAvg'] = 0;
+
+            $this->rateableReportsData[$id]['currentPeriod']['contactCount'] = 0;
+            $this->rateableReportsData[$id]['currentPeriod']['ratingCount'] = 0;
+            $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] = 0;
+            $this->rateableReportsData[$id]['currentPeriod']['ratingsAvg'] = 0;
+            
+            if ( empty($record['imageFileName']) == FALSE ) {
+                $this->rateableReportsData[$id]['profilePictureURL'] = "/uploads/images/{$record['imageFileName']}.{$record['imageFileExtension']}";
+            }
+        }
+    }
+    
+    private function loadGetRatingsForCollectionStatement() {
+        $connection = $this->get('database_connection');
+        $queryText = sprintf($this->getRatingsForCollectionQueryText, 
+            $this->reportCollection->getId(), 
+            $this->reportPreviousPeriod['startDate']->format("Y-m-d H:i:s"),
+            $this->reportCurrentPeriod['endDate']->format("Y-m-d H:i:s")
+        );
+        $this->getRatingsForCollectionStatement = $connection->executeQuery($queryText);
+        $this->getRatingsForCollectionStatement->execute();
+    }
+
+    private function processGetRatingsForCollectionStatement() {
+        foreach($this->getRatingsForCollectionStatement->fetchAll() AS $record) {
+            $id = $record['rateableId'];
+            $contactTimestamp = strtotime($record['contactHappenedAt']);
+
+            if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
+                ++$this->rateableReportsData[$id]['previousPeriod']['contactCount'];
+            }
+            elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
+                ++$this->rateableReportsData[$id]['currentPeriod']['contactCount'];
+            }
+
+            if ( empty($record['stars']) == FALSE ) {
+                if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
+                    $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] += $record['stars'];
+                    ++$this->rateableReportsData[$id]['previousPeriod']['ratingCount'];
+                }
+                elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
+                    $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] += $record['stars'];
+                    ++$this->rateableReportsData[$id]['currentPeriod']['ratingCount'];
+                }
+            }
+        }
+    }
+
+    private function isTimestampInPreviousPeriod($timestamp) {
+        if ( ( $this->reportPreviousPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportPreviousPeriod['endDate']->getTimestamp() ) ) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    private function isTimestampInCurrentPeriod($timestamp) {
+        if ( ( $this->reportCurrentPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportCurrentPeriod['endDate']->getTimestamp() ) ) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    private function postProcessGetRatingsForCollectionStatement() {
+        foreach($this->rateableReportsData AS $id => $rateableData) {
+            foreach(array('currentPeriod', 'previousPeriod') AS $periodName) {
+                $avg = 0.0;
+                if ( empty($this->rateableReportsData[$id][$periodName]['ratingCount']) == FALSE ) {
+                    $avg = $this->rateableReportsData[$id][$periodName]['ratingsSum'] / $this->rateableReportsData[$id][$periodName]['ratingCount'];
+                }
+
+                $this->rateableReportsData[$id][$periodName]['ratingsAvg'] = $avg;
+                
+                if ( $periodName === 'currentPeriod' ) {
+                    $rateableName = $this->rateableReportsData[$id]['name'];
+                    $this->rateableAveragesChartData[$rateableName] = $avg;
+                }
+            }
+        }
     }
 }

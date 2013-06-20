@@ -1,3 +1,7 @@
+acme_user_load_welcome_page:
+    pattern:  /
+    defaults: { _controller: AcmeUserBundle:Default:loadWelcomePage }
+
 acme_user_upload_image:
     pattern:  /felhasznalo/profil/kepfeltoltes
     defaults: { _controller: AcmeUserBundle:Default:uploadImage }

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=900" />
+        <meta name="description" content="report">
+        <meta name="keywords" content="report">
+        <meta name="author" content="RateMe">
+        <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/report.css') }}" />
+        <script type="text/javascript" src="{{ asset('js/jquery-1.10.1.min.js') }}"></script>
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ asset('bundles/acmerating/js/report/excanvas.min.js') }}"></script><![endif]-->
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/jqplot.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.dateAxisRenderer.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.canvasOverlay.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.pointLabels.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.categoryAxisRenderer.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.barRenderer.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.canvasTextRenderer.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.canvasAxisTickRenderer.min.js') }}"></script>
+        <title>Jelentés</title>
+        <!--[if lt IE 8]>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.person').css('margin-left', '1.8%');
+                });
+            </script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.person:nth-child(3n+1)').css('margin-left', 0);
+                });
+            </script>
+        <![endif]-->
+		<script type="text/javascript">
+
+        var charts = [];
+        var dateChartAvg = 0;
+        var dateChartMax = 0;
+
+        $(document).ready(function() {
+            /*
+            // TODO: jaasoa 2013.06.17. – http://stackoverflow.com/questions/10426192/jqplot-how-to-change-opacity-or-z-index-of-canvasoverlay
+            $.jqplot.postDrawHooks.push(function() {
+                var overlayCanvas = $($('.jqplot-overlayCanvas-canvas')[0]);
+                var seriesCanvas = $($('.jqplot-series-canvas')[0]);
+                seriesCanvas.detach();
+                overlayCanvas.after(seriesCanvas);
+            });
+            */
+            var data = [0.9176, 0.9296, 0.927, 0.9251, 0.9241, 0.9225, 0.9197, 0.9164, 0.9131, 0.9098, 0.9064, 0.9028, 0.8991, 0.8957, 0.8925, 0.8896, 0.8869, 0.8844, 0.882, 0.8797, 0.8776, 0.8755, 0.8735, 0.8715, 0.8696, 0.8677, 0.8658, 0.8637, 0.8616, 0.8594, 0.8572, 0.8548, 0.8524, 0.8499, 0.8473, 0.8446, 0.8418, 0.8389, 0.8359, 0.8328, 0.8295, 0.8262, 0.8227, 0.8191, 0.8155, 0.8119, 0.8083, 0.8048, 0.8013, 0.7979, 0.7945, 0.7912, 0.7879, 0.7846, 0.7813, 0.778, 0.7747, 0.7714, 0.768, 0.7647, 0.7612, 0.7577, 0.7538, 0.7496, 0.7449, 0.7398, 0.7342, 0.7279, 0.721, 0.7137, 0.7059, 0.6977, 0.6889, 0.6797, 0.6698, 0.6593, 0.6482, 0.6367, 0.6247, 0.6121, 0.5989, 0.5852, 0.571, 0.5561, 0.5402, 0.5232, 0.505, 0.4855, 0.4643, 0.4414, 0.4166, 0.3893, 0.3577, 0.3204, 0.2764, 0.2272, 0.1774, 0.1231, 0.0855, 0.0849];
+            var smallChartData = [data, data, data, data, data];
+            for (var i = 0; i < smallChartData.length; i++) {
+                if (i === 4) {
+                    createSmallMainLineChart('smallChart_'+(i+1), data, null, null, '#6F4575', '#78287D');
+                } else {
+                    createSmallMainLineChart('smallChart_'+(i+1), data);
+                }
+            }
+
+            data = [['2008-08-12 4:00PM',4], ['2008-09-12 4:00PM',6.5], ['2008-10-12 4:00PM',5.7], ['2008-11-12 4:00PM',9], ['2008-12-12 4:00PM',8.2]];
+            createDateChart('dateChart', data, '#F7A053', '#815C87');
+
+            data = [{% for name, avg in rateableAveragesChartData %}{{avg}}, {% endfor %}];
+            var categories = [{% for name, avg in rateableAveragesChartData %}'{{name}}', {% endfor %}];
+            createBarChart('barChart', data, categories, '#94BD3D', '#D72E31', '#F7A053');
+
+            $(window).on('resize', resizeCharts);
+        });
+
+        function createSmallMainLineChart(chartDivId, serie, width, height, chartColor, bgColor, xAxisMin, xAxisMax, yAxisMin, yAxisMax) {
+            if (typeof chartColor === 'undefined' || chartColor === null) {
+                chartColor = '#F6A56E';
+            }
+
+            if (typeof bgColor === 'undefined' || bgColor === null) {
+                bgColor = '#F59450';
+            }
+
+            if (typeof xAxisMin === 'undefined' || xAxisMin === null) {
+                xAxisMin = 1;
+            }
+
+            if (typeof xAxisMax === 'undefined' || xAxisMax === null) {
+                xAxisMax = 100;
+            }
+
+            if (typeof yAxisMin === 'undefined' || yAxisMin === null) {
+                yAxisMin = 0;
+            }
+
+            if (typeof yAxisMax === 'undefined' || yAxisMax === null) {
+                yAxisMax = 1;
+            }
+
+            if (width || height) {
+                var chartDiv = $('#'+chartDivId);
+                if (width) {
+                    chartDiv.css({width: width});
+                }
+                if (height) {
+                    chartDiv.css({height: height});
+                }
+            }
+
+            charts[chartDivId] = $.jqplot(chartDivId, [serie], {
+                seriesColors: [chartColor],
+                axesDefaults: {
+                    pad: 0,
+                    show: false,
+                    tickOptions: {
+                        show: false
+                    }
+                },
+                seriesDefaults: {
+                    showMarker: false,
+                    shadow: false,
+                    fill: true,
+                    rendererOptions: {
+                        highlightMouseOver: true
+                    }
+                },
+                legend: {
+                    show: false
+                },
+                axes: {
+                    xaxis: {
+                        min: xAxisMin,
+                        max: xAxisMax
+
+                    },
+                    yaxis: {
+                        min: yAxisMin,
+                        max: yAxisMax
+                    }
+                },
+                grid: {
+                    drawBorder: false,
+                    shadow: false,
+                    background: bgColor,
+                    drawGridLines: false
+                },
+                gridPadding: {
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0
+                }
+            });
+        }
+
+        function createDateChart(chartDivId, serie, lineColor, markerColor) {
+            var avg = 0;
+            var maxIndex = 0;
+            var labels = [];
+            for (var i = 0; i < serie.length; ++i) {
+                avg += serie[i][1];
+                if (serie[i][1] > serie[maxIndex][1]) {
+                    maxIndex = i;
+                }
+                labels[i] = '';
+            }
+            avg = avg / serie.length;
+            dateChartAvg = avg;
+            var max = serie[maxIndex][1];
+            labels[maxIndex] = max;
+            dateChartMax = max;
+            var chart = $('#'+chartDivId);
+            charts[chartDivId] = $.jqplot(chartDivId, [serie], {
+                grid: {
+                    shadow: false,
+                    background: '#ffffff',
+                    gridLineColor: '#F7EFF6',
+                    borderColor: '#F7EFF6'
+                },
+                axesDefaults: {
+                    pad: 1.1,
+                    numberTicks: null,
+                    tickOptions:{
+                        showMark: false,
+                        showLabel: true
+                    }
+                },
+                axes:{
+                    xaxis: {
+                        //tickInterval:'2 weeks',
+                        rendererOptions: {
+                            min: null,
+                            max: null,
+                            numberTicks: null
+                        },
+                        renderer: $.jqplot.DateAxisRenderer,
+                        tickOptions:{
+                            formatString:'%Y/%#m',
+                            textColor: lineColor
+                        }
+                    },
+                    yaxis: {
+                        renderer: $.jqplot.LinearAxisRenderer
+                    }
+                },
+                seriesDefaults: {
+                    shadow: false,
+                    color: lineColor,
+                    lineWidth: 2.5,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        color: markerColor
+                    },
+                    pointLabels:{
+                       show: true,
+                       labels: labels,
+                       location:'ne',
+                       xpadding: 5,
+                       ypadding: 5
+                   }
+                },
+                canvasOverlay: {
+                    show: true,
+                    objects: [
+                        {horizontalLine: {
+                            name: 'EvalAvg',
+                            lineWidth: 1,
+                            color: lineColor,
+                            shadow: false,
+                            y: avg,
+                            xOffset: 0
+                            }
+                        }]
+                }
+            });
+
+            adjustMarkers(chart, charts[chartDivId], max, markerColor)
+            renderTextToEvaluationAvgLine(chart, charts[chartDivId], avg, lineColor);
+        }
+
+        function createBarChart(chartDivId, serie, categories, overAvgColor, underAvgColor, labelColor) {
+            //serie.sort(function(a,b){return b-a});
+            var avg = 0;
+            for (var i = 0; i < serie.length; ++i) {
+                avg += serie[i];
+
+            }
+            avg = avg / serie.length;
+
+            var colors = [];
+            for (var i = 0; i < serie.length; ++i) {
+                if (serie[i] < avg) {
+                    colors.push(underAvgColor);
+                } else {
+                    colors.push(overAvgColor);
+                }
+            }
+
+            charts[chartDivId] = $.jqplot(chartDivId, [serie], {
+                seriesColors: colors,
+                seriesDefaults:{
+                    renderer: $.jqplot.BarRenderer,
+                    rendererOptions: {
+                        barWidth: null,
+                        barMargin: 20,
+                        highlightMouseOver: true,
+                        varyBarColor: true
+                    },
+                    pointLabels: {
+                        show: true,
+                        formatString: '%.1f',
+                        location: 's'
+                    }
+                },
+                axesDefaults: {
+                    tickOptions:{
+                        showMark: false
+                    }
+                },
+                axes: {
+                    xaxis: {
+                        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                        tickOptions:{
+                            fontFamily: 'DINProH-Regular',
+                            fontSize: '16px',
+                            textColor: labelColor,
+                            angle: -30
+                        },
+                        renderer: $.jqplot.CategoryAxisRenderer,
+                        ticks: categories
+                    }
+                },
+                grid: {
+                    background: '#ffffff',
+                    gridLineColor: '#F7EFF6',
+                    borderColor: '#F7EFF6'
+                },
+                canvasOverlay: {
+                    show: true,
+                    objects: [
+                        {horizontalLine: {
+                            name: 'BarChartsAvg',
+                            lineWidth: 1,
+                            color: labelColor,
+                            shadow: false,
+                            y: avg,
+                            xOffset: 0
+                            }
+                        }]
+                }
+            });
+
+            renderTextToBarChartAvgLine($('#'+chartDivId), charts[chartDivId], avg, labelColor);
+        }
+
+        function adjustMarkers(chartDiv, plot, max, color) {
+            chartDiv.find('.jqplot-xaxis-tick').eq(0).hide();
+            var points = plot.series[0].data;
+            var r, maxR = 8;
+            for (var i = 0; i < points.length; ++i) {
+                var x = plot.axes.xaxis.series_u2p(points[i][0]);
+                var y = plot.axes.yaxis.series_u2p(points[i][1]);
+                r = points[i][1] / max * maxR;
+                var drawingCanvas = getDrawingCanvas(chartDiv);
+                var context = drawingCanvas.getContext('2d');
+                context.strokeStyle = color;
+                context.fillStyle = color;
+                context.beginPath();
+                context.arc(x, y, r, 0, Math.PI * 2);
+                context.closePath();
+                context.stroke();
+                context.fill();
+            }
+        }
+
+        function renderTextToEvaluationAvgLine(chartDiv, plot, avg, color) {
+            var text = 'Iparági átlag: ' + toFixed(avg, 3);
+            var avgYCoord = plot.axes.yaxis.series_u2p(avg);
+            var drawingCanvas = getDrawingCanvas(chartDiv);
+            var context = drawingCanvas.getContext('2d');
+            context.fillStyle = color;
+            context.font = '18px DINProH-Regular';
+            if (avgYCoord >= 30) {
+                context.textBaseline = 'bottom';
+                context.fillText(text,16,avgYCoord-3);
+            } else {
+                context.textBaseline = 'top';
+                context.fillText(text,16,avgYCoord+3);
+            }
+        }
+
+        function renderTextToBarChartAvgLine(chartDiv, plot, avg, color) {
+            var text = 'Havi átlag: ' + toFixed(avg, 3);
+            var avgYCoord = plot.axes.yaxis.series_u2p(avg);
+            var drawingCanvas = getDrawingCanvas(chartDiv);
+            var context = drawingCanvas.getContext('2d');
+            context.fillStyle = color;
+            context.font = '18px DINProH-Regular';
+            context.textAlign = 'right';
+            var xCoord = drawingCanvas.width;
+            if (avgYCoord >= 30) {
+                context.textBaseline = 'bottom';
+                context.fillText(text,xCoord-10,avgYCoord-3);
+            } else {
+                context.textBaseline = 'top';
+                context.fillText(text,xCoord-10,avgYCoord+3);
+            }
+        }
+
+        function getDrawingCanvas(chartDiv) {
+            var drawingCanvas = chartDiv.find('.jqplot-highlight-canvas');
+            if (!drawingCanvas.length) {
+                drawingCanvas = chartDiv.find('.jqplot-series-canvas');
+            }
+            return drawingCanvas[0];
+        }
+
+        function resizeCharts() {
+            for (var i in charts) {
+                charts[i].replot({resetAxes: true});
+                if (i === 'dateChart') {
+                    var lineColor = charts[i].options.seriesDefaults.color;
+                    var markerColor = charts[i].options.seriesDefaults.markerOptions.color
+                    var chart = $('#'+i);
+                    adjustMarkers(chart, charts[i], dateChartMax, markerColor)
+                    renderTextToEvaluationAvgLine(chart, charts[i], dateChartAvg, lineColor);
+                } else if (i === 'barChart') {
+                    charts[i].series[0].barWidth = null;
+                }
+            }
+        }
+
+        function toFixed(value, precision) {
+            var precision = precision || 0,
+            neg = value < 0,
+            power = Math.pow(10, precision),
+            value = Math.round(value * power),
+            integral = String((neg ? Math.ceil : Math.floor)(value / power)),
+            fraction = String((neg ? -value : value) % power),
+            padding = new Array(Math.max(precision - fraction.length, 0) + 1).join('0');
+
+            return precision ? integral + '.' +  padding + fraction : integral;
+        }
+
+		</script>
+	</head>
+	<body>
+		<div class="header">
+			<div class="logo_vidanet"></div>
+			<div class="rateme_logo"></div>
+            <h1>Jelentés</h1>
+            <h2>{{ title }}</h2>
+        </div>
+		<div class="content">
+			<div class="graph">
+				<div class="graph_3_list">
+					<div class="cell_1">Kiszolgált ügyfelek</div>
+					<div class="cell_2" id="smallChart_1"><span>– </span><span class="measure">db</span></div>
+					<div class="cell_3 down"><div class="pic"></div>– <span>db</span></div>
+				</div>
+				<div class="graph_3_list">
+					<div class="cell_1">Kiküldött értékelők</div>
+					<div class="cell_2" id="smallChart_2"><span>745 </span><span class="measure">db</span></div>
+					<div class="cell_3 up"><div class="pic"></div>345 <span>db</span></div>
+				</div>
+				<div class="graph_3_list">
+					<div class="cell_1">Kiküldési arány</div>
+					<div class="cell_2" id="smallChart_3"><span>–</span><span class="measure"></span></div>
+					<div class="cell_3 down"><div class="pic"></div>–<span></span></div>
+				</div>
+				<div class="graph_3_list">
+					<div class="cell_1">Értékelések száma</div>
+					<div class="cell_2" id="smallChart_4"><span>145 </span><span class="measure">db</span></div>
+					<div class="cell_3 up"><div class="pic"></div>345 <span>db</span></div>
+				</div>
+			</div>
+			<div class="graph">
+				<div class="graph_3_list purple">
+					<div class="cell_1">Értékelések átlaga</div>
+					<div class="cell_2" id="smallChart_5"><span class="avg">4,56</span></div>
+					<div class="cell_3 down"><div class="pic"></div>2<span>%</span></div>
+				</div>
+
+				</div>
+    			<div class="graph">
+    				<div class="graph_wrapper">
+                        <div class="inner_graph">
+                            <div id="dateChart" style="height: 350px;"></div>
+                        </div>
+    				</div>
+    			</div>
+
+    			<div class="graph">
+    			    <h2>Egyéni eredmények</h2>
+    				<div class="graph_wrapper">
+                        <div class="inner_graph">
+                            <div id="barChart" style="height: 350px;"></div>
+                        </div>
+    				</div>
+    			</div>
+			</div>
+			<div class="person_list clear">
+                {% for rateableId, rateable in rateableReportsData %}
+                    <div class="person clear">
+                        <h2>{{ rateable.name }}</h2>
+                        <div class="person_img_content clear">
+                            <img src="{{ rateable.profilePictureURL }}" alt="profile picture" />
+                            <div class="person_counter {% if rateable.previousPeriod.ratingsAvg < rateable.currentPeriod.ratingsAvg %}up{% else %}down{% endif %}">
+                                <div class="pic"></div>
+                                    {{ (rateable.currentPeriod.ratingsAvg - rateable.previousPeriod.ratingsAvg)|number_format(2, ',', ' ') }}
+                            </div>
+                            <h3>
+                                {{ rateable.currentPeriod.ratingsAvg|number_format(2, ',', ' ') }}
+                            </h3>
+                        </div>
+                        <div class="row odd">
+                            <h4>{{ rateable.currentPeriod.ratingCount }} db</h4>
+                            Értékelések száma:
+                        </div>
+                        <div class="row even">
+                            <h4>–</h4>
+                            Kiküldési arány:
+                        </div>
+                        <div class="row odd">
+                            <h4>{{ rateable.currentPeriod.contactCount }} db</h4>
+                            Kiszolgált ügyfelek:
+                        </div>
+                    </div>
+                {% endfor %}
+			</div>
+		</div>
+        <div class="footer">
+            További információért lépjen velünk kapcsolatba a <a href="mailto:info@rate.me.uk">info@rate.me.uk</a> e-mail címen
+        </div>
+    </body>
+</html>
+
