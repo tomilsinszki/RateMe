@@ -55,7 +55,8 @@ class RateableCollectionController extends Controller
     private $reportPreviousPeriod = null;
     private $reportCollection = null;
     private $contactCountByDayChartData = null;
-    private $ratingCountByDay = null;
+    private $ratingCountByDayChartData = null;
+    private $ratingAvgByDayChartData = null;
     private $rateableReportsData = array();
     private $rateableAveragesChartData = array();
     private $overallRatingAverageByDayChartData = array();
@@ -349,6 +350,7 @@ class RateableCollectionController extends Controller
             'ratingsByStarsChartData' => $this->ratingsByStarsChartData,
             'contactCountByDayChartData' => $this->contactCountByDayChartData,
             'ratingCountByDayChartData' => $this->ratingCountByDayChartData,
+            'ratingAvgByDayChartData' => $this->ratingAvgByDayChartData,
         ));
     }
 
@@ -370,6 +372,7 @@ class RateableCollectionController extends Controller
         $this->initOverallRatingAverageByDayChartData();
         $this->initContactCountByDayChartData();
         $this->initRatingCountByDayChartData();
+        $this->initRatingAvgByDayChartData();
 
         $this->loadGetRateablesForCollectionStatement();
         $this->processGetRateablesForCollectionStatement();
@@ -419,6 +422,19 @@ class RateableCollectionController extends Controller
         
         while( $currentDay->getTimestamp() <= $this->reportCurrentPeriod['endDate']->getTimestamp() ) {
             $this->ratingCountByDayChartData['day'][$currentDay->format('Y-m-d')] = 0;
+            $currentDay->modify('+1 day');
+        }
+    }
+
+    private function initRatingAvgByDayChartData() {
+        $currentDay = new \DateTime();
+        $currentDay->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp());
+        $this->ratingAvgByDayChartData = array();
+        
+        while( $currentDay->getTimestamp() <= $this->reportCurrentPeriod['endDate']->getTimestamp() ) {
+            $this->ratingAvgByDayChartData['day'][$currentDay->format('Y-m-d')]['sum'] = 0;
+            $this->ratingAvgByDayChartData['day'][$currentDay->format('Y-m-d')]['count'] = 0;
+            $this->ratingAvgByDayChartData['day'][$currentDay->format('Y-m-d')]['avg'] = 0;
             $currentDay->modify('+1 day');
         }
     }
@@ -556,6 +572,9 @@ class RateableCollectionController extends Controller
                 ++$this->ratingsByStarsChartData[$record['stars']];
 
                 ++$this->ratingCountByDayChartData['day'][$ratingDateTime->format('Y-m-d')];
+
+                $this->ratingAvgByDayChartData['day'][$ratingDateTime->format('Y-m-d')]['sum'] += $record['stars'];
+                ++$this->ratingAvgByDayChartData['day'][$ratingDateTime->format('Y-m-d')]['count'];
             }
         }
     }
@@ -594,14 +613,14 @@ class RateableCollectionController extends Controller
                 $this->overallRatingsAvg[$periodName] = $this->overallRatingsSum[$periodName] / $this->overallRatingsCount[$periodName];
             }
         }
-
+        
         $maxRatingCount = 0;
         foreach($this->ratingCountByDayChartData['day'] AS $ratingCount) {
             if ( $maxRatingCount < $ratingCount ) {
                 $maxRatingCount = $ratingCount;
             }
         }
-
+        
         $highestValueInChart = 1.1 * $maxRatingCount;
         
         $unitTime = ( $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp() ) / 100;
@@ -625,6 +644,47 @@ class RateableCollectionController extends Controller
             $y2 = $this->ratingCountByDayChartData['day'][$nextDay->format('Y-m-d')];
 
             $this->ratingCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+        }
+        
+        $maxRatingAvg = 0;
+        foreach($this->ratingAvgByDayChartData['day'] AS $dateString => $stats) {
+            if ( empty($this->ratingAvgByDayChartData['day'][$dateString]['count']) === TRUE ) {
+                $this->ratingAvgByDayChartData['day'][$dateString]['avg'] = 0;
+            }
+            else {
+                $this->ratingAvgByDayChartData['day'][$dateString]['avg'] = 
+                    $this->ratingAvgByDayChartData['day'][$dateString]['sum'] / 
+                    $this->ratingAvgByDayChartData['day'][$dateString]['count'];
+            }
+            
+            if ( $maxRatingAvg < $this->ratingAvgByDayChartData['day'][$dateString]['avg'] ) {
+                $maxRatingAvg = $this->ratingAvgByDayChartData['day'][$dateString]['avg'];
+            }
+        }
+
+        $highestValueInChart = 1.1 * $maxRatingAvg;
+
+        $unitTime = ( $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp() ) / 100;
+        for($point=0; $point<100; ++$point) {
+            $currentDateTime = new \DateTime();
+            $currentDateTime->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp() + ($point * $unitTime));
+
+            $previousDay = new \DateTime();
+            $previousDay->setTimestamp($currentDateTime->getTimestamp());
+            $previousDay->setTime(0, 0, 0);
+
+            $nextDay = new \DateTime();
+            $nextDay->setTimestamp($currentDateTime->getTimestamp());
+            $nextDay->setTime(0, 0, 0);
+            $nextDay->modify('+1 day');
+
+            $x = $currentDateTime->getTimestamp();
+            $x1 = $previousDay->getTimestamp();
+            $x2 = $nextDay->getTimestamp();
+            $y1 = $this->ratingAvgByDayChartData['day'][$previousDay->format('Y-m-d')]['avg'];
+            $y2 = $this->ratingAvgByDayChartData['day'][$nextDay->format('Y-m-d')]['avg'];
+
+            $this->ratingAvgByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
         }
     }
 
