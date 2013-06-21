@@ -54,6 +54,8 @@ class RateableCollectionController extends Controller
     private $reportCurrentPeriod = null;
     private $reportPreviousPeriod = null;
     private $reportCollection = null;
+    private $contactCountByDayChartData = null;
+    private $ratingCountByDay = null;
     private $rateableReportsData = array();
     private $rateableAveragesChartData = array();
     private $overallRatingAverageByDayChartData = array();
@@ -345,6 +347,8 @@ class RateableCollectionController extends Controller
             'overallRatingsAvg' => $this->overallRatingsAvg,
             'ratingsByStarsChartConfig' => $this->ratingsByStarsChartConfig,
             'ratingsByStarsChartData' => $this->ratingsByStarsChartData,
+            'contactCountByDayChartData' => $this->contactCountByDayChartData,
+            'ratingCountByDayChartData' => $this->ratingCountByDayChartData,
         ));
     }
 
@@ -364,12 +368,15 @@ class RateableCollectionController extends Controller
         $this->rateableReportsData = array();
         
         $this->initOverallRatingAverageByDayChartData();
+        $this->initContactCountByDayChartData();
+        $this->initRatingCountByDayChartData();
 
         $this->loadGetRateablesForCollectionStatement();
         $this->processGetRateablesForCollectionStatement();
 
         $this->loadGetContactsForCollectionStatement();
         $this->processGetContactsForCollectionStatement();
+        $this->postProcessGetContactsForCollectionStatement();
 
         $this->loadGetRatingsForCollectionStatement();
         $this->processGetRatingsForCollectionStatement();
@@ -390,6 +397,28 @@ class RateableCollectionController extends Controller
                 'avg' => 0,
             );
             
+            $currentDay->modify('+1 day');
+        }
+    }
+
+    private function initContactCountByDayChartData() {
+        $currentDay = new \DateTime();
+        $currentDay->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp());
+        $this->contactCountByDayChartData = array();
+        
+        while( $currentDay->getTimestamp() <= $this->reportCurrentPeriod['endDate']->getTimestamp() ) {
+            $this->contactCountByDayChartData['day'][$currentDay->format('Y-m-d')] = 0;
+            $currentDay->modify('+1 day');
+        }
+    }
+
+    private function initRatingCountByDayChartData() {
+        $currentDay = new \DateTime();
+        $currentDay->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp());
+        $this->ratingCountByDayChartData = array();
+        
+        while( $currentDay->getTimestamp() <= $this->reportCurrentPeriod['endDate']->getTimestamp() ) {
+            $this->ratingCountByDayChartData['day'][$currentDay->format('Y-m-d')] = 0;
             $currentDay->modify('+1 day');
         }
     }
@@ -440,6 +469,8 @@ class RateableCollectionController extends Controller
         foreach($this->getContactsForCollectionStatement->fetchAll() AS $record) {
             $id = $record['rateableId'];
             $contactTimestamp = strtotime($record['contactHappenedAt']);
+            $contactDateTime = new \DateTime();
+            $contactDateTime->setTimestamp($contactTimestamp);
 
             if ( $this->isTimestampInPreviousPeriod($contactTimestamp) ) {
                 ++$this->rateableReportsData[$id]['previousPeriod']['contactCount'];
@@ -448,7 +479,42 @@ class RateableCollectionController extends Controller
             elseif ( $this->isTimestampInCurrentPeriod($contactTimestamp) ) {
                 ++$this->rateableReportsData[$id]['currentPeriod']['contactCount'];
                 ++$this->overallContactsCount['currentPeriod'];
+                ++$this->contactCountByDayChartData['day'][$contactDateTime->format('Y-m-d')];
             }
+        }
+    }
+
+    private function postProcessGetContactsForCollectionStatement() {
+        $maxContactCount = 0;
+        foreach($this->contactCountByDayChartData['day'] AS $contactCount) {
+            if ( $maxContactCount < $contactCount ) {
+                $maxContactCount = $contactCount;
+            }
+        }
+
+        $highestValueInChart = 1.1 * $maxContactCount;
+        
+        $unitTime = ( $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp() ) / 100;
+        for($point=0; $point<100; ++$point) {
+            $currentDateTime = new \DateTime();
+            $currentDateTime->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp() + ($point * $unitTime));
+
+            $previousDay = new \DateTime();
+            $previousDay->setTimestamp($currentDateTime->getTimestamp());
+            $previousDay->setTime(0, 0, 0);
+
+            $nextDay = new \DateTime();
+            $nextDay->setTimestamp($currentDateTime->getTimestamp());
+            $nextDay->setTime(0, 0, 0);
+            $nextDay->modify('+1 day');
+
+            $x = $currentDateTime->getTimestamp();
+            $x1 = $previousDay->getTimestamp();
+            $x2 = $nextDay->getTimestamp();
+            $y1 = $this->contactCountByDayChartData['day'][$previousDay->format('Y-m-d')];
+            $y2 = $this->contactCountByDayChartData['day'][$nextDay->format('Y-m-d')];
+
+            $this->contactCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
         }
     }
 
@@ -488,6 +554,8 @@ class RateableCollectionController extends Controller
                 ++$this->overallRatingsCount['currentPeriod'];
 
                 ++$this->ratingsByStarsChartData[$record['stars']];
+
+                ++$this->ratingCountByDayChartData['day'][$ratingDateTime->format('Y-m-d')];
             }
         }
     }
@@ -525,6 +593,38 @@ class RateableCollectionController extends Controller
             else {
                 $this->overallRatingsAvg[$periodName] = $this->overallRatingsSum[$periodName] / $this->overallRatingsCount[$periodName];
             }
+        }
+
+        $maxRatingCount = 0;
+        foreach($this->ratingCountByDayChartData['day'] AS $ratingCount) {
+            if ( $maxRatingCount < $ratingCount ) {
+                $maxRatingCount = $ratingCount;
+            }
+        }
+
+        $highestValueInChart = 1.1 * $maxRatingCount;
+        
+        $unitTime = ( $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp() ) / 100;
+        for($point=0; $point<100; ++$point) {
+            $currentDateTime = new \DateTime();
+            $currentDateTime->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp() + ($point * $unitTime));
+
+            $previousDay = new \DateTime();
+            $previousDay->setTimestamp($currentDateTime->getTimestamp());
+            $previousDay->setTime(0, 0, 0);
+
+            $nextDay = new \DateTime();
+            $nextDay->setTimestamp($currentDateTime->getTimestamp());
+            $nextDay->setTime(0, 0, 0);
+            $nextDay->modify('+1 day');
+
+            $x = $currentDateTime->getTimestamp();
+            $x1 = $previousDay->getTimestamp();
+            $x2 = $nextDay->getTimestamp();
+            $y1 = $this->ratingCountByDayChartData['day'][$previousDay->format('Y-m-d')];
+            $y2 = $this->ratingCountByDayChartData['day'][$nextDay->format('Y-m-d')];
+
+            $this->ratingCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
         }
     }
 
