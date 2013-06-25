@@ -16,14 +16,14 @@
             <h2>Értékelj, nálunk számít...</h2>
         {% endif %}
         <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }} class="form">
-            <div>
+            <div class="big">
                 {{ form_errors(form.alphanumericValue) }}
                 {{ form_widget(form.alphanumericValue) }}
             </div>
 
             {{ form_rest(form) }}
 
-            <div class="btn_cont yellow ok">
+            <div class="btn_cont yellow ok big_after">
                 <input type="submit" value="OK" class="btn" />
             </div>
         </form>

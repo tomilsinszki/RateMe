@@ -210,7 +210,7 @@
 	text-align: center;
 	width: 100%;
 }
-.form input.big {
+.form .big input {
 	height: 50px;
 	line-height: 55px;
 }
@@ -280,9 +280,26 @@
 }
 
 .wrap {
+	display: table;
 	margin: 0 auto;
 	max-width: 800px;
+	height: 100%;
+	min-height: 400px;
 	width: 100%;
+}
+
+.rel.wrap {
+	height: 100%;
+	position: relative;
+}
+.space_40 {
+	height: 40px;
+}
+.space_20 {
+	height: 20px;
+}
+.space_10 {
+	height: 10px;
 }
 
 /* buttons */
@@ -317,6 +334,10 @@
 	width: 100%;	
 }
 
+.big_after {
+	margin-top: 0!important;
+}
+
 
 /* main style */
 html {
@@ -349,6 +370,14 @@ body {
 	left: 0;
 	right: 0;
 	min-height: 100%;
+}
+
+.logo {
+	background: transparent url('../images/logo@2x.png') center center no-repeat;
+	background-size: 99px 113px;
+	margin: 0 auto 20px auto;
+	height: 113px;
+	width: 99px;
 }
 
 .main {
@@ -407,6 +436,22 @@ body {
 	font-size: 20px;
 	font-weight: normal;
 	text-align: center;
+}
+
+.head {
+	background: transparent url('../images/head_bg.png') center center no-repeat;
+	background-size: 126px 126px;
+	height: 120px;
+	margin: 0 auto;
+	padding-top: 6px;
+	text-align: center;
+	width: 126px;
+}
+
+.head img {
+	border-radius: 114px;
+	height: 114px;
+	width: 114px;
 }
 
 .head_bg {
@@ -469,6 +514,48 @@ p {
 	margin-top: 40px;
 	text-align: center;
 	text-shadow: 0px 1px rgba(0, 0, 0, 0.75);
+}
+
+.content h1 {
+	color: #b5d700;
+	font-family: 'DINProH-Medium';
+	font-size: 24px;
+	line-height: 30px;
+	padding-top: 5px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(29, 29, 29, 0.75);
+}
+.content h2 {
+	color: #b6d700;
+	font-family: 'DINProH-Bold';
+	font-size: 100%;
+	line-height: 25px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(0, 0, 0, 0.75);
+}
+.content h2.red {
+	color: #fa4040;
+}
+
+.content h3 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Regular';
+	font-size: 18px;
+	line-height: 26px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+}
+
+.content h6 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Regular';
+	font-size: 14px;
+	line-height: 25px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+}
+.content h6.or {
+	margin: 14px 0 12px 0;
 }
 
 .form {
@@ -570,12 +657,517 @@ p {
 .form .form_input.error {
 	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.76), 0px 1px 1px #dfff58, 0px 1px 0px 2px #d20000;
 }
-
+.form h2 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Bold';
+	font-size: 18px;
+	line-height: 24px;
+	margin-bottom: 25px;
+	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+}
 .form h3 {
 	color: #d0d0d0;
 	font-family: 'DINProH-Regular';
 	font-size: 16px;
 	line-height: 24px;
 	padding: 0 2%;
+	text-align: left;
 	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+}
+.form h4 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Light';
+	font-size: 12px;
+	line-height: 15px;
+	margin: -15px 0 12px 0;
+	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+}
+
+.content .prof_bg {
+	background: transparent url('../images/prof_bg_big.png') center 18px no-repeat;
+	background-size: 668px 592px;
+	height: 100%;
+}
+
+.buttons {
+	margin: 18px auto;
+	width: 87.5%;
+}
+.buttons .btn_cont {
+	width: 48.214286%;	
+}
+.buttons .btn_cont.left,
+.buttons .btn_cont.facebook {
+	float: left;
+}
+.buttons .btn_cont.right,
+.buttons .btn_cont.google {
+	float: right;
+}
+
+.buttons .btn_cont.left .btn h3:after {
+	content: 'Belépés';
+}
+.buttons .btn_cont.right .btn h3:after {
+	content: 'Regisztrálok';
+}
+
+.slider_bg {
+	background-color: #6b6b6b;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6b6b6b', endColorstr='#484848');
+	background: -webkit-gradient(linear, left top, left bottom, from(#6b6b6b), to(#484848)); 
+	background: -moz-linear-gradient(top,  #6b6b6b,  #484848);	
+	background: -o-linear-gradient(top,  #6b6b6b,  #484848);
+	border-radius: 4px;
+	box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.09);
+	margin: 15px auto 0 auto;
+	padding-bottom: 5px;
+	width: 87.5%;
+}
+
+.slider_bg .slider {
+	background-color: #636363;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#636363', endColorstr='#424242');
+	background: -webkit-gradient(linear, left top, left bottom, from(#636363), to(#424242)); 
+	background: -moz-linear-gradient(top,  #636363,  424242);	
+	background: -o-linear-gradient(top,  #636363,  #424242);
+	border-radius: 4px;
+	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.14);
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+
+.slider_bg .slider .slider_head {
+	height: 30px;
+	overflow: hidden;
+	padding: 0 11px;
+}
+.slider_bg .slider .slider_head h3 {
+	color: #363636;
+	float: left;
+	font-family: 'DINProH-Medium';
+	font-size: 12px;
+	line-height: 30px;
+	margin: 0 25px 0 0;
+	text-align: left;
+	text-transform: uppercase;
+	text-shadow: 0px -1px rgba(186, 186, 186, 0.75);
+}
+
+.slider_bg .slider .slider_head h3 span {
+	color: #a1c800;
+	font-size: 24px;
+	line-height: 30px;
+	margin-left: 12px;
+	position: relative;
+	top: 2px;
+	text-shadow: 0px 1px rgba(51, 51, 51, 0.75);
+}
+
+.slider_bg .slider .slide_elem {
+	border-top: 1px solid #797979;
+	box-shadow: 0px -1px 0px 0px #4f4f4f;
+	height: 89px;
+	padding: 0 15px;
+}
+.lister .slider_bg .slider .slide_elem {
+	height: 62px;
+}
+
+.slider_bg .slider .slide_elem:first-child {
+	border-top: none;
+	box-shadow: none;
+}
+
+.slider_bg .slider .slide_elem .head {
+	background-size: 75px 75px;
+	float: left;
+	height: 71px;
+	margin: 7px 14px 0 0;
+	padding-top: 4px;
+	width: 75px;
+}
+.lister .slider_bg .slider .slide_elem .head {
+	background-size: 53px 53px;
+	height: 50px;
+	margin: 4px 11px 0 0;
+	padding-top: 3px;
+	width: 53px;
+}
+
+.slider_bg .slider .slide_elem .head img {
+	border-radius: 67px;
+	height: 67px;
+	width: 67px;
+}
+.lister .slider_bg .slider .slide_elem .head img {
+	border-radius: 47px;
+	height: 47px;
+	width: 47px;
+}
+
+.slider_bg .slider .slide_elem h1 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Medium';
+	font-size: 24px;
+	line-height: 26px;
+	padding-top: 20px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+.lister .slider_bg .slider .slide_elem h1 {
+	font-size: 13px;
+	line-height: 16px;
+	padding-top: 6px;
+}
+
+.slider_bg .slider .slide_elem h2 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Light';
+	font-size: 18px;
+	line-height: 24px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+.lister .slider_bg .slider .slide_elem h2 {
+	font-size: 13px;
+	line-height: 16px;
+}
+.lister .slider_bg .slider .slide_elem h4 {
+	color: #b5b5b5;
+	float: left;
+	font-family: 'DINProH-Regular';
+	font-size: 10px;
+	line-height: 22px;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+
+.lister .slider_bg .slider .slide_elem ul {
+	clear: none;
+	float: left;
+	list-style: none;
+	margin: 0 15px 0 0;
+	width: auto;
+}
+.lister .slider_bg .slider .slide_elem ul li {
+	float: left;
+	height: 16px;
+	margin-right: 2px;
+	width: 16px;
+}
+.lister .slider_bg .slider .slide_elem li a {
+	background: transparent url('../images/pic_holder.png') -138px -27px no-repeat;
+	cursor: pointer;
+	display: block;
+	height: 16px;
+	width: 16px;
+}
+.lister .slider_bg .slider .slide_elem ul li.on a {
+	background: transparent url('../images/pic_holder.png') -121px -27px no-repeat;
+}
+
+.form .pager,
+.slider_bg .slider .pager {
+	cursor: pointer;
+	height: 13px;
+	position: absolute;
+	right: 10px;
+	width: 16px;
+}
+.slider_bg .slider .pager.top {
+	background: transparent url('../images/pic_holder.png') -148px 0px no-repeat;
+	top: 7px;
+}
+.lister .slider_bg .slider .pager.top {
+	top: 40px;
+}
+.form .pager.top {
+	background: transparent url('../images/pic_holder.png') -159px -16px no-repeat;
+	top: 0px;
+	right: 0;
+}
+
+.slider_bg .slider .pager.bottom {
+	background: transparent url('../images/pic_holder.png') -168px 0px no-repeat;
+	bottom: 10px;
+}
+
+.form .pager.bottom {
+	background: transparent url('../images/pic_holder.png') -180px -16px no-repeat;
+	right: 0;
+	bottom: 0px;
+}
+
+.vote {
+	background: transparent url('../images/vote_bg.png') top center no-repeat;
+	background-size: 433px 259px;
+	height: auto;
+	min-height: 249px;
+	padding-top: 10px;
+	width: 100%;
+}
+
+.vote h1 {
+	color: #e3e3e3;
+	font-family: 'DINProH-Medium';
+	font-size: 24px;
+	line-height: 28px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+.vote h2 {
+	color: #e3e3e3;
+	font-family: 'DINProH-Light';
+	font-size: 18px;
+	line-height: 22px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+
+.vote ul,
+.floated_bg ul {
+	clear: both;
+	display: table;
+	list-style: none;
+	margin: 10px auto 15px auto;
+	overflow: auto;
+	width: 78.125%;
+}
+.vote ul li,
+.floated_bg ul li {
+	float: left;
+	height: 45px;
+	width: 20%;
+}
+.vote ul li a,
+.floated_bg ul li a {
+	background: transparent url('../images/pic_holder.png') -50px -55px no-repeat;
+	cursor: pointer;
+	display: block;
+	height: 45px;
+	margin: 0 auto;
+	width: 47px;
+}
+.vote ul li.on a,
+.floated_bg ul li.on a {
+	background: transparent url('../images/pic_holder.png') 0px -55px no-repeat;
+}
+
+.vote .btn_cont {
+	margin: 15px auto 0 auto;
+	width: 78.125%;
+}
+
+.vote .btn_cont.gray .btn h3:after {
+	content: 'Mást értékelek';
+}
+
+
+.floated_bg {
+	background: transparent url('../images/vote_bg.png') left 125px no-repeat;
+	background-size: 433px 259px;
+	bottom: 0;
+	left: 0;
+	margin-left: -124px;
+	padding: 0 0 0 124px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 100%;
+}
+
+.floated_bg .head {
+	float: left;
+	margin-left: 4.21875%;
+	margin-right: 10px;
+}
+
+.floated_bg.lister .head {
+	margin-right: 25px;
+}
+
+@media all and (max-width: 799px) {
+	.floated_bg {
+		background-position: 3% 125px;
+	}
+	.floated_bg .head {
+		margin-left: 8.21875%;
+	}
+}
+
+.floated_bg h1 {
+	color: #e3e3e3;
+	font-family: 'DINProH-Medium';
+	font-size: 18px;
+	line-height: 20px;
+	padding-top: 37px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+.floated_bg h2 {
+	color: #e3e3e3;
+	font-family: 'DINProH-Light';
+	font-size: 15px;
+	line-height: 17px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+.floated_bg h3 {
+	color: #b6d700;
+	font-family: 'DINProH-Bold';
+	font-size: 23px;
+	line-height: 23px;
+	margin: 10px 0 5px 0;
+	text-shadow: 0px 1px rgba(29, 29, 29, 0.75);
+}
+.floated_bg h4 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Regular';
+	font-size: 18px;
+	line-height: 26px;
+	text-align: center;
+	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+}
+
+.floated_bg .btn_cont.connect_to_profile_and_share {
+	margin: 35px auto;
+	width: 78.125%;
+}
+.floated_bg .btn_cont.connect_to_profile_and_share h3 {
+	font-size: 12px;
+}
+
+.floated_bg .btn_cont.connect_to_profile_and_share .btn h3:after {
+	content: 'Csatold a profilodhoz és oszd meg!';
+}
+
+.floated_bg .btn_cont.share_on_facebook {
+	margin: 15px auto;
+	width: 78.125%;
+}
+.floated_bg .btn_cont.share_on_facebook .btn h3 {
+	font-size: 21px;
+}
+.floated_bg .btn_cont.share_on_facebook .btn h3:after {
+	content: 'Megosztás Facebookon';
+}
+.floated_bg .btn_cont.back_to_profile {
+	margin: 0 auto;
+	width: 78.125%;
+}
+.floated_bg .btn_cont.back_to_profile .btn h3:after {
+	content: 'Vissza a profilomra';
+}
+
+.floated_bg .btn_cont.edit {
+	margin-right: 6.25%;
+	margin-top: 10px;
+	overflow: hidden;
+}
+.floated_bg .btn_cont.edit h3 {
+	margin: 0;
+}
+.floated_bg .btn_cont.edit .btn h3:after {
+	content: 'Szerkesztés';
+}
+
+.floated_bg.lister h1 {
+	color: #d0d0d0;
+	font-family: 'DINProH-Medium';
+	font-size: 25px;
+	line-height: 29px;
+	padding-top: 5px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+}
+
+.profiler .head {
+	background-size: 112px 112px;
+	float: left;
+	height: 107px;
+	margin: 0px 20px 0 6.25%;
+	padding-top: 5px;
+	width: 112px;
+}
+
+.profiler .head img {
+	border-radius: 102px;
+	height: 102px;
+	width: 102px;
+}
+
+.profiler h1 {
+	color: #b9d800;
+	font-family: 'DINProH-Medium';
+	font-size: 18px;
+	line-height: 22px;
+	padding-top: 8px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(29, 29, 29, 0.75);
+}
+
+.profiler .btn_cont {
+	margin-right: 6.25%;
+	margin-top: 5px;
+	overflow: hidden;
+}
+
+.profiler .form {
+	margin-top: 10px;
+}
+
+.profiler .form label {
+	color: #d0d0d0;
+	float: left;
+	font-family: 'DINProH-Light';
+	font-size: 15px;
+	height: 40px;
+	margin-bottom: 10px;
+	line-height: 40px;
+	text-align: left;
+	text-shadow: 0px 1px rgba(108, 108, 108, 0.75);
+	width: 37.5%;
+}
+
+.profiler .form input {
+	float: right;
+	padding: 0 10px;
+	text-align: left;
+	width: 50.625%;
+}
+
+.profiler .buttons .btn_cont {
+	margin: 0;
+}
+
+.btn_cont.save .btn h3:after {
+	content: 'Mentés';
+}
+
+.text {
+	max-height: 230px;
+	overflow: hidden;
+	padding-right: 25px;
+	position: relative;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.text h5 {
+	color: #c8c8c8;
+	font-family: 'DINProH-Bold';
+	font-size: 14px;
+	line-height: 16px;
+}
+.text p {
+	color: #c8c8c8;
+	font-family: 'DINProH-Regular';
+	font-size: 13px;
+	line-height: 16px;
+	margin-bottom: 18px;
+}
+
+.btn_cont.send .btn h3:after {
+	content: 'Elküld';
 }
