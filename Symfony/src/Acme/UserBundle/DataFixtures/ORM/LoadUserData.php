@@ -64,6 +64,7 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
             'vrabel.mihaly',
             'bertha.viktoria',
             'major.edith',
+            'arbogaszt.fanni',
         );
         
         $this->createUsersForKsPartner($manager, $customerServiceGroup, $userNamesForKsPartner, 'kspartner123');

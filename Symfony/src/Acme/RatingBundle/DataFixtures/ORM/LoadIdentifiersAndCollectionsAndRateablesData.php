@@ -90,6 +90,7 @@ class LoadIdentifierData implements FixtureInterface
             'vrabel.mihaly' => 'Vrábel Mihály',
             'bertha.viktoria' => 'Bertha Viktória',
             'major.edith' => 'Major Edith',
+            'arbogaszt.fanni' => 'Árbogászt Fanni',
         );
         
         foreach( $rateables AS $userName => $rateableName ) {
