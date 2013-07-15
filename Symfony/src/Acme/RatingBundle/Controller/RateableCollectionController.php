@@ -64,7 +64,7 @@ class RateableCollectionController extends Controller
     private $overallRatingsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsSum = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsAvg = array('currentPeriod' => 0, 'previousPeriod' => 0);
-    private $ratingsByStarsChartData = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
+    private $ratingsByStarsChartData = array(5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0);
     private $ratingsByStarsChartConfig = array(
         'width' => '100',
         'height' => '350px',

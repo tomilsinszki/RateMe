@@ -53,19 +53,24 @@
 
             windowOrigWidth = $(window).width();
 
+            /*
             var data = [0.0];
             createSmallMainLineChart('smallChart_1', data);
+            */
 
             var data = [{% for point, value in contactCountByDayChartData.values %}{{value}}, {% endfor %}];
             createSmallMainLineChart('smallChart_2', data);
             
+            /*
             var data = [0.0];
             createSmallMainLineChart('smallChart_3', data);
+            */
 
             var data = [{% for point, value in ratingCountByDayChartData.values %}{{value}}, {% endfor %}];
             createSmallMainLineChart('smallChart_4', data);
 
-            var data = [{% for point, value in ratingAvgByDayChartData.values %}{{value}}, {% endfor %}];
+            /*var data = [{% for point, value in ratingAvgByDayChartData.values %}{{value}}, {% endfor %}];*/
+            var data = [0.0, 0.0, 0.0];
             createSmallMainLineChart('smallChart_5', data, null, null, '#6F4575', '#78287D');
             
             data = [{% for dateString, stats in overallRatingAverageByDayChartData %}['{{dateString}}',{{stats.avg}}], {% endfor %}];
@@ -461,21 +466,25 @@
         </div>
 		<div class="content">
 			<div class="graph">
+                <!--
 				<div class="graph_3_list">
 					<div class="cell_1">Kiszolgált ügyfelek</div>
 					<div class="cell_2" id="smallChart_1"><span>– </span><span class="measure">db</span></div>
 					<div class="cell_3 down"><div class="pic"></div>– <span>db</span></div>
 				</div>
+                -->
 				<div class="graph_3_list">
 					<div class="cell_1">Kiküldött értékelők</div>
 					<div class="cell_2" id="smallChart_2"><span>{{overallContactsCount.currentPeriod}} </span><span class="measure">db</span></div>
 					<div class="cell_3 {% if overallContactsCount.previousPeriod < overallContactsCount.currentPeriod %}up{% else %}down{% endif %}"><div class="pic"></div>{{ (overallContactsCount.currentPeriod - overallContactsCount.previousPeriod) }} <span>db</span></div>
 				</div>
+                <!--
 				<div class="graph_3_list">
 					<div class="cell_1">Kiküldési arány</div>
 					<div class="cell_2" id="smallChart_3"><span>–</span><span class="measure"></span></div>
 					<div class="cell_3 down"><div class="pic"></div>–<span></span></div>
 				</div>
+                -->
 				<div class="graph_3_list">
 					<div class="cell_1">Értékelések száma</div>
 					<div class="cell_2" id="smallChart_4"><span>{{overallRatingsCount.currentPeriod}} </span><span class="measure">db</span></div>
@@ -536,6 +545,7 @@
                             <h4>{{ rateable.currentPeriod.ratingCount }} db</h4>
                             Értékelések száma:
                         </div>
+                        <!--
                         <div class="row even">
                             <h4>–</h4>
                             Kiküldési arány:
@@ -544,6 +554,7 @@
                             <h4>{{ rateable.currentPeriod.contactCount }} db</h4>
                             Kiszolgált ügyfelek:
                         </div>
+                        -->
                     </div>
                 {% endfor %}
 			</div>
