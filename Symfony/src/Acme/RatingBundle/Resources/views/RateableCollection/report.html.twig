@@ -35,8 +35,10 @@
 		<script type="text/javascript">
 
         var charts = [];
+        var smallChartsAndHtmls = [];
         var dateChartAvg = 0;
         var dateChartMax = 0;
+        var windowOrigWidth = null;
 
         $(document).ready(function() {
             /*
@@ -48,6 +50,8 @@
                 overlayCanvas.after(seriesCanvas);
             });
             */
+
+            windowOrigWidth = $(window).width();
 
             var data = [0.0];
             createSmallMainLineChart('smallChart_1', data);
@@ -99,8 +103,11 @@
                 yAxisMax = 1;
             }
 
+            var div = $('#'+chartDivId);
+            smallChartsAndHtmls[chartDivId] = {div: div, html: getHtmlForSmallChart(div)};
+
             if (width || height) {
-                var chartDiv = $('#'+chartDivId);
+                var chartDiv = div;
                 if (width) {
                     chartDiv.css({width: width});
                 }
@@ -153,6 +160,15 @@
                     right: 0
                 }
             });
+        }
+
+        function getHtmlForSmallChart(div) {
+            var html = '';
+            var spans = div.find('span');
+            for (var i = 0; i < spans.length; i++) {
+                html += spans[i].outerHTML;
+            }
+            return html;
         }
 
         function createDateChart(chartDivId, serie, lineColor, markerColor) {
@@ -241,21 +257,37 @@
             renderTextToEvaluationAvgLine(chart, charts[chartDivId], avg, lineColor);
         }
 
-        function createBarChart(chartDivId, serie, categories, overAvgColor, underAvgColor, labelColor) {
-            //serie.sort(function(a,b){return b-a});
+        function createBarChart(chartDivId, serie, categories, overAvgColor, underAvgColor, labelColor, pointLabelColor) {
+            var all = [];
             var avg = 0;
+            var cnt = 0;
+            
             for (var i = 0; i < serie.length; ++i) {
-                avg += serie[i];
-
+                all.push({'value': serie[i], 'category': categories[i]});
+                if ( serie[i] != 0 ) {
+                    avg += serie[i];
+                    ++cnt;
+                }
             }
-            avg = avg / serie.length;
+            
+            if ( 0 < cnt) {
+                avg = avg / cnt;
+            }
+            else {
+                avg = 0;
+            }
 
+            serie = [];
+            categories = [];
             var colors = [];
-            for (var i = 0; i < serie.length; ++i) {
+            all.sort(function(a, b) { return b.value - a.value });
+            for (var i = 0; i < all.length; i++) {
+                serie[i] = all[i].value;
+                categories[i] =  all[i].category;
                 if (serie[i] < avg) {
-                    colors.push(underAvgColor);
+                    colors[i] = underAvgColor;
                 } else {
-                    colors.push(overAvgColor);
+                    colors[i] = overAvgColor;
                 }
             }
 
@@ -265,7 +297,7 @@
                     renderer: $.jqplot.BarRenderer,
                     rendererOptions: {
                         barWidth: null,
-                        barMargin: 20,
+                        barMargin: 5,
                         highlightMouseOver: true,
                         varyBarColor: true
                     },
@@ -313,7 +345,12 @@
                 }
             });
 
-            renderTextToBarChartAvgLine($('#'+chartDivId), charts[chartDivId], avg, labelColor);
+            var barChart = $('#'+chartDivId);
+            renderTextToBarChartAvgLine(barChart, charts[chartDivId], avg, labelColor);
+
+            if (pointLabelColor) {
+                barChart.find('.jqplot-point-label').css('color', pointLabelColor);
+            }
         }
 
         function adjustMarkers(chartDiv, plot, max, color) {
@@ -388,7 +425,15 @@
                     adjustMarkers(chart, charts[i], dateChartMax, markerColor)
                     renderTextToEvaluationAvgLine(chart, charts[i], dateChartAvg, lineColor);
                 } else if (i === 'barChart') {
+                    var labelColor = charts[i].options.canvasOverlay.objects[0].horizontalLine.color;
+                    var avg = charts[i].options.canvasOverlay.objects[0].horizontalLine.y;
                     charts[i].series[0].barWidth = null;
+                    var chart = $('#'+i);
+                    var fontSize = $(window).width() / windowOrigWidth * 28;
+                    chart.find('.jqplot-point-label').css('font-size', fontSize+'px');
+                    renderTextToBarChartAvgLine(chart, charts[i], avg, labelColor);
+                } else if (i in smallChartsAndHtmls) {
+                    smallChartsAndHtmls[i].div.prepend(smallChartsAndHtmls[i].html);
                 }
             }
         }
