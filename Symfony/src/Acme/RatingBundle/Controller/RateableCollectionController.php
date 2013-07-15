@@ -59,7 +59,7 @@ class RateableCollectionController extends Controller
     private $ratingAvgByDayChartData = null;
     private $rateableReportsData = array();
     private $rateableAveragesChartData = array();
-    private $overallRatingAverageByDayChartData = array();
+    private $overallRatingAverageByMonthChartData = array();
     private $overallContactsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsSum = array('currentPeriod' => 0, 'previousPeriod' => 0);
@@ -342,7 +342,7 @@ class RateableCollectionController extends Controller
             'title' => $this->reportCurrentPeriod['startDate']->format("Y.m.d.")." – ".$this->reportCurrentPeriod['endDate']->format("Y.m.d."),
             'rateableReportsData' => $this->rateableReportsData,
             'rateableAveragesChartData' => $this->rateableAveragesChartData,
-            'overallRatingAverageByDayChartData' => $this->overallRatingAverageByDayChartData,
+            'overallRatingAverageByMonthChartData' => $this->overallRatingAverageByMonthChartData,
             'overallContactsCount' => $this->overallContactsCount,
             'overallRatingsCount' => $this->overallRatingsCount,
             'overallRatingsAvg' => $this->overallRatingsAvg,
@@ -389,19 +389,21 @@ class RateableCollectionController extends Controller
     }
 
     private function initOverallRatingAverageByDayChartData() {
-        $currentDay = new \DateTime();
-        $currentDay->setTimestamp($this->reportCurrentPeriod['startDate']->getTimestamp());
-        $this->overallRatingAverageByDayChartData = array();
-
-        while( $currentDay->getTimestamp() < $this->reportCurrentPeriod['endDate']->getTimestamp() ) {
-            $this->overallRatingAverageByDayChartData["{$currentDay->format('Y-m-d')} 0:00AM"] = array(
+        $firstDayOfMonth = new \DateTime();
+        $firstDayOfMonth->setTimestamp($this->reportCurrentPeriod['endDate']->getTimestamp());
+        $firstDayOfMonth->modify('first day of this month');
+        $firstDayOfMonth->modify('-12 month');
+        $this->overallRatingAverageByMonthChartData = array();
+   
+        for($monthIndex=0; $monthIndex<12; ++$monthIndex) {
+            $this->overallRatingAverageByMonthChartData["{$firstDayOfMonth->format('Y-m')}"] = array(
                 'sum' => 0,
                 'count' => 0,
                 'avg' => 0,
             );
-            
-            $currentDay->modify('+1 day');
-        }
+
+            $firstDayOfMonth->modify('+1 month');
+        } 
     }
 
     private function initContactCountByDayChartData() {
@@ -535,10 +537,15 @@ class RateableCollectionController extends Controller
     }
 
     private function loadGetRatingsForCollectionStatement() {
+        $startDate = new \DateTime();
+        $startDate->setTimestamp($this->reportCurrentPeriod['endDate']->getTimestamp());
+        $startDate->modify('first day of this month');
+        $startDate->modify('-12 month');
+
         $connection = $this->get('database_connection');
         $queryText = sprintf($this->getRatingsForCollectionQueryText, 
             $this->reportCollection->getId(),
-            $this->reportPreviousPeriod['startDate']->format("Y-m-d H:i:s"),
+            $startDate->format("Y-m-d H:i:s"),
             $this->reportCurrentPeriod['endDate']->format("Y-m-d H:i:s")
         );
         $this->getRatingsForCollectionStatement = $connection->executeQuery($queryText);
@@ -549,6 +556,13 @@ class RateableCollectionController extends Controller
         foreach($this->getRatingsForCollectionStatement->fetchAll() AS $record) {
             $id = $record['rateableId'];
             $ratingTimestamp = strtotime($record['ratingReceivedAt']);
+            $ratingDateTime = new \DateTime();
+            $ratingDateTime->setTimestamp($ratingTimestamp);
+            
+            if ( array_key_exists($ratingDateTime->format('Y-m'), $this->overallRatingAverageByMonthChartData) === TRUE ) {
+                $this->overallRatingAverageByMonthChartData["{$ratingDateTime->format('Y-m')}"]['sum'] += $record['stars'];
+                ++$this->overallRatingAverageByMonthChartData["{$ratingDateTime->format('Y-m')}"]['count'];
+            }
 
             if ( $this->isTimestampInPreviousPeriod($ratingTimestamp) ) {
                 $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] += $record['stars'];
@@ -560,12 +574,7 @@ class RateableCollectionController extends Controller
             elseif ( $this->isTimestampInCurrentPeriod($ratingTimestamp) ) {
                 $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] += $record['stars'];
                 ++$this->rateableReportsData[$id]['currentPeriod']['ratingCount'];
-
-                $ratingDateTime = new \DateTime();
-                $ratingDateTime->setTimestamp($ratingTimestamp);
-                $this->overallRatingAverageByDayChartData["{$ratingDateTime->format('Y-m-d')} 0:00AM"]['sum'] += $record['stars'];
-                ++$this->overallRatingAverageByDayChartData["{$ratingDateTime->format('Y-m-d')} 0:00AM"]['count'];
-
+                
                 $this->overallRatingsSum['currentPeriod'] += $record['stars'];
                 ++$this->overallRatingsCount['currentPeriod'];
 
@@ -596,12 +605,12 @@ class RateableCollectionController extends Controller
             }
         }
 
-        foreach($this->overallRatingAverageByDayChartData AS $date => $statistics) {
+        foreach($this->overallRatingAverageByMonthChartData AS $date => $statistics) {
             if ( empty($statistics['count']) === TRUE ) {
-                $this->overallRatingAverageByDayChartData[$date]['avg'] = 0;
+                $this->overallRatingAverageByMonthChartData[$date]['avg'] = 0;
             }
             else {
-                $this->overallRatingAverageByDayChartData[$date]['avg'] = $statistics['sum'] / $statistics['count'];
+                $this->overallRatingAverageByMonthChartData[$date]['avg'] = $statistics['sum'] / $statistics['count'];
             }
         }
 

@@ -69,11 +69,13 @@
             var data = [{% for point, value in ratingCountByDayChartData.values %}{{value}}, {% endfor %}];
             createSmallMainLineChart('smallChart_4', data);
 
-            /*var data = [{% for point, value in ratingAvgByDayChartData.values %}{{value}}, {% endfor %}];*/
+            /*
+            var data = [{% for point, value in ratingAvgByDayChartData.values %}{{value}}, {% endfor %}];
+            */
             var data = [0.0, 0.0, 0.0];
             createSmallMainLineChart('smallChart_5', data, null, null, '#6F4575', '#78287D');
             
-            data = [{% for dateString, stats in overallRatingAverageByDayChartData %}['{{dateString}}',{{stats.avg}}], {% endfor %}];
+            data = [{% for dateString, stats in overallRatingAverageByMonthChartData %}['{{dateString}}',{{stats.avg}}], {% endfor %}];
             createDateChart('dateChart', data, '#F7A053', '#815C87');
 
             data = [{% for name, avg in rateableAveragesChartData %}{{avg}}, {% endfor %}];
@@ -178,16 +180,28 @@
 
         function createDateChart(chartDivId, serie, lineColor, markerColor) {
             var avg = 0;
+            var cnt = 0;
             var maxIndex = 0;
             var labels = [];
+
             for (var i = 0; i < serie.length; ++i) {
-                avg += serie[i][1];
-                if (serie[i][1] > serie[maxIndex][1]) {
-                    maxIndex = i;
+                if ( 0 < serie[i][1] ) {
+                    avg += serie[i][1];
+                    ++cnt;
+                    if (serie[i][1] > serie[maxIndex][1]) {
+                        maxIndex = i;
+                    }
+                    labels[i] = '';
                 }
-                labels[i] = '';
             }
-            avg = avg / serie.length;
+
+            if ( 0 < cnt ) {
+                avg = avg / cnt;
+            }
+            else {
+                avg = 0;
+            }
+            
             dateChartAvg = avg;
             var max = serie[maxIndex][1];
             labels[maxIndex] = max;
