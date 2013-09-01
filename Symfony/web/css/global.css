@@ -440,18 +440,20 @@ body {
 
 .head {
 	background: transparent url('../images/head_bg.png') center center no-repeat;
-	background-size: 126px 126px;
-	height: 120px;
+	background-size: 100% 100%;
+	box-sizing: content-box;
 	margin: 0 auto;
-	padding-top: 6px;
 	text-align: center;
-	width: 126px;
+	min-width: 120px;
+	max-width: 500px;
+	width: 35%;
+	padding: 6px;
 }
 
 .head img {
-	border-radius: 114px;
-	height: 114px;
-	width: 114px;
+	border-radius: 100%;
+	display: block;
+	width: 100%;
 }
 
 .head_bg {
@@ -785,7 +787,8 @@ p {
 	float: left;
 	height: 71px;
 	margin: 7px 14px 0 0;
-	padding-top: 4px;
+	min-width: 75px;
+	padding: 4px 0 0;
 	width: 75px;
 }
 .lister .slider_bg .slider .slide_elem .head {
@@ -798,6 +801,7 @@ p {
 
 .slider_bg .slider .slide_elem .head img {
 	border-radius: 67px;
+	display: inline;
 	height: 67px;
 	width: 67px;
 }

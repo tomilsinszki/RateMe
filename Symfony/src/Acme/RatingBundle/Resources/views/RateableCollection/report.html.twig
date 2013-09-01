@@ -36,7 +36,7 @@
 
         var charts = [];
         var smallChartsAndHtmls = [];
-        var dateChartAvg = 0;
+        var dateChartAvg = {{ overallRatingAverageByMonthChartData.globalAverage }};
         var dateChartMax = 0;
         var windowOrigWidth = null;
 
@@ -75,14 +75,43 @@
             var data = [0.0, 0.0, 0.0];
             createSmallMainLineChart('smallChart_5', data, null, null, '#6F4575', '#78287D');
             
-            data = [{% for dateString, stats in overallRatingAverageByMonthChartData %}['{{dateString}}',{{stats.avg}}], {% endfor %}];
+            data = [{% for dateString, stats in overallRatingAverageByMonthChartData.dataByMonths %}['{{dateString}}',{{stats.avg}}], {% endfor %}];
             createDateChart('dateChart', data, '#F7A053', '#815C87');
 
             data = [{% for name, avg in rateableAveragesChartData %}{{avg}}, {% endfor %}];
             var categories = [{% for name, avg in rateableAveragesChartData %}'{{name}}', {% endfor %}];
-            createBarChart('barChart', data, categories, '#94BD3D', '#D72E31', '#F7A053');
-
+            createBarChart('averageBarChart', data, categories, '#94BD3D', '#D72E31', '#F7A053', '#FFFFFF', '%.1f', 2);
+            
+            data = [{% for name, cnt in rateableRatingCountsChartData %}{{cnt}}, {% endfor %}];
+            var categories = [{% for name, cnt in rateableRatingCountsChartData %}'{{name}}', {% endfor %}];
+            createBarChart('ratingsCountBarChart', data, categories, '#94BD3D', '#D72E31', '#F7A053', '#FFFFFF', '%d', 1);
+            
             $(window).on('resize', resizeCharts);
+
+            $('#rateableRatingsCountBarChart').css('display', 'none');
+            $('#rateableReportsContainerSortedByRatingCount').css('display', 'none');
+            
+            $('#rateableContactCountTitle').click(function() {
+                $('#rateableContactCountTitle').css('color', '#572160');
+                $('#rateableRatingsAverageTitle').css('color', '#999999');
+
+                $('#rateableRatingsAverageBarChart').css('display', 'none');
+                $('#rateableRatingsCountBarChart').css('display', 'block');
+
+                $('#rateableReportsContainerSortedByRatingAverage').css('display', 'none');
+                $('#rateableReportsContainerSortedByRatingCount').css('display', 'block');
+            });
+
+            $('#rateableRatingsAverageTitle').click(function() {
+                $('#rateableRatingsAverageTitle').css('color', '#572160');
+                $('#rateableContactCountTitle').css('color', '#999999');
+
+                $('#rateableRatingsCountBarChart').css('display', 'none');
+                $('#rateableRatingsAverageBarChart').css('display', 'block');
+
+                $('#rateableReportsContainerSortedByRatingCount').css('display', 'none');
+                $('#rateableReportsContainerSortedByRatingAverage').css('display', 'block');
+            });
         });
 
         function createSmallMainLineChart(chartDivId, serie, width, height, chartColor, bgColor, xAxisMin, xAxisMax, yAxisMin, yAxisMax) {
@@ -179,33 +208,43 @@
         }
 
         function createDateChart(chartDivId, serie, lineColor, markerColor) {
-            var avg = 0;
-            var cnt = 0;
-            var maxIndex = 0;
-            var labels = [];
+            var minDate = new Date(serie[0][0]);
+            var maxDate = new Date(serie[(serie.length-1)][0]);
+            maxDate.setMonth(maxDate.getMonth()+1);
+            
 
+            var doesSerieHaveNonZeroValueSoFar = false;
+            var serieWithoutZeros = [];
             for (var i = 0; i < serie.length; ++i) {
                 if ( 0 < serie[i][1] ) {
-                    avg += serie[i][1];
-                    ++cnt;
-                    if (serie[i][1] > serie[maxIndex][1]) {
-                        maxIndex = i;
-                    }
-                    labels[i] = '';
+                    doesSerieHaveNonZeroValueSoFar = true;
+                }
+
+                if ( doesSerieHaveNonZeroValueSoFar ) {
+                    serieWithoutZeros[serieWithoutZeros.length] = serie[i];
+                }
+            }
+            serie = serieWithoutZeros;
+
+
+            var labels = [];
+            var max = 0;
+            var min = serie[0][1];
+            for (var i = 0; i < serie.length; ++i) {
+                var current = serie[i][1];
+
+                labels[i] = current;
+
+                if ( max < current ) {
+                    max = current;
+                }
+
+                if ( current < min ) {
+                    min = current;
                 }
             }
 
-            if ( 0 < cnt ) {
-                avg = avg / cnt;
-            }
-            else {
-                avg = 0;
-            }
             
-            dateChartAvg = avg;
-            var max = serie[maxIndex][1];
-            labels[maxIndex] = max;
-            dateChartMax = max;
             var chart = $('#'+chartDivId);
             charts[chartDivId] = $.jqplot(chartDivId, [serie], {
                 grid: {
@@ -224,11 +263,11 @@
                 },
                 axes:{
                     xaxis: {
-                        //tickInterval:'2 weeks',
                         rendererOptions: {
-                            min: null,
-                            max: null,
-                            numberTicks: null
+                            min: minDate,
+                            max: maxDate,
+                            numberTicks: null,
+                            tickInterval: '1 month'
                         },
                         renderer: $.jqplot.DateAxisRenderer,
                         tickOptions:{
@@ -237,7 +276,12 @@
                         }
                     },
                     yaxis: {
-                        renderer: $.jqplot.LinearAxisRenderer
+                        renderer: $.jqplot.LinearAxisRenderer,
+                        min: min-(0.5*(max-min)),
+                        max: max+(0.5*(max-min)),
+                        tickOptions:{
+                            formatString:'%.2f'
+                        }
                     }
                 },
                 seriesDefaults: {
@@ -253,7 +297,7 @@
                        show: true,
                        labels: labels,
                        location:'ne',
-                       xpadding: 5,
+                       xpadding: 13,
                        ypadding: 5
                    }
                 },
@@ -265,7 +309,7 @@
                             lineWidth: 1,
                             color: lineColor,
                             shadow: false,
-                            y: avg,
+                            y: dateChartAvg,
                             xOffset: 0
                             }
                         }]
@@ -273,10 +317,10 @@
             });
 
             adjustMarkers(chart, charts[chartDivId], max, markerColor)
-            renderTextToEvaluationAvgLine(chart, charts[chartDivId], avg, lineColor);
+            renderTextToEvaluationAvgLine(chart, charts[chartDivId], dateChartAvg, lineColor);
         }
 
-        function createBarChart(chartDivId, serie, categories, overAvgColor, underAvgColor, labelColor, pointLabelColor) {
+        function createBarChart(chartDivId, serie, categories, overAvgColor, underAvgColor, labelColor, pointLabelColor, pointLabelFormat, avgNumberOfDecimals) {
             var all = [];
             var avg = 0;
             var cnt = 0;
@@ -322,7 +366,7 @@
                     },
                     pointLabels: {
                         show: true,
-                        formatString: '%.1f',
+                        formatString: pointLabelFormat,
                         location: 's'
                     }
                 },
@@ -393,7 +437,7 @@
         }
 
         function renderTextToEvaluationAvgLine(chartDiv, plot, avg, color) {
-            var text = 'Iparági átlag: ' + toFixed(avg, 3);
+            var text = 'Iparági átlag: ' + toFixed(avg, 2);
             var avgYCoord = plot.axes.yaxis.series_u2p(avg);
             var drawingCanvas = getDrawingCanvas(chartDiv);
             var context = drawingCanvas.getContext('2d');
@@ -409,7 +453,7 @@
         }
 
         function renderTextToBarChartAvgLine(chartDiv, plot, avg, color) {
-            var text = 'Havi átlag: ' + toFixed(avg, 3);
+            var text = 'Átlag: ' + toFixed(avg, 2);
             var avgYCoord = plot.axes.yaxis.series_u2p(avg);
             var drawingCanvas = getDrawingCanvas(chartDiv);
             var context = drawingCanvas.getContext('2d');
@@ -435,7 +479,60 @@
         }
 
         function resizeCharts() {
+            charts['smallChart_2'].replot({resetAxes: true});
+            smallChartsAndHtmls['smallChart_2'].div.prepend(smallChartsAndHtmls['smallChart_2'].html);
+
+
+
+            charts['smallChart_4'].replot({resetAxes: true});
+            smallChartsAndHtmls['smallChart_4'].div.prepend(smallChartsAndHtmls['smallChart_4'].html);
+
+
+
+            charts['smallChart_5'].replot({resetAxes: true});
+            smallChartsAndHtmls['smallChart_5'].div.prepend(smallChartsAndHtmls['smallChart_5'].html);
+
+
+            
+            var chartDisplayValue = $('#rateableRatingsAverageBarChart').css('display');
+            $('#rateableRatingsAverageBarChart').css('display', 'block');
+            var chart = $('#averageBarChart');
+            var pointLabelColor = chart.find('.jqplot-point-label').css('color');
+            charts['averageBarChart'].replot({resetAxes: true});
+            var labelColor = charts['averageBarChart'].options.canvasOverlay.objects[0].horizontalLine.color;
+            var avg = charts['averageBarChart'].options.canvasOverlay.objects[0].horizontalLine.y;
+            charts['averageBarChart'].series[0].barWidth = null;
+            var fontSize = $(window).width() / windowOrigWidth * 28;
+            chart.find('.jqplot-point-label').css('font-size', fontSize+'px');
+            if (pointLabelColor) {
+                chart.find('.jqplot-point-label').css('color', pointLabelColor);
+            }
+            renderTextToBarChartAvgLine(chart, charts['averageBarChart'], avg, labelColor);
+            $('#rateableRatingsAverageBarChart').css('display', chartDisplayValue);
+
+
+
+            var chartDisplayValue = $('#rateableRatingsCountBarChart').css('display');
+            $('#rateableRatingsCountBarChart').css('display', 'block');
+            var chart = $('#ratingsCountBarChart');
+            var pointLabelColor = chart.find('.jqplot-point-label').css('color');
+            charts['ratingsCountBarChart'].replot({resetAxes: true});
+            var labelColor = charts['ratingsCountBarChart'].options.canvasOverlay.objects[0].horizontalLine.color;
+            var avg = charts['ratingsCountBarChart'].options.canvasOverlay.objects[0].horizontalLine.y;
+            charts['ratingsCountBarChart'].series[0].barWidth = null;
+            var fontSize = $(window).width() / windowOrigWidth * 28;
+            chart.find('.jqplot-point-label').css('font-size', fontSize+'px');
+            if (pointLabelColor) {
+                chart.find('.jqplot-point-label').css('color', pointLabelColor);
+            }
+            renderTextToBarChartAvgLine(chart, charts['ratingsCountBarChart'], avg, labelColor);
+            $('#rateableRatingsCountBarChart').css('display', chartDisplayValue);
+
+
+            
+
             for (var i in charts) {
+                /*
                 charts[i].replot({resetAxes: true});
                 if (i === 'dateChart') {
                     var lineColor = charts[i].options.seriesDefaults.color;
@@ -454,6 +551,7 @@
                 } else if (i in smallChartsAndHtmls) {
                     smallChartsAndHtmls[i].div.prepend(smallChartsAndHtmls[i].html);
                 }
+                */
             }
         }
 
@@ -518,7 +616,7 @@
                         {% for stars, count in ratingsByStarsChartData %}
                             <div class="evaluationChartLine">
                                 <div class="evaluationChartLineElement evaluationName" style="color: '{{ratingsByStarsChartConfig.nameColor}}'">{{stars}}</div>
-                                <div class="evaluationChartLineElement evaluationValue" style="{{ ratingsByStarsChartConfig.lineHeightStyle }};width: {{ count/ratingsByStarsChartConfig.maxEvalValue*98 }}%; color: {{ ratingsByStarsChartConfig.valueColor }}; background-color: {{ ratingsByStarsChartConfig.lineColor }}"><span class="numValue">{{count}}</span><span class="measure"> db</span></div>
+                                <div class="evaluationChartLineElement evaluationValue" style="{{ ratingsByStarsChartConfig.lineHeightStyle }};width: {% if ratingsByStarsChartConfig.maxEvalValue == 0 %} 0%; {% else %} {{ count/ratingsByStarsChartConfig.maxEvalValue*98 }}%; {% endif %} color: {{ ratingsByStarsChartConfig.valueColor }}; background-color: {{ ratingsByStarsChartConfig.lineColor }}"><span class="numValue">{{count}}</span><span class="measure"> db</span></div>
                             </div>
                         {% endfor %}
                         </div>
@@ -534,16 +632,55 @@
                     </div>
 
                     <div class="graph">
-                        <h2>Egyéni eredmények</h2>
-                        <div class="graph_wrapper">
+                        <div style='text-align:center; line-height:300%;'>
+                            <h2 style='display:inline; color:#572160; padding-left:20px; cursor:pointer;' id='rateableRatingsAverageTitle'>Értékelés átlagok</h2>
+                            <h2 style='display:inline; color:#999999; padding-left:20px; cursor:pointer;' id='rateableContactCountTitle'>Értékelések száma</h2>
+                        </div>
+                        <div id='rateableRatingsAverageBarChart' class="graph_wrapper" style="display:block;">
                             <div class="inner_graph">
-                                <div id="barChart" style="height: 350px;"></div>
+                                <div id="averageBarChart" style="height: 350px;"></div>
+                            </div>
+                        </div>
+                        <div id='rateableRatingsCountBarChart' class="graph_wrapper" style="display:block;">
+                            <div class="inner_graph">
+                                <div id="ratingsCountBarChart" style="height: 350px;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="person_list clear">
-                    {% for rateableId, rateable in rateableReportsData %}
+                <div id="rateableReportsContainerSortedByRatingAverage" class="person_list clear" style="display: block;">
+                    {% for rateableId, rateable in rateableReportsDataSortedByRatingAverage %}
+                        <div class="person clear">
+                            <h2>{{ rateable.name }}</h2>
+                            <div class="person_img_content clear">
+                                <img src="{{ rateable.profilePictureURL }}" alt="profile picture" />
+                                <div class="person_counter {% if rateable.previousPeriod.ratingsAvg < rateable.currentPeriod.ratingsAvg %}up{% else %}down{% endif %}">
+                                    <div class="pic"></div>
+                                        {{ (rateable.currentPeriod.ratingsAvg - rateable.previousPeriod.ratingsAvg)|number_format(2, ',', ' ') }}
+                                </div>
+                                <h3>
+                                    {{ rateable.currentPeriod.ratingsAvg|number_format(2, ',', ' ') }}
+                                </h3>
+                            </div>
+                            <div class="row odd">
+                                <h4>{{ rateable.currentPeriod.ratingCount }} db</h4>
+                                Értékelések száma:
+                            </div>
+                            <!--
+                            <div class="row even">
+                                <h4>–</h4>
+                                Kiküldési arány:
+                            </div>
+                            <div class="row odd">
+                                <h4>{{ rateable.currentPeriod.contactCount }} db</h4>
+                                Kiszolgált ügyfelek:
+                            </div>
+                            -->
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="rateableReportsContainerSortedByRatingCount" class="person_list clear" style="display: block;">
+                    {% for rateableId, rateable in rateableReportsDataSortedByRatingCount %}
                         <div class="person clear">
                             <h2>{{ rateable.name }}</h2>
                             <div class="person_img_content clear">
@@ -575,7 +712,7 @@
                 </div>
             </div>
             <div class="footer">
-                További információért lépjen velünk kapcsolatba a <a href="mailto:info@rate.me.uk">info@rate.me.uk</a> e-mail címen
+                További információért lépjen velünk kapcsolatba a <a href="mailto:info@rate.me.uk">info@rate.me.uk</a> e-mail címen – <a href="{{ path('logout') }}">Kilépés</a>
             </div>
         </div>
     </body>

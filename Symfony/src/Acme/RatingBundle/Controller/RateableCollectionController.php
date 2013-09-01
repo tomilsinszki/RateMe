@@ -32,9 +32,16 @@ class RateableCollectionController extends Controller
         LEFT JOIN rateable rb ON c.rateable_id=rb.id
         WHERE 
             rb.collection_id=%1$d AND
-            c.contact_happened_at between "%2$s%%" AND "%3$s%%"
+            c.contact_happened_at BETWEEN "%2$s" AND "%3$s"
         ORDER BY c.contact_happened_at';
     private $getContactsForCollectionStatement = null;
+
+    private $getRatingsAverageForLastTwelveMonthsQueryText =
+        'SELECT 
+            AVG(stars) AS rating_average 
+        FROM rating
+        WHERE updated BETWEEN "%1$s" AND "%2$s"';
+    private $getRatingsAverageForLastTwelveMonthsStatement = null;
 
     private $getRatingsForCollectionQueryText =
         'SELECT 
@@ -47,7 +54,7 @@ class RateableCollectionController extends Controller
         WHERE 
             r.stars IS NOT NULL AND 
             rc.id=%1$d AND
-            r.updated between "%2$s%%" AND "%3$s%%"
+            r.updated BETWEEN "%2$s" AND "%3$s"
         ORDER BY r.updated;';
     private $getRatingsForCollectionStatement = null;
     
@@ -58,7 +65,10 @@ class RateableCollectionController extends Controller
     private $ratingCountByDayChartData = null;
     private $ratingAvgByDayChartData = null;
     private $rateableReportsData = array();
+    private $rateableReportsDataSortedByRatingAverage = array();
+    private $rateableReportsDataSortedByRatingCount = array();
     private $rateableAveragesChartData = array();
+    private $rateableRatingCountsChartData = array();
     private $overallRatingAverageByMonthChartData = array();
     private $overallContactsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
     private $overallRatingsCount = array('currentPeriod' => 0, 'previousPeriod' => 0);
@@ -337,11 +347,19 @@ class RateableCollectionController extends Controller
         
         $this->calcPreviousPeriodWithSameLength();
         $this->loadReportDataForPeriod();
+
+        $this->rateableReportsDataSortedByRatingAverage = $this->rateableReportsData;
+        uasort($this->rateableReportsDataSortedByRatingAverage, array($this, 'rateableReportsDataCompareByRatingAverage'));
+
+        $this->rateableReportsDataSortedByRatingCount = $this->rateableReportsData;
+        uasort($this->rateableReportsDataSortedByRatingCount, array($this, 'rateableReportsDataCompareByRatingCount'));
         
         return $this->render('AcmeRatingBundle:RateableCollection:report.html.twig', array(
             'title' => $this->reportCurrentPeriod['startDate']->format("Y.m.d.")." – ".$this->reportCurrentPeriod['endDate']->format("Y.m.d."),
-            'rateableReportsData' => $this->rateableReportsData,
+            'rateableReportsDataSortedByRatingAverage' => $this->rateableReportsDataSortedByRatingAverage,
+            'rateableReportsDataSortedByRatingCount' => $this->rateableReportsDataSortedByRatingCount,
             'rateableAveragesChartData' => $this->rateableAveragesChartData,
+            'rateableRatingCountsChartData' => $this->rateableRatingCountsChartData,
             'overallRatingAverageByMonthChartData' => $this->overallRatingAverageByMonthChartData,
             'overallContactsCount' => $this->overallContactsCount,
             'overallRatingsCount' => $this->overallRatingsCount,
@@ -381,6 +399,9 @@ class RateableCollectionController extends Controller
         $this->processGetContactsForCollectionStatement();
         $this->postProcessGetContactsForCollectionStatement();
 
+        $this->loadGetRatingsAverageForLastTwelveMonthsStatement();
+        $this->processGetRatingsAverageForLastTwelveMonthsStatement();
+
         $this->loadGetRatingsForCollectionStatement();
         $this->processGetRatingsForCollectionStatement();
         $this->postProcessGetRatingsForCollectionStatement();
@@ -393,10 +414,13 @@ class RateableCollectionController extends Controller
         $firstDayOfMonth->setTimestamp($this->reportCurrentPeriod['endDate']->getTimestamp());
         $firstDayOfMonth->modify('first day of this month');
         $firstDayOfMonth->modify('-12 month');
-        $this->overallRatingAverageByMonthChartData = array();
+        $this->overallRatingAverageByMonthChartData = array(
+            'globalAverage' => 0,
+            'dataByMonths' => array(),
+        );
    
         for($monthIndex=0; $monthIndex<12; ++$monthIndex) {
-            $this->overallRatingAverageByMonthChartData["{$firstDayOfMonth->format('Y-m')}"] = array(
+            $this->overallRatingAverageByMonthChartData['dataByMonths']["{$firstDayOfMonth->format('Y-m')}"] = array(
                 'sum' => 0,
                 'count' => 0,
                 'avg' => 0,
@@ -469,6 +493,8 @@ class RateableCollectionController extends Controller
             if ( empty($record['imageFileName']) == FALSE ) {
                 $this->rateableReportsData[$id]['profilePictureURL'] = "/uploads/images/{$record['imageFileName']}.{$record['imageFileExtension']}";
             }
+
+            $this->rateableRatingCountsChartData[$name] = 0;
         }
     }
     
@@ -532,7 +558,34 @@ class RateableCollectionController extends Controller
             $y1 = $this->contactCountByDayChartData['day'][$previousDay->format('Y-m-d')];
             $y2 = $this->contactCountByDayChartData['day'][$nextDay->format('Y-m-d')];
 
-            $this->contactCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+            if ( empty($highestValueInChart) === TRUE ) {
+                $this->contactCountByDayChartData['values'][$point] = 0;
+            }
+            else {
+                $this->contactCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+            }
+        }
+    }
+
+    private function loadGetRatingsAverageForLastTwelveMonthsStatement() {
+        $startDate = new \DateTime();
+        $startDate->setTimestamp($this->reportCurrentPeriod['endDate']->getTimestamp());
+        $startDate->modify('first day of this month');
+        $startDate->modify('-12 month');
+
+        $connection = $this->get('database_connection');
+        $queryText = sprintf($this->getRatingsAverageForLastTwelveMonthsQueryText,
+            $startDate->format("Y-m-d H:i:s"),
+            $this->reportCurrentPeriod['endDate']->format("Y-m-d H:i:s")
+        );
+        $this->getRatingsAverageForLastTwelveMonthsStatement = $connection->executeQuery($queryText);
+        $this->getRatingsAverageForLastTwelveMonthsStatement->execute();
+    }
+
+    private function processGetRatingsAverageForLastTwelveMonthsStatement() {
+        foreach($this->getRatingsAverageForLastTwelveMonthsStatement->fetchAll() AS $record) {
+            $this->overallRatingAverageByMonthChartData['globalAverage'] = floatval($record['rating_average']);
+            break;
         }
     }
 
@@ -559,11 +612,11 @@ class RateableCollectionController extends Controller
             $ratingDateTime = new \DateTime();
             $ratingDateTime->setTimestamp($ratingTimestamp);
             
-            if ( array_key_exists($ratingDateTime->format('Y-m'), $this->overallRatingAverageByMonthChartData) === TRUE ) {
-                $this->overallRatingAverageByMonthChartData["{$ratingDateTime->format('Y-m')}"]['sum'] += $record['stars'];
-                ++$this->overallRatingAverageByMonthChartData["{$ratingDateTime->format('Y-m')}"]['count'];
+            if ( array_key_exists($ratingDateTime->format('Y-m'), $this->overallRatingAverageByMonthChartData['dataByMonths']) === TRUE ) {
+                $this->overallRatingAverageByMonthChartData['dataByMonths']["{$ratingDateTime->format('Y-m')}"]['sum'] += $record['stars'];
+                ++$this->overallRatingAverageByMonthChartData['dataByMonths']["{$ratingDateTime->format('Y-m')}"]['count'];
             }
-
+            
             if ( $this->isTimestampInPreviousPeriod($ratingTimestamp) ) {
                 $this->rateableReportsData[$id]['previousPeriod']['ratingsSum'] += $record['stars'];
                 ++$this->rateableReportsData[$id]['previousPeriod']['ratingCount'];
@@ -584,6 +637,9 @@ class RateableCollectionController extends Controller
 
                 $this->ratingAvgByDayChartData['day'][$ratingDateTime->format('Y-m-d')]['sum'] += $record['stars'];
                 ++$this->ratingAvgByDayChartData['day'][$ratingDateTime->format('Y-m-d')]['count'];
+
+                $rateableName = $this->rateableReportsData[$id]['name'];
+                ++$this->rateableRatingCountsChartData[$rateableName];
             }
         }
     }
@@ -605,12 +661,12 @@ class RateableCollectionController extends Controller
             }
         }
 
-        foreach($this->overallRatingAverageByMonthChartData AS $date => $statistics) {
+        foreach($this->overallRatingAverageByMonthChartData['dataByMonths'] AS $date => $statistics) {
             if ( empty($statistics['count']) === TRUE ) {
-                $this->overallRatingAverageByMonthChartData[$date]['avg'] = 0;
+                $this->overallRatingAverageByMonthChartData['dataByMonths'][$date]['avg'] = 0;
             }
             else {
-                $this->overallRatingAverageByMonthChartData[$date]['avg'] = $statistics['sum'] / $statistics['count'];
+                $this->overallRatingAverageByMonthChartData['dataByMonths'][$date]['avg'] = $statistics['sum'] / $statistics['count'];
             }
         }
 
@@ -652,7 +708,12 @@ class RateableCollectionController extends Controller
             $y1 = $this->ratingCountByDayChartData['day'][$previousDay->format('Y-m-d')];
             $y2 = $this->ratingCountByDayChartData['day'][$nextDay->format('Y-m-d')];
 
-            $this->ratingCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+            if ( empty($highestValueInChart) === TRUE ) {
+                $this->ratingCountByDayChartData['values'][$point] = 0;
+            }
+            else {
+                $this->ratingCountByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+            }
         }
         
         $maxRatingAvg = 0;
@@ -693,7 +754,12 @@ class RateableCollectionController extends Controller
             $y1 = $this->ratingAvgByDayChartData['day'][$previousDay->format('Y-m-d')]['avg'];
             $y2 = $this->ratingAvgByDayChartData['day'][$nextDay->format('Y-m-d')]['avg'];
 
-            $this->ratingAvgByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+            if ( empty($highestValueInChart) === TRUE ) {
+                $this->ratingAvgByDayChartData['values'][$point] = 0;
+            }
+            else {
+                $this->ratingAvgByDayChartData['values'][$point] = ( $y1+($x-$x1)*($y2-$y1)/($x2-$x1) ) / $highestValueInChart;
+            }
         }
     }
 
@@ -739,6 +805,22 @@ class RateableCollectionController extends Controller
                 $this->ratingsByStarsChartConfig['maxEvalValue'] = $count;
             }
         }
+    }
+
+    private function rateableReportsDataCompareByRatingAverage($a, $b) {
+        if ( $a['currentPeriod']['ratingsAvg'] == $b['currentPeriod']['ratingsAvg'] ) {
+            return 0;
+        }
+
+        return ( $a['currentPeriod']['ratingsAvg'] < $b['currentPeriod']['ratingsAvg'] ) ? 1 : -1;
+    }
+
+    private function rateableReportsDataCompareByRatingCount($a, $b) {
+        if ( $a['currentPeriod']['ratingCount'] == $b['currentPeriod']['ratingCount'] ) {
+            return 0;
+        }
+
+        return ( $a['currentPeriod']['ratingCount'] < $b['currentPeriod']['ratingCount'] ) ? 1 : -1;
     }
 }
 
