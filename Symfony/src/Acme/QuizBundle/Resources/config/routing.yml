@@ -1,0 +1,3 @@
+quiz_main:
+    pattern:   /quiz/{rateableId}
+    defaults: { _controller: AcmeQuizBundle:Default:index }
