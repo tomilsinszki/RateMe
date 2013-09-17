@@ -54,6 +54,8 @@ security:
         - { path: ^/ugyfel/kontakt/email/autocomplete, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/ugyfel/kontakt/mentes, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/ugyfel/kontakt, roles: 'ROLE_CUSTOMERSERVICE' }
-        - { path: ^/jelentes, roles: 'ROLE_MANAGER' }
+        - { path: ^/jelentes/valaszto, roles: 'ROLE_MANAGER' }
+        - { path: ^/jelentes/megtekintes, roles: 'ROLE_MANAGER' }
+        - { path: ^/menedzser/nyito, roles: 'ROLE_MANAGER' }
         - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  
         - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  

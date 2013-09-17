@@ -298,15 +298,17 @@ class DefaultController extends Controller
         if ( CurrentUser::isOfRole($securityContext, 'ROLE_CUSTOMERSERVICE') ) {
             return $this->redirect($this->generateUrl('contact_index'));
         }
-        
-        $ownedCollection = CurrentUser::getCollectionIfOwner($securityContext);
-        if ( empty($ownedCollection) === FALSE ) {
-            return $this->redirect($this->generateUrl('report', array(
-                'startDateString' => date("Y-m-d", strtotime("-1 months")),
-                'endDateString' => date("Y-m-d"),
-            )));
+        else if ( CurrentUser::isOfRole($securityContext, 'ROLE_MANAGER') ) {
+            return $this->redirect($this->generateUrl('acme_manager_welcome'));
         }
-    
+        
         return $this->redirect($this->generateUrl('identifier_main'));
+    }
+
+    public function managerWelcomeAction()
+    {
+        return $this->render('AcmeUserBundle:Default:managerWelcome.html.twig', array(
+            'user' => $this->getUserFromContext(),
+        ));
     }
 }

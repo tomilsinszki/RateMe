@@ -46,3 +46,7 @@ acme_user_password_is_valid:
     pattern:  /felhasznalo/jelszo/ervenyese
     defaults: { _controller: AcmeUserBundle:Default:isPasswordValid }
 
+acme_manager_welcome:
+    pattern:  /menedzser/nyito
+    defaults: { _controller: AcmeUserBundle:Default:managerWelcome }
+

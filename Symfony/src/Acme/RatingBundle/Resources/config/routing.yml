@@ -90,7 +90,11 @@ flag_email_for_contact_as_flawed:
     pattern:   /ugyfel/kontakt/hibajelzes/{token}
     defaults: { _controller: AcmeRatingBundle:Contact:flagEmailAsFlawed }
 
+report_selector:
+    pattern:   /jelentes/valaszto
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:reportSelector }
+
 report:
-    pattern:   /jelentes/kezdete/{startDateString}/vege/{endDateString}
+    pattern:   /jelentes/megtekintes
     defaults: { _controller: AcmeRatingBundle:RateableCollection:report }
 
