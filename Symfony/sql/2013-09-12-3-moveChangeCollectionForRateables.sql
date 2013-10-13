@@ -12,4 +12,5 @@ UPDATE rateable SET collection_id=(SELECT id FROM rateable_collection WHERE name
 -- Move Kovács Gyula
 -- Move Szilvás Anikó
 -- Move Árbogászt Fanni
+-- Move Madár Zsanett
 
