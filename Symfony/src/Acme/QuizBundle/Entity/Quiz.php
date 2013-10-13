@@ -2,8 +2,8 @@
 
 namespace Acme\QuizBundle\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Acme\RatingBundle\Entity\Rateable;
 
 /**
  * Quiz
@@ -25,6 +25,7 @@ class Quiz {
     /**
      * @var \DateTime
      *
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
@@ -62,7 +63,7 @@ class Quiz {
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -78,14 +79,14 @@ class Quiz {
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -101,14 +102,14 @@ class Quiz {
     public function setRateable(\Acme\RatingBundle\Entity\Rateable $rateable = null)
     {
         $this->rateable = $rateable;
-    
+
         return $this;
     }
 
     /**
      * Get rateable
      *
-     * @return \Acme\RatingBundle\Entity\Rateable 
+     * @return \Acme\RatingBundle\Entity\Rateable
      */
     public function getRateable()
     {
@@ -124,14 +125,14 @@ class Quiz {
     public function setQuestion(\Acme\QuizBundle\Entity\Question $question = null)
     {
         $this->question = $question;
-    
+
         return $this;
     }
 
     /**
      * Get question
      *
-     * @return \Acme\QuizBundle\Entity\Question 
+     * @return \Acme\QuizBundle\Entity\Question
      */
     public function getQuestion()
     {
@@ -147,14 +148,14 @@ class Quiz {
     public function setGivenAnswer(\Acme\QuizBundle\Entity\Answer $givenAnswer = null)
     {
         $this->givenAnswer = $givenAnswer;
-    
+
         return $this;
     }
 
     /**
      * Get givenAnswer
      *
-     * @return \Acme\QuizBundle\Entity\Answer 
+     * @return \Acme\QuizBundle\Entity\Answer
      */
     public function getGivenAnswer()
     {

@@ -3,6 +3,7 @@
 namespace Acme\QuizBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Answer
@@ -105,7 +106,7 @@ class Answer
     public function addQuestionsRelatedByCorrectAnswer(\Acme\QuizBundle\Entity\Question $questionsRelatedByCorrectAnswer)
     {
         $this->questions_related_by_correct_answer[] = $questionsRelatedByCorrectAnswer;
-    
+
         return $this;
     }
 
@@ -122,7 +123,7 @@ class Answer
     /**
      * Get questions_related_by_correct_answer
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getQuestionsRelatedByCorrectAnswer()
     {
@@ -138,7 +139,7 @@ class Answer
     public function addQuestionsRelatedByWrongAnswer1(\Acme\QuizBundle\Entity\Question $questionsRelatedByWrongAnswer1)
     {
         $this->questions_related_by_wrong_answer1[] = $questionsRelatedByWrongAnswer1;
-    
+
         return $this;
     }
 
@@ -155,7 +156,7 @@ class Answer
     /**
      * Get questions_related_by_wrong_answer1
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getQuestionsRelatedByWrongAnswer1()
     {
@@ -171,7 +172,7 @@ class Answer
     public function addQuestionsRelatedByWrongAnswer2(\Acme\QuizBundle\Entity\Question $questionsRelatedByWrongAnswer2)
     {
         $this->questions_related_by_wrong_answer2[] = $questionsRelatedByWrongAnswer2;
-    
+
         return $this;
     }
 
@@ -188,7 +189,7 @@ class Answer
     /**
      * Get questions_related_by_wrong_answer2
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getQuestionsRelatedByWrongAnswer2()
     {
@@ -204,7 +205,7 @@ class Answer
     public function addQuizze(\Acme\QuizBundle\Entity\Quiz $quizzes)
     {
         $this->quizzes[] = $quizzes;
-    
+
         return $this;
     }
 
@@ -221,7 +222,7 @@ class Answer
     /**
      * Get quizzes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getQuizzes()
     {

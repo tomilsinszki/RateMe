@@ -3,6 +3,7 @@
 namespace Acme\QuizBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * QuestionGroup
@@ -81,7 +82,7 @@ class QuestionGroup {
     public function addQuestion(\Acme\QuizBundle\Entity\Question $questions)
     {
         $this->questions[] = $questions;
-    
+
         return $this;
     }
 
@@ -98,7 +99,7 @@ class QuestionGroup {
     /**
      * Get questions
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getQuestions()
     {

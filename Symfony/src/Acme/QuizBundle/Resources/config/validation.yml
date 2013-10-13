@@ -1,0 +1,9 @@
+Acme\QuizBundle\Entity\QuestionFile:
+    properties:
+        file:
+            - NotNull:
+                message: Tölts fel egy valódi Excel fájlt
+            - File:
+                #maxSize: 1M
+                #mimeTypes: [application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet]
+                #mimeTypesMessage: Please upload a valid Excel file

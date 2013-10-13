@@ -1,3 +1,11 @@
+quiz_upload:
+    pattern:   /quiz
+    defaults: { _controller: AcmeQuizBundle:Default:upload}
+
+quiz_questionnaire:
+    pattern:   /quiz/questionnaire
+    defaults: { _controller: AcmeQuizBundle:Default:questionnaire}
+
 quiz_main:
     pattern:   /quiz/{rateableId}
     defaults: { _controller: AcmeQuizBundle:Default:index }

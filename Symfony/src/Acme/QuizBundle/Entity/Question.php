@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Question
  *
  * @ORM\Table(name="question")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Acme\QuizBundle\Entity\QuestionRepository")
  */
 class Question
 {
@@ -76,6 +76,11 @@ class Question
     private $wrongAnswer2;
 
 
+    public function logOccured() {
+        $this->setLastOccuredAt(new \DateTime('now'));
+
+        return $this;
+    }
 
     /**
      * Get id

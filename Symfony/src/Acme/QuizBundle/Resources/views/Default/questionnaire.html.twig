@@ -1,0 +1,44 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmequiz/css/style.css') }}" />
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+<div class="form">
+	<div class="question-table">
+	<div class="question-table-header">
+		<div class="col col-1">Kérdés</div>
+		<div class="col col-2">Helyes válasz</div>
+		<div class="col col-3">Egyéb válasz 1</div>
+		<div class="col col-4">Egyéb válasz 2</div>
+	</div>
+
+    {% for question in questions %}
+		<div class="question-table-row">
+			<div class="col col-1">{{ question.text }}</div>
+			<div class="col col-2">{{ question.correctAnswer.text }}</div>
+			<div class="col col-3">{{ question.wrongAnswer1.text }}</div>
+			<div class="col col-4">{{ question.wrongAnswer2.text }}</div>
+		</div>
+		<div class="border"></div>
+    {% endfor %}
+
+    </div>
+	<div class="bt_holder">
+		<div class="btn_cont green new-questions">
+			<a class="btn" href="{{ path('quiz_upload') }}">Új kérdéssor feltöltése</a>
+		</div>
+		<div class="btn_cont green actual-download">
+			<a class="btn" href="{{ asset(questionsHref) }}" target="_blank">Aktuális kérdéssor letöltése</a>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+
+{% endblock %}

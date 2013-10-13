@@ -57,26 +57,26 @@
 .btn_cont.yellow {
 	background-color: #a2ca00;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a2ca00', endColorstr='#9bc100');
-	background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#9bc100)); 
-	background: -moz-linear-gradient(top,  #a2ca00,  #9bc100);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#9bc100));
+	background: -moz-linear-gradient(top,  #a2ca00,  #9bc100);
 	background: -o-linear-gradient(top,  #a2ca00,  #9bc100);
 	border-radius: 4px;
 	cursor: pointer;
 	height: 44px;
-	width: 100%;	
+	width: 100%;
 }
 .btn_cont.yellow .btn {
 	background-color: #aad300;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aad300', endColorstr='#c2dc00');
-	background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00)); 
-	background: -moz-linear-gradient(top,  #aad300,  #c2dc00);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00));
+	background: -moz-linear-gradient(top,  #aad300,  #c2dc00);
 	background: -o-linear-gradient(top,  #aad300,  #c2dc00);
 	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.62);
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
 	height: 39px;
-	width: 100%;	
+	width: 100%;
 }
 .btn_cont.yellow .btn h3 {
 	font-family: 'DINProH-Medium';
@@ -122,12 +122,12 @@
 .btn_cont.gray .button_bg {
 	background-color: #707070;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#707070', endColorstr='#484848');
-	background: -webkit-gradient(linear, left top, left bottom, from(#707070), to(#484848)); 
-	background: -moz-linear-gradient(top,  #707070,  #484848);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#707070), to(#484848));
+	background: -moz-linear-gradient(top,  #707070,  #484848);
 	background: -o-linear-gradient(top,  #707070,  #484848);
 	border-radius: 4px;
 	height: 41px;
-	width: 100%;	
+	width: 100%;
 }
 .btn_cont.gray.small .button_bg {
 	height: 30px;
@@ -135,13 +135,13 @@
 .btn_cont.gray .btn {
 	background-color: #666666;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#4a4a4a');
-	background: -webkit-gradient(linear, left top, left bottom, from(#666666), to(#4a4a4a)); 
-	background: -moz-linear-gradient(top,  #666666,  #4a4a4a);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#666666), to(#4a4a4a));
+	background: -moz-linear-gradient(top,  #666666,  #4a4a4a);
 	background: -o-linear-gradient(top,  #666666,  #4a4a4a);
 	border-radius: 4px;
 	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.14);
 	height: 37px;
-	width: 100%;	
+	width: 100%;
 }
 .btn_cont.gray.small .btn {
 	height: 26px;
@@ -195,9 +195,9 @@
 .form input {
 	background-color: #e5e5e5;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e5e5e5', endColorstr='#ffffff');
-	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff)); 
-	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);	
-	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff));
+	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);
+	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);
 	border: none;
 	border-radius: 4px;
 	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.76), 0px 1px 1px #dfff58;
@@ -221,9 +221,9 @@
 .form textarea {
 	background-color: #e5e5e5;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e5e5e5', endColorstr='#ffffff');
-	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff)); 
-	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);	
-	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff));
+	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);
+	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);
 	border: none;
 	border-radius: 4px;
 	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.76), 0px 1px 1px #dfff58;
@@ -306,20 +306,20 @@
 .btn_cont.yellow {
 	background-color: #a2ca00;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a2ca00', endColorstr='#9bc100');
-	background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#9bc100)); 
-	background: -moz-linear-gradient(top,  #a2ca00,  #9bc100);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#9bc100));
+	background: -moz-linear-gradient(top,  #a2ca00,  #9bc100);
 	background: -o-linear-gradient(top,  #a2ca00,  #9bc100);
 	border-radius: 4px;
 	cursor: pointer;
 	height: 44px;
 	margin-top: 25px;
-	width: 100%;	
+	width: 100%;
 }
 .btn_cont.yellow input {
 	background-color: #aad300;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aad300', endColorstr='#c2dc00');
-	background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00)); 
-	background: -moz-linear-gradient(top,  #aad300,  #c2dc00);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00));
+	background: -moz-linear-gradient(top,  #aad300,  #c2dc00);
 	background: -o-linear-gradient(top,  #aad300,  #c2dc00);
 	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.62);
 	border: none;
@@ -331,7 +331,7 @@
 	height: 39px;
 	line-height: 44px;
 	text-shadow: 0px -1px #ecf5bf;
-	width: 100%;	
+	width: 100%;
 }
 
 .big_after {
@@ -580,13 +580,13 @@ p {
 .form .form_input {
 	background-color: #e5e5e5;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e5e5e5', endColorstr='#ffffff');
-	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff)); 
-	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);	
-	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff));
+	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);
+	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);
 	border: none;
 	border-radius: 4px;
 	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.76), 0px 1px 1px #dfff58;
-	
+
 	height: 40px;
 	margin-bottom: 15px;
 	position: relative;
@@ -696,7 +696,7 @@ p {
 	width: 87.5%;
 }
 .buttons .btn_cont {
-	width: 48.214286%;	
+	width: 48.214286%;
 }
 .buttons .btn_cont.left,
 .buttons .btn_cont.facebook {
@@ -717,8 +717,8 @@ p {
 .slider_bg {
 	background-color: #6b6b6b;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6b6b6b', endColorstr='#484848');
-	background: -webkit-gradient(linear, left top, left bottom, from(#6b6b6b), to(#484848)); 
-	background: -moz-linear-gradient(top,  #6b6b6b,  #484848);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#6b6b6b), to(#484848));
+	background: -moz-linear-gradient(top,  #6b6b6b,  #484848);
 	background: -o-linear-gradient(top,  #6b6b6b,  #484848);
 	border-radius: 4px;
 	box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.09);
@@ -730,8 +730,8 @@ p {
 .slider_bg .slider {
 	background-color: #636363;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#636363', endColorstr='#424242');
-	background: -webkit-gradient(linear, left top, left bottom, from(#636363), to(#424242)); 
-	background: -moz-linear-gradient(top,  #636363,  424242);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#636363), to(#424242));
+	background: -moz-linear-gradient(top,  #636363,  424242);
 	background: -o-linear-gradient(top,  #636363,  #424242);
 	border-radius: 4px;
 	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.14);

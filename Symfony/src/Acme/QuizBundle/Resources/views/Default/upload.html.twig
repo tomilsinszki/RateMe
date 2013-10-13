@@ -1,0 +1,46 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <form action="{{ path('quiz_upload') }}" method="post" enctype="multipart/form-data">
+        {{ form_errors(form) }}
+
+        {{ form_errors(form.file) }}
+
+        {{ form_widget(form.file, {'attr': {'accept': 'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}}) }}
+
+        {{ form_rest(form) }}
+
+        <input type="submit" value="Feltöltés" />
+    </form>
+
+    {% if questionsHref %}
+        <div>A kérdéssor letölthető <a style="display: inline;" href="{{ asset(questionsHref) }}" target="_blank">innen</a></div>
+        <div>A kérdéssor megtekinthető <a style="display: inline;" href="{{ path('quiz_questionnaire') }}">itt</a></div>
+        {% if errors %}
+            {% if errors.HEADER is defined %}
+                <div>Fejléc hibák:</div>
+                {% for error in errors.HEADER %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+            {% if errors.QUESTIONS is defined %}
+                <div>Kérdőív hibák:</div>
+                {% for error in errors.QUESTIONS %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        {% elseif rowNum %}
+            <div><span>A kérdéssor feltöltve, összesen {{ rowNum }} darab kérdés.</span></div>
+        {% endif %}
+    {% else %}
+        <div><span>Még nem lettek feltöltve vizsgakérdések</span></div>
+    {% endif %}
+
+{% endblock %}
