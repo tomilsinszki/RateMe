@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Acme\UserBundle\AcmeUserBundle(),
             new Acme\RatingBundle\AcmeRatingBundle(),
+            new Acme\SubRatingBundle\AcmeSubRatingBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

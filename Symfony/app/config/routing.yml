@@ -1,3 +1,8 @@
+acme_sub_rating:
+    resource: "@AcmeSubRatingBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 login:
     pattern:   /login
     defaults:  { _controller: AcmeUserBundle:Default:login }
