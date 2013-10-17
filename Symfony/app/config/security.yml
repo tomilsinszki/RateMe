@@ -57,5 +57,11 @@ security:
         - { path: ^/jelentes/valaszto, roles: 'ROLE_MANAGER' }
         - { path: ^/jelentes/megtekintes, roles: 'ROLE_MANAGER' }
         - { path: ^/menedzser/nyito, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdesek, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/melysegi/kovetkezo/kerdes, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/melysegi/koszonjuk, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/melysegi/kerdoiv, roles: 'ROLE_MANAGER' }        
+        - { path: ^/melysegi/kerdestipusok, roles: 'ROLE_MANAGER' }        
+        - { path: ^/melysegi/kerdes/sorrend/valozas, roles: 'ROLE_MANAGER' }        
         - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  
         - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  

@@ -1,0 +1,7 @@
+parameters:
+#    acme_subrating.example.class: Acme\SubRatingBundle\Example
+
+services:
+#    acme_subrating.example:
+#        class: %acme_subrating.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,12 @@
+sub_rating_owner_main:
+    pattern:   /melysegi/kerdoiv/{rateableCollectionId}
+    defaults: { _controller: AcmeSubRatingBundle:Owner:index, rateableCollectionId: null }    
+
+sub_rating_question_types:
+    pattern:   /melysegi/kerdestipusok
+    defaults: { _controller: AcmeSubRatingBundle:Owner:getQuestionTypes }  
+
+sub_rating_question_order_change:
+    pattern:   /melysegi/kerdes/sorrend/valozas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:questionOrderChange }
+

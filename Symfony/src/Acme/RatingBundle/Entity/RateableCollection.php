@@ -83,7 +83,7 @@ class RateableCollection
 
     /**
      * @ORM\ManyToOne(targetEntity="Acme\SubRatingBundle\Entity\QuestionOrder", inversedBy="collections")
-     * @ORM\JoinColumn(name="question_order_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="question_order_id", referencedColumnName="id", nullable=false)
      */
     private $questionOrder;
     

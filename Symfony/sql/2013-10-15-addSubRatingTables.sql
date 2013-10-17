@@ -3,7 +3,7 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
 ALTER TABLE `rateable_collection` 
-ADD COLUMN `question_order_id` INT(11) NULL DEFAULT NULL AFTER `company_id`,
+ADD COLUMN `question_order_id` INT(11) NOT NULL AFTER `company_id`,
 ADD INDEX `IDX_CC0020A0EE97DD34` (`question_order_id` ASC);
 
 CREATE TABLE IF NOT EXISTS `sub_rating` (
@@ -110,4 +110,27 @@ ADD CONSTRAINT `FK_CC0020A0EE97DD34`
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+INSERT INTO `sub_rating_question_type` (`name`) VALUES 
+('yes/no'), 
+('scale');
+
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT 'yes' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='yes/no';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT 'no' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='yes/no';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT 'n/a' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='yes/no';
+
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT '1' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='scale';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT '2' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='scale';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT '3' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='scale';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT '4' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='scale';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT '5' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='scale';
+INSERT INTO `sub_rating_answer_type` (`name`, `question_type_id`) SELECT 'n/a' AS name, t.id AS question_type_id FROM `sub_rating_question_type` t WHERE t.name='scale';
+
+INSERT INTO `sub_rating_question_order` (`name`) VALUES 
+('sequential'), 
+('random'), 
+('weighted random'), 
+('balanced');
+
+UPDATE `rateable_collection` SET `question_order_id`=(SELECT `id` FROM `sub_rating_question_order` WHERE `name`='sequential');
 
