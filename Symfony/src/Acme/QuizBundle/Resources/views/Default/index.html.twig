@@ -29,11 +29,15 @@
 
     $(document).ready(function() {
         setupRemainedQuestionIds();
-        cacheDomElements();
-        initEventHandlers();
+        if (remainedQuestionIds.length < 3) {
+            alert('Nincs olyan 3 kérdés, ami nem lett volna az elmúlt két hétben.');
+        } else {
+            cacheDomElements();
+            initEventHandlers();
 
-        showQuestionWithAnswers(true);
-        initTimer();
+            showQuestionWithAnswers(true);
+            initTimer();
+        }
     });
 
     function setupRemainedQuestionIds() {
@@ -66,17 +70,19 @@
         --seconds;
         countdown.html('00:' + String(seconds).lpad('0', 2));
         if (seconds === 0) {
-            evaluateQuiz();
+            evaluateQuiz(true);
         }
     }
 
-    function evaluateQuiz() {
+    function evaluateQuiz(isTimeOut) {
         timer.stop();
+        isTimeOut = isTimeOut || false;
 
         // evaluation
         var correctAnswerNum = 0;
         var ev = $('#evaluation');
         var c, g, t, i = 1;
+        var postData = {};
         for (var id in questions) {
             if (!('GIVEN_ANSWER' in questions[id])) {
                 break;
@@ -84,20 +90,45 @@
             c = questions[id].CORRECT_ANSWER;
             g = questions[id].GIVEN_ANSWER;
             t = evaluatedAnswerTemplate;
-            if (c === g && id !== currentQuestionId) {
+            if (c === g && (!isTimeOut || id !== currentQuestionId)) {
                 t = t.replace('###BADorRIGHT###', 'good');
                 ++correctAnswerNum;
+                postData[id] = null;
             } else {
                 t = t.replace('###BADorRIGHT###', 'bad');
+                if (c !== g) {
+                    postData[id] = getWrongAnswerId(questions[id], g);
+                }
             }
             t = t.replace('###Q_NUM###', i).replace('###Q###', questions[id].QUESTION).replace('###A###', c);
             ev.append(t);
             ++i;
         }
+        sendEvaluatedQuizData(postData);
         $('#correctAnswerNum', ev).html(correctAnswerNum);
         $('#questionNum', ev).html(correctAnswerNum);
         $('#quiz').hide();
         ev.show();
+    }
+
+    function getWrongAnswerId(question, wrongAnswerText) {
+        if (question.WRONG_ANSWER1 === wrongAnswerText) {
+            return question.WRONG_ANSWER1_ID;
+        } else if (question.WRONG_ANSWER2 === wrongAnswerText) {
+            return question.WRONG_ANSWER2_ID;
+        }
+        return null;
+    }
+
+    function sendEvaluatedQuizData(quizData) {
+        $.ajax({
+            url: '{{ path("quiz_save", {"rateableId": rateableId}) }}',
+            data: { quizData: JSON.stringify(quizData) },
+            dataType: "text",
+            type: "POST"
+        }).done(function(data) {
+
+        });
     }
 
     function showQuestionWithAnswers(showAnyway) {

@@ -26,39 +26,30 @@ class Quiz {
      * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @ORM\Column(name="created", type="datetime", nullable=false)
      */
-    private $createdAt;
+    private $created;
 
     /**
      * @var \Acme\RatingBundle\Entity\Rateable
      *
      * @ORM\ManyToOne(targetEntity="Acme\RatingBundle\Entity\Rateable", inversedBy="quizzes")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="rateable_id", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="rateable_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      * })
      */
     private $rateable;
 
     /**
-     * @var \Acme\QuizBundle\Entity\Question
+     * @var ArrayCollection
      *
-     * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Question", inversedBy="quizzes")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="question_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @ORM\OneToMany(targetEntity="QuizReply", mappedBy="quiz")
      */
-    private $question;
+    private $quizReplies;
 
-    /**
-     * @var \Acme\QuizBundle\Entity\Answer
-     *
-     * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Answer", inversedBy="quizzes")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="given_answer_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
-     */
-    private $givenAnswer;
+    public function __construct() {
+        $this->quizReplies = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -71,26 +62,26 @@ class Quiz {
     }
 
     /**
-     * Set createdAt
+     * Set created
      *
-     * @param \DateTime $createdAt
+     * @param \DateTime $created
      * @return Quiz
      */
-    public function setCreatedAt($createdAt)
+    public function setCreated($created)
     {
-        $this->createdAt = $createdAt;
+        $this->created = $created;
 
         return $this;
     }
 
     /**
-     * Get createdAt
+     * Get created
      *
      * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getCreated()
     {
-        return $this->createdAt;
+        return $this->created;
     }
 
     /**
@@ -117,48 +108,35 @@ class Quiz {
     }
 
     /**
-     * Set question
+     * Add quizReply
      *
-     * @param \Acme\QuizBundle\Entity\Question $question
+     * @param \Acme\QuizBundle\Entity\QuizReply $quizReply
      * @return Quiz
      */
-    public function setQuestion(\Acme\QuizBundle\Entity\Question $question = null)
+    public function addQuizReply(\Acme\QuizBundle\Entity\QuizReply $quizReply)
     {
-        $this->question = $question;
+        $this->quizReplies[] = $quizReply;
 
         return $this;
     }
 
     /**
-     * Get question
+     * Remove quizReply
      *
-     * @return \Acme\QuizBundle\Entity\Question
+     * @param \Acme\QuizBundle\Entity\QuizReply $quizReply
      */
-    public function getQuestion()
+    public function removeQuizReply(\Acme\QuizBundle\Entity\QuizReply $quizReply)
     {
-        return $this->question;
+        $this->quizReplies->removeElement($quizReply);
     }
 
     /**
-     * Set givenAnswer
+     * Get quizReplies
      *
-     * @param \Acme\QuizBundle\Entity\Answer $givenAnswer
-     * @return Quiz
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function setGivenAnswer(\Acme\QuizBundle\Entity\Answer $givenAnswer = null)
+    public function getQuizReplies()
     {
-        $this->givenAnswer = $givenAnswer;
-
-        return $this;
-    }
-
-    /**
-     * Get givenAnswer
-     *
-     * @return \Acme\QuizBundle\Entity\Answer
-     */
-    public function getGivenAnswer()
-    {
-        return $this->givenAnswer;
+        return $this->quizReplies;
     }
 }

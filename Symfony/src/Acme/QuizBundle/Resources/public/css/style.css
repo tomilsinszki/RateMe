@@ -448,11 +448,33 @@ body {
 }
 
 .new-questions {
-	float: left;
+	float: right;
 	width: 194px!important;
+	position: relative;
 }
 
 .actual-download {
-	float: right;
+	float: left;
 	width: 235px!important;
+}
+
+
+/* File upload */
+div.fakefile {
+    left:0px;
+    position:absolute;
+    bottom:3px;
+    z-index:1;
+    cursor: pointer;
+}
+
+input.file {
+    opacity:0;
+    -moz-opacity:0;
+    filter:alpha(opacity: 0);
+    position:absolute;
+    width:194px!important;
+    z-index:2;
+    cursor: pointer;
+    left:0;
 }

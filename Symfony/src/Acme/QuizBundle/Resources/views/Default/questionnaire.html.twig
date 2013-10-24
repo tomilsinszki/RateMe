@@ -3,42 +3,124 @@
 {% block stylesheets %}
     {{ parent() }}
 
-    <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmequiz/css/style.css') }}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmequiz/css/style.css') }}" />
 
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="{{ asset('js/jquery-1.5.1.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/utils.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/acmequiz/js/ajaxfileupload.js') }}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+    function downloadQuestionnaire() {
+        {% if questions %}
+            window.open('{{ path("quiz_download", {"rateableCollectionId": rateableCollectionId}) }}', '_blank');
+        {% else %}
+            alert('Még nem lettek feltöltve vizsgakérdések!');
+        {% endif %}
+    }
+
+    function ajaxFileUpload() {
+        $.ajaxFileUpload ({
+            url: '{{ url("quiz_upload") }}',
+            secureuri:false,
+            fileElementId: 'file',
+            dataType: 'json',
+            data:{ rateableCollectionId: {{ rateableCollectionId }} },
+            success: function (data, status) {
+                if (data.invalid) {
+                    alert(data.invalid);
+                } else {
+                    if (data.errors) {
+                        showErrors(data.errors);
+                    } else {
+                        alert('Kérdőiv sikeresen feltöltődött.');
+                        window.open('{{ path("quiz_questionnaire") }}', '_self');
+                    }
+                }
+            },
+            error: function (data, status, e) {
+                alert('Hiba! Oka: '+e);
+            }
+        });
+
+        return false;
+    }
+
+    function showErrors(errors) {
+        var e = '';
+        if (errors.HEADER) {
+            e = '<div>Fejléc hibák:<\/div>';
+            for (var i in errors.HEADER) {
+                e += '<div>'+errors.HEADER[i]+'<\/div>';
+            }
+        }
+        if (errors.QUESTIONS) {
+            e = '<div>Kérdőív hibák:<\/div>';
+            for (var i in errors.QUESTIONS) {
+                e += '<div>'+errors.QUESTIONS[i]+'<\/div>';
+            }
+        }
+
+        $('#errors').html(e);
+    }
+
+    function rateableCollectionChange(e) {
+        var id = e.options[e.selectedIndex].value;
+        window.open('{{ path("quiz_questionnaire") }}/' + id, '_self');
+    }
+
+    </script>
 {% endblock %}
 
 {% block body %}
     {{ parent() }}
 
 <div class="form">
+    <select onchange="rateableCollectionChange(this);" id="rateableCollection" name="rateableCollection">
+        {% for rateableCollection in rateableCollections %}
+            <option value="{{ rateableCollection.id }}" {% if rateableCollectionId == rateableCollection.id %} selected="selected" {% endif %}>{{ rateableCollection.name }}</option>
+        {% endfor %}
+    </select>
 	<div class="question-table">
-	<div class="question-table-header">
-		<div class="col col-1">Kérdés</div>
-		<div class="col col-2">Helyes válasz</div>
-		<div class="col col-3">Egyéb válasz 1</div>
-		<div class="col col-4">Egyéb válasz 2</div>
-	</div>
+	{% if questions %}
+    	<div class="question-table-header">
+    		<div class="col col-1">Kérdés</div>
+    		<div class="col col-2">Helyes válasz</div>
+    		<div class="col col-3">Egyéb válasz 1</div>
+    		<div class="col col-4">Egyéb válasz 2</div>
+    	</div>
 
-    {% for question in questions %}
-		<div class="question-table-row">
-			<div class="col col-1">{{ question.text }}</div>
-			<div class="col col-2">{{ question.correctAnswer.text }}</div>
-			<div class="col col-3">{{ question.wrongAnswer1.text }}</div>
-			<div class="col col-4">{{ question.wrongAnswer2.text }}</div>
-		</div>
-		<div class="border"></div>
-    {% endfor %}
+        {% for question in questions %}
+    		<div class="question-table-row">
+    			<div class="col col-1">{{ question.text }}</div>
+    			<div class="col col-2">{{ question.correctAnswerText }}</div>
+    			{% for wrongAnswer in question.wrongAnswers %}
+        			<div class="col col-3">{{ wrongAnswer.text }}</div>
+		        {% endfor %}
+    		</div>
+    		<div class="border"></div>
+        {% endfor %}
+    {% endif %}
 
     </div>
+    <form name="form" action="" method="POST" enctype="multipart/form-data">
 	<div class="bt_holder">
-		<div class="btn_cont green new-questions">
-			<a class="btn" href="{{ path('quiz_upload') }}">Új kérdéssor feltöltése</a>
-		</div>
 		<div class="btn_cont green actual-download">
-			<a class="btn" href="{{ asset(questionsHref) }}" target="_blank">Aktuális kérdéssor letöltése</a>
+			<div onclick="downloadQuestionnaire();" class="btn">Aktuális kérdéssor letöltése</div>
+		</div>
+		<div class="btn_cont green new-questions">
+            <input onchange="ajaxFileUpload();" type="file" id="file" name="file" class="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+			<div class="btn fakefile">Új kérdéssor feltöltése</div>
 		</div>
 		<div class="clear"></div>
 	</div>
+	</form>
 </div>
+
+<div id="errors"></div>
 
 {% endblock %}

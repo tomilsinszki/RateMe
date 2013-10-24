@@ -33,6 +33,14 @@ class QuestionFile {
         }
     }
 
+    public function isValid() {
+        if (null === $this->file) {
+            return false;
+        }
+
+        return ($this->extension === 'xlsx' || $this->extension === 'xls');
+    }
+
     public function upload() {
         if (null === $this->file) {
             return;

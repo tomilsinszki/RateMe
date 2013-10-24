@@ -2,12 +2,15 @@
 
 namespace Acme\QuizBundle\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Question
  *
- * @ORM\Table(name="question")
+ * @ORM\Table(name="question",
+ * uniqueConstraints={@ORM\UniqueConstraint(name="unique_question",columns={"text", "rateable_collection_id"})})
  * @ORM\Entity(repositoryClass="Acme\QuizBundle\Entity\QuestionRepository")
  */
 class Question
@@ -24,62 +27,67 @@ class Question
     /**
      * @var string
      *
-     * @ORM\Column(name="text", type="string", length=255, nullable=false, unique=true)
+     * @ORM\Column(name="text", type="string", length=255, nullable=false)
      */
     private $text;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="correct_answer_text", type="string", length=255, nullable=false)
+     */
+    private $correctAnswerText;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="WrongAnswer", mappedBy="question")
+     */
+    private $wrongAnswers;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="QuizReply", mappedBy="question")
+     */
+    private $quizReplies;
+
+    /**
+     * @var \Acme\RatingBundle\Entity\RateableCollection
+     *
+     * @ORM\ManyToOne(targetEntity="Acme\RatingBundle\Entity\RateableCollection", inversedBy="questions")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="rateable_collection_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
+     * })
+     */
+    private $rateableCollection;
+
+    /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_occured_at", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime", nullable=false)
      */
-    private $lastOccuredAt;
+    private $created;
 
     /**
-     * @var \Acme\QuizBundle\Entity\QuestionGroup
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\QuestionGroup", inversedBy="questions")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated", type="datetime", nullable=false)
      */
-    private $group;
+    private $updated;
 
     /**
-     * @var \Acme\QuizBundle\Entity\Answer
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Answer", inversedBy="questions_related_by_correct_answer")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="correct_answer_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @ORM\Column(name="deleted", type="datetime", nullable=true)
      */
-    private $correctAnswer;
+    private $deleted;
 
-    /**
-     * @var \Acme\QuizBundle\Entity\Answer
-     *
-     * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Answer", inversedBy="questions_related_by_wrong_answer1")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="wrong_answer1_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
-     */
-    private $wrongAnswer1;
-
-    /**
-     * @var \Acme\QuizBundle\Entity\Answer
-     *
-     * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Answer", inversedBy="questions_related_by_wrong_answer2")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="wrong_answer2_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
-     */
-    private $wrongAnswer2;
-
-
-    public function logOccured() {
-        $this->setLastOccuredAt(new \DateTime('now'));
-
-        return $this;
+    public function __construct() {
+        $this->wrongAnswers = new ArrayCollection();
+        $this->quizReplies = new ArrayCollection();
     }
 
     /**
@@ -116,117 +124,207 @@ class Question
     }
 
     /**
-     * Set lastOccuredAt
+     * Set correctAnswerText
      *
-     * @param \DateTime $lastOccuredAt
+     * @param string $correctAnswerText
      * @return Question
      */
-    public function setLastOccuredAt($lastOccuredAt)
+    public function setCorrectAnswerText($correctAnswerText)
     {
-        $this->lastOccuredAt = $lastOccuredAt;
+        $this->correctAnswerText = $correctAnswerText;
 
         return $this;
     }
 
     /**
-     * Get lastOccuredAt
+     * Get correctAnswerText
+     *
+     * @return string
+     */
+    public function getCorrectAnswerText()
+    {
+        return $this->correctAnswerText;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Question
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
      *
      * @return \DateTime
      */
-    public function getLastOccuredAt()
+    public function getCreated()
     {
-        return $this->lastOccuredAt;
+        return $this->created;
     }
 
     /**
-     * Set group
+     * Set updated
      *
-     * @param \Acme\QuizBundle\Entity\QuestionGroup $group
+     * @param \DateTime $updated
      * @return Question
      */
-    public function setGroup(\Acme\QuizBundle\Entity\QuestionGroup $group = null)
+    public function setUpdated($updated)
     {
-        $this->group = $group;
+        $this->updated = $updated;
 
         return $this;
     }
 
     /**
-     * Get group
+     * Get updated
      *
-     * @return \Acme\QuizBundle\Entity\QuestionGroup
+     * @return \DateTime
      */
-    public function getGroup()
+    public function getUpdated()
     {
-        return $this->group;
+        return $this->updated;
     }
 
-    /**
-     * Set correctAnswer
-     *
-     * @param \Acme\QuizBundle\Entity\Answer $correctAnswer
-     * @return Question
-     */
-    public function setCorrectAnswer(\Acme\QuizBundle\Entity\Answer $correctAnswer = null)
-    {
-        $this->correctAnswer = $correctAnswer;
+    public function logDeleted($withWrongAnswersAlso = true) {
+        $this->setDeleted(new \DateTime('now'));
+
+        if ($withWrongAnswersAlso) {
+            foreach ($this->getWrongAnswers() as $wrongAnswer) {
+                $wrongAnswer->logDeleted();
+            }
+        }
+
+        return $this;
+    }
+
+    public function logUnDeleted($withWrongAnswersAlso = true) {
+        $this->setDeleted(null);
+
+        if ($withWrongAnswersAlso) {
+            foreach ($this->getWrongAnswers() as $wrongAnswer) {
+                $wrongAnswer->logUnDeleted();
+            }
+        }
 
         return $this;
     }
 
     /**
-     * Get correctAnswer
+     * Set deleted
      *
-     * @return \Acme\QuizBundle\Entity\Answer
-     */
-    public function getCorrectAnswer()
-    {
-        return $this->correctAnswer;
-    }
-
-    /**
-     * Set wrongAnswer1
-     *
-     * @param \Acme\QuizBundle\Entity\Answer $wrongAnswer1
+     * @param \DateTime $deleted
      * @return Question
      */
-    public function setWrongAnswer1(\Acme\QuizBundle\Entity\Answer $wrongAnswer1 = null)
+    public function setDeleted($deleted)
     {
-        $this->wrongAnswer1 = $wrongAnswer1;
+        $this->deleted = $deleted;
 
         return $this;
     }
 
     /**
-     * Get wrongAnswer1
+     * Get deleted
      *
-     * @return \Acme\QuizBundle\Entity\Answer
+     * @return \DateTime
      */
-    public function getWrongAnswer1()
+    public function getDeleted()
     {
-        return $this->wrongAnswer1;
+        return $this->deleted;
     }
 
     /**
-     * Set wrongAnswer2
+     * Set rateableCollection
      *
-     * @param \Acme\QuizBundle\Entity\Answer $wrongAnswer2
+     * @param \Acme\RatingBundle\Entity\RateableCollection
      * @return Question
      */
-    public function setWrongAnswer2(\Acme\QuizBundle\Entity\Answer $wrongAnswer2 = null)
+    public function setRateableCollection(\Acme\RatingBundle\Entity\RateableCollection $rateableCollection = null)
     {
-        $this->wrongAnswer2 = $wrongAnswer2;
+        $this->rateableCollection = $rateableCollection;
 
         return $this;
     }
 
     /**
-     * Get wrongAnswer2
+     * Get rateableCollection
      *
-     * @return \Acme\QuizBundle\Entity\Answer
+     * @return \Acme\RatingBundle\Entity\RateableCollection
      */
-    public function getWrongAnswer2()
+    public function getRateableCollection()
     {
-        return $this->wrongAnswer2;
+        return $this->rateableCollection;
+    }
+
+    /**
+     * Add wrongAnswer
+     *
+     * @param \Acme\QuizBundle\Entity\WrongAnswer $wrongAnswer
+     * @return Question
+     */
+    public function addWrongAnswer(\Acme\QuizBundle\Entity\WrongAnswer $wrongAnswer)
+    {
+        $this->wrongAnswers[] = $wrongAnswer;
+
+        return $this;
+    }
+
+    /**
+     * Remove wrongAnswer
+     *
+     * @param \Acme\QuizBundle\Entity\WrongAnswer $wrongAnswer
+     */
+    public function removeWrongAnswer(\Acme\QuizBundle\Entity\WrongAnswer $wrongAnswer)
+    {
+        $this->wrongAnswers->removeElement($wrongAnswers);
+    }
+
+    /**
+     * Get wrongAnswers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWrongAnswers()
+    {
+        return $this->wrongAnswers;
+    }
+
+    /**
+     * Add quizReply
+     *
+     * @param \Acme\QuizBundle\Entity\QuizReply $quizReply
+     * @return Question
+     */
+    public function addQuizReply(\Acme\QuizBundle\Entity\QuizReply $quizReply)
+    {
+        $this->quizReplies[] = $quizReply;
+
+        return $this;
+    }
+
+    /**
+     * Remove quizReply
+     *
+     * @param \Acme\QuizBundle\Entity\QuizReply $quizReply
+     */
+    public function removeQuizReply(\Acme\QuizBundle\Entity\QuizReply $quizReply)
+    {
+        $this->quizReplies->removeElement($quizReply);
+    }
+
+    /**
+     * Get quizReplies
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getQuizReplies()
+    {
+        return $this->quizReplies;
     }
 }
