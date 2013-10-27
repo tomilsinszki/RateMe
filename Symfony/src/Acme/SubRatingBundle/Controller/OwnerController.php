@@ -145,6 +145,29 @@ class OwnerController extends Controller
         return false;
     }
 
+    private function isModifyQuestionRequestValid($request) {
+        if ( !$this->areRequestParametersNonEmpty($request, array('title', 'text', 'target', 'typeId')) ) {
+            return false;
+        }
+
+        if ( $request->request->get('isAnswerNaEnabled') ) {
+            $answerNaText = $request->request->get('answerNaText');
+
+            if ( empty($answerNaText) ) {
+                return false;
+            }
+        }
+        
+        if ( 1 == $request->request->get('typeId') ) {
+            return $this->areRequestParametersNonEmpty($request, array('answerYesText', 'answerNoText'));
+        }
+        else if ( 2 == $request->request->get('typeId') ) {
+            return $this->areRequestParametersNonEmpty($request, array('answerOneText', 'answerTwoText', 'answerThreeText', 'answerFourText', 'answerFiveText'));
+        }
+        
+        return false;
+    }
+
     private function areRequestParametersNonEmpty($request, $parameterNames) {
         foreach ($parameterNames as $parameterName) {
             $parameterValue = $request->request->get($parameterName);
@@ -174,21 +197,21 @@ class OwnerController extends Controller
         $answer = new Answer();
         $answer->setText($request->request->get('answerYesText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, 'yes'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), 'yes'));
         $answer->setQuestion($question);
         $answers[] = $answer;
 
         $answer = new Answer();
         $answer->setText($request->request->get('answerNoText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, 'no'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), 'no'));
         $answer->setQuestion($question);
         $answers[] = $answer;
 
         $answer = new Answer();
         $answer->setText($request->request->get('answerNaText'));
         $answer->setIsEnabled($request->request->get('isAnswerNaEnabled'));
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, 'n/a'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), 'n/a'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
@@ -201,42 +224,42 @@ class OwnerController extends Controller
         $answer = new Answer();
         $answer->setText($request->request->get('answerOneText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, '1'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), '1'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
         $answer = new Answer();
         $answer->setText($request->request->get('answerTwoText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, '2'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), '2'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
         $answer = new Answer();
         $answer->setText($request->request->get('answerThreeText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, '3'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), '3'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
         $answer = new Answer();
         $answer->setText($request->request->get('answerFourText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, '4'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), '4'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
         $answer = new Answer();
         $answer->setText($request->request->get('answerFiveText'));
         $answer->setIsEnabled(true);
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, '5'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), '5'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
         $answer = new Answer();
         $answer->setText($request->request->get('answerNaText'));
         $answer->setIsEnabled($request->request->get('isAnswerNaEnabled'));
-        $answer->setAnswerType($this->getAnswerTypeByQuestionAndName($question, 'n/a'));
+        $answer->setAnswerType($this->getAnswerTypeByQuestionTypeAndName($question->getQuestionType(), 'n/a'));
         $answer->setQuestion($question);
         $answers[] = $answer;
         
@@ -246,18 +269,20 @@ class OwnerController extends Controller
     private function persistQuestionAndAnswers($question, $answers) {
         $em = $this->getDoctrine()->getManager();
         $em->persist($question);
+        
         foreach($answers as $answer) {
             $em->persist($answer);
         }
+        
         $em->flush();
     }
     
-    private function getAnswerTypeByQuestionAndName($question, $name) {
+    private function getAnswerTypeByQuestionTypeAndName($questionType, $name) {
         $query = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:AnswerType')->createQueryBuilder('at')
             ->leftJoin('at.questionType', 'qt')
             ->where('qt.id = :questionTypeId')
             ->andWhere('at.name = :name')
-            ->setParameter('questionTypeId', $question->getQuestionType()->getId())
+            ->setParameter('questionTypeId', $questionType->getId())
             ->setParameter('name', $name)
             ->getQuery();
         
@@ -378,6 +403,11 @@ class OwnerController extends Controller
         }
         
         $request->request->set('isAnswerNaEnabled', ($request->request->get('isAnswerNaEnabled') === 'true'));
+        
+        if ( !$this->isModifyQuestionRequestValid($request) ) {
+            throw $this->createNotFoundException('Request data invalid.');
+            return null;
+        }
 
         $question = $this->getNonDeletedQuestionForRequest($request);
         $this->getOwnedRateableCollectionById($question->getRateableCollection()->getId());
@@ -388,31 +418,88 @@ class OwnerController extends Controller
         }
 
         if ( $question->getQuestionType()->getId() == intval($request->request->get('typeId')) ) {
-            $question->setTitle($request->request->get('title'));
-            $question->setText($request->request->get('text'));
-            $question->setTarget($request->request->get('target'));
-            $question->setRateableCollection($this->getOwnedRateableCollectionById($request->request->get('rateableCollectionId')));
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($question);
-            $em->flush();
+            $this->modifyQuestionAndAnswersIfQuestionTypeDidNotChange($question, $request);
         }
         else {
-            
+            $this->modifyQuestionAndAnswersIfQuestionTypeDidChange($question, $request);
         }
-        
-        // TODO: check if questionType has changed
-        
-        /*
-        if ( !$this->isCreateQuestionRequestValid($request) ) {
-            throw $this->createNotFoundException('Request data invalid.');
-            return null;
-        }
-        */
-
-        //$this->persistQuestionAndAnswers($question, $answers);
         
         return new Response(json_encode(array()), 200, array('Content-Type' => 'application/json'));
+    }
+
+    private function modifyQuestionAndAnswersIfQuestionTypeDidNotChange($question, $request) {
+        $answers = array();
+
+        if ( 'yes/no' == $question->getQuestionType()->getName() ) {
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, 'yes')->setText($request->request->get('answerYesText'))->logUpdated();
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, 'no')->setText($request->request->get('answerNoText'))->logUpdated();
+        }
+        else if ( 'scale' == $question->getQuestionType()->getName() ) {
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, '1')->setText($request->request->get('answerOneText'))->logUpdated();
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, '2')->setText($request->request->get('answerTwoText'))->logUpdated();
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, '3')->setText($request->request->get('answerThreeText'))->logUpdated();
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, '4')->setText($request->request->get('answerFourText'))->logUpdated();
+            $answers[] = $this->getAnswerForQuestionByAnswerTypeName($question, '5')->setText($request->request->get('answerFiveText'))->logUpdated();
+        }
+
+        $answer = $this->getAnswerForQuestionByAnswerTypeName($question, 'n/a');
+        $answer->setText($request->request->get('answerNaText'));
+        $answer->setIsEnabled($request->request->get('isAnswerNaEnabled'));
+        $answer->logUpdated();
+        $answers[] = $answer;
+        
+        $question->setTitle($request->request->get('title'));
+        $question->setText($request->request->get('text'));
+        $question->setTarget($request->request->get('target'));
+        $question->logUpdated();
+
+        $this->persistQuestionAndAnswers($question, $answers);
+    }
+
+    private function modifyQuestionAndAnswersIfQuestionTypeDidChange($question, $request) {
+        $this->deleteAnswersForQuestion($question);
+        
+        $questionType = $this->getDoctrine()->getManager()->getRepository('AcmeSubRatingBundle:QuestionType')->find($request->request->get('typeId'));
+        $answers = array();
+        
+        $question->setTitle($request->request->get('title'));
+        $question->setText($request->request->get('text'));
+        $question->setTarget($request->request->get('target'));
+        $question->setQuestionType($questionType);
+        $question->logUpdated();
+
+        if ( 'yes/no' == $question->getQuestionType()->getName() ) {
+            $answers = $this->createYesNoAnswerObjectsForQuestionUsingRequest($question, $request);
+        }
+        else if ( 'scale' == $question->getQuestionType()->getName() ) {
+            $answers = $this->createScaleAnswerObjectsForQuestionUsingRequest($question, $request);
+        }
+        
+        $this->persistQuestionAndAnswers($question, $answers);
+    }
+    
+    private function deleteAnswersForQuestion($question) {
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($question->getAnswers() as $answer) {
+            $em->remove($answer);
+        }
+        
+        $em->flush();
+    }
+
+    private function getAnswerForQuestionByAnswerTypeName($question, $answerTypeName) {
+        $query = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Answer')->createQueryBuilder('a')
+            ->leftJoin('a.answerType', 'at')
+            ->leftJoin('a.question', 'q')
+            ->where('at.name = :name')
+            ->andWhere('q.id = :questionId')
+            ->andWhere('q.deleted IS NULL')
+            ->setParameter('name', $answerTypeName)
+            ->setParameter('questionId', $question->getId())
+            ->getQuery();
+        
+        return $query->getSingleResult();
     }
 
     private function getNonDeletedQuestionForRequest($request) {

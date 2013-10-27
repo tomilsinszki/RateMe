@@ -166,7 +166,7 @@ $('document').ready(function() {
             dataType: 'JSON',
             async: false
         }).done(function(data) {
-            //location.reload();
+            location.reload();
         });
     }
 
@@ -184,7 +184,7 @@ $('document').ready(function() {
             dataType: 'JSON',
             async: false
         }).done(function(data) {
-            //location.reload();
+            location.reload();
         });
     }
 
