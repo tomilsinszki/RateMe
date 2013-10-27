@@ -1,3 +1,11 @@
+sub_rating_user_next_question:
+    pattern:   /melysegi/kerdoiv/kovetkezo/kerdes
+    defaults: { _controller: AcmeSubRatingBundle:User:saveSubRatingAndShowNextQuestion }
+
+sub_rating_user_thank_you:
+    pattern:   /melysegi/kerdoiv/koszonjuk
+    defaults: { _controller: AcmeSubRatingBundle:User:thankYou }
+
 sub_rating_owner_question_form:
     pattern:   /melysegi/kerdoiv/uj/kerdes/urlap
     defaults: { _controller: AcmeSubRatingBundle:Owner:createQuestionForm }

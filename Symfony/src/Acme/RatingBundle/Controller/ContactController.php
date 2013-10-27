@@ -445,14 +445,14 @@ class ContactController extends Controller
         if ( ( $stars < 1 ) OR ( 5 < $stars ) ) {
             throw $this->createNotFoundException('Invalid rating!');
         }
-
+        
         $contact = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRateToken($token);
         if ( empty($contact) === TRUE ) {
             throw $this->createNotFoundException('Invalid rating!');
         }
         
         $isEmailNonExpired = ( $this->daysPassedSince($contact->getSentEmailAt()) < 3.0 );
-
+        
         $rating = $contact->getRating();
         if ( ( empty($rating) === TRUE ) AND ( $isEmailNonExpired === TRUE ) ) {
             $this->createRatingForContact($contact, $stars);
@@ -463,15 +463,19 @@ class ContactController extends Controller
         else {
             $stars = $contact->getRating()->getStars();
         }
-
+        
         if ( empty($stars) === TRUE ) {
             throw $this->createNotFoundException('Email has expired, no rating was given!');
         }
+
+        $question = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($contact->getRating());
         
-        return $this->render('AcmeRatingBundle:Contact:vote.html.twig', array(
-            'stars' => $stars,
+        return $this->render('AcmeRatingBundle:Rating:new.html.twig', array(
+            'rating' => $contact->getRating(),
             'contact' => $contact,
-            'profileURL' => $this->getImageURL($contact->getRateable()),
+            'rateable' => $contact->getRateable(),
+            'question' => $question,
+            'profileImageURL' => $this->getImageURL($contact->getRateable()),
         ));
     }
     
@@ -489,14 +493,10 @@ class ContactController extends Controller
         $rating->setStars($stars);
         $rating->setCreated(new \DateTime());
         $rating->setUpdated(new \DateTime());
+        $contact->setRating($rating);
         $entityManager->persist($rating);
+        $entityManager->persist($contact);
         $entityManager->flush();
-        
-        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
-        $connection->update('contact',
-            array('rating_id' => $rating->getId()),
-            array('id' => $contact->getId())
-        );
     }
     
     private static function minsPassedSince($pastDatetime) {
@@ -507,11 +507,11 @@ class ContactController extends Controller
     }
 
     private function updateRating($rating, $stars) {
-        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
-        $connection->update('rating',
-            array('stars' => $stars, 'updated' => date('Y-m-d H:i:s')),
-            array('id' => $rating->getId())
-        );
+        $entityManager = $this->getDoctrine()->getManager();
+        $rating->setStars($stars);
+        $rating->setUpdated(new \DateTime());
+        $entityManager->persist($rating);
+        $entityManager->flush();
     }
 
     private function getImageURL($rateable) {

@@ -28,15 +28,14 @@ class RatingController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($rating);
         $entityManager->flush();
-        
-        $content = $this->renderView('AcmeRatingBundle:Rating:new.html.twig', array(
+
+        return $this->render('AcmeRatingBundle:Rating:new.html.twig', array(
             'rating' => $rating,
             'rateable' => $rateable,
-            'collection' => $rateable->getCollection(),
-            'rateableImageURL' => $this->getImageURL($rateable),
+            'question' => $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating),
+            'contact' => $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating),
+            'profileImageURL' => $this->getImageURL($rateable),
         ));
-
-        return new Response($content);
     }
 
     private function getStarsFromRequest()

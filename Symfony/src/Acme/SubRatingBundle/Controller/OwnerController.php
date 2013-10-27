@@ -8,7 +8,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Acme\SubRatingBundle\Entity\Question;
+use Acme\SubRatingBundle\Entity\QuestionType;
 use Acme\SubRatingBundle\Entity\Answer;
+use Acme\SubRatingBundle\Entity\AnswerType;
+use Acme\SubRatingBundle\Entity\SubRating;
 
 class OwnerController extends Controller
 {

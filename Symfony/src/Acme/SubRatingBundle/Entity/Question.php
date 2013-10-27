@@ -6,8 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Acme\SubRatingBundle\Entity\Question
  *
- * @ORM\Entity
  * @ORM\Table(name="sub_rating_question", uniqueConstraints={@ORM\UniqueConstraint(columns={"sequence", "collection_id"})})
+ * @ORM\Entity(repositoryClass="Acme\SubRatingBundle\Entity\QuestionRepository")
  */
 class Question
 {
