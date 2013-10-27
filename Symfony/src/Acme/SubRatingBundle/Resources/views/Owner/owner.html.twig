@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RateMe</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        
+        <link href="{{ asset('css/global.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/upper-menu.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/jquery-ui.min.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/chosen.css') }}" type="text/css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmesubrating/css/owner.css') }}" />
+        
+        <script src="{{ asset('js/jquery.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/jquery-ui.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/utils.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/chosen.jquery.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('bundles/acmesubrating/js/owner.js') }}" type="text/javascript"></script>
+
+        <style>
+            .ui-button{
+                display:inline-block;
+                position:relative;
+                padding:0;
+                line-height:normal;
+                margin-right:.1em;
+                cursor:pointer;
+                vertical-align:middle;
+                text-align:center;
+                overflow:visible;
+                border-radius: 4px !important;
+                box-shadow: inset 0px -3px 0px rgb(155, 193, 0);
+                border:none;
+                background-color: #aad300;
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aad300', endColorstr='#c2dc00');
+                background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00));
+                background: -moz-linear-gradient(top,  #aad300,  #c2dc00);
+                background: -o-linear-gradient(top,  #aad300,  #c2dc00);
+            }
+
+            .ui-button .ui-button-text{
+                display:block;
+                line-height:normal;
+                font-family: 'DINProH-Medium';
+                color: #535353;
+                font-size: 16px;
+                -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(104,104,104,1)), to(rgba(104,104,104,0)));
+            }
+
+            .ui-button-text-only .ui-button-text{
+                padding:.2em 1em;
+            }
+
+            .ui-dialog{
+                /*
+                background-color: #585858 !important;
+                background-color: rgba(98, 98, 98, 0.5) !important;
+                */
+                box-shadow: inset 0px -2px 1px rgba(255, 255, 255, 0.15), 0px -1px 2px rgba(0, 0, 0, 0.15) !important;
+                border-radius: 10px !important;
+                left: 50% !important;
+                margin-left: -120px !important;
+                padding: 15px 0 !important;
+                position: absolute !important;
+                text-align: center !important;
+                width: 240px !important;
+                filter:alpha(opacity=97) !important;
+                opacity:.97 !important;
+            }
+
+            .ui-dialog .ui-dialog-titlebar{
+                padding:.4em 1em;
+                position:relative;
+                display:none;
+            }
+
+            .ui-dialog .ui-dialog-content{
+                position:relative;
+                border:0;
+                background:0;
+                overflow:auto;
+                min-height:0 !important;
+            }
+
+            .ui-dialog .ui-dialog-buttonpane{
+                text-align:left;
+                border-width:1px 0 0;
+                background-image:none;
+                margin-top:1em;
+            }
+
+            .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
+                text-align: center;
+            }
+
+            .ui-dialog .ui-dialog-buttonpane button{
+                margin-left: 0.4em;
+                margin-right: 0.4em;
+                margin-top: 0.4em;
+                cursor:pointer;
+            }
+
+            .ui-progressbar .ui-progressbar-overlay{
+                /*
+                background:url(../images/jquery-ui/animated-overlay.gif);
+                */
+                height:100%;
+                filter:alpha(opacity=25);
+                opacity:.25;
+            }
+
+            .ui-widget{
+            }
+            
+            .ui-widget .ui-widget{
+            }
+
+            .ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button{
+            }
+
+            .ui-widget-content{
+                /*
+                background-color: #585858 !important;
+                background-color: rgba(98, 98, 98, 0.5) !important;
+                */
+                /*
+                background: none repeat scroll 0 0 rgba(98, 98, 98, 0.5) !important;
+                */
+            }
+
+            .ui-widget-content a{
+                color:#fff;
+            }
+
+            .ui-widget-header{
+                border:1px solid #aaa;
+                /*
+                background:#ccc url(../images/jquery-ui/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+                */
+                color:#222;
+                font-weight:700;
+            }
+
+            .ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default{
+                background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+                border-color: #444444 #333333 #222222;
+                border-width: 1px 1px 0px 1px;
+                opacity: 100;
+                filter:Alpha(Opacity=1);
+            }
+
+            .ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus{}
+
+            .ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active{}
+
+            .ui-state-highlight,.ui-widget-content .ui-state-highlight,.ui-widget-header .ui-state-highlight{
+                border:1px solid #fcefa1;
+                /*
+                background:#fbf9ee url(../images/jquery-ui/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x;
+                */
+                color:#363636;
+            }
+
+            .ui-state-error,.ui-widget-content .ui-state-error,.ui-widget-header .ui-state-error{
+                border:1px solid #cd1a0a;
+                /*
+                background:#fef1ec url(../images/jquery-ui/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x;
+                */
+                color:#cd0a0a;
+            }
+
+            .ui-state-disabled,.ui-widget-content .ui-state-disabled,.ui-widget-header .ui-state-disabled{
+                background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+                border-color: #444444 #333333 #222222;
+                opacity: 100;
+                filter:Alpha(Opacity=1);
+            }
+            
+            /*
+            .ui-icon,.ui-widget-content .ui-icon{background-image:url(../images/jquery-ui/ui-icons_222222_256x240.png)}
+            .ui-widget-header .ui-icon{background-image:url(../images/jquery-ui/ui-icons_222222_256x240.png)}
+            .ui-state-default .ui-icon{background-image:url(../images/jquery-ui/ui-icons_888888_256x240.png)}
+            .ui-state-hover .ui-icon,.ui-state-focus .ui-icon{background-image:url(../images/jquery-ui/ui-icons_454545_256x240.png)}
+            .ui-state-active .ui-icon{background-image:url(../images/jquery-ui/ui-icons_454545_256x240.png)}
+            .ui-state-highlight .ui-icon{background-image:url(../images/jquery-ui/ui-icons_2e83ff_256x240.png)}
+            .ui-state-error .ui-icon,.ui-state-error-text .ui-icon{background-image:url(../images/jquery-ui/ui-icons_cd0a0a_256x240.png)}
+            */
+
+            .ui-corner-all,.ui-corner-top,.ui-corner-left,.ui-corner-tl{border-top-left-radius:10px}
+            .ui-corner-all,.ui-corner-top,.ui-corner-right,.ui-corner-tr{border-top-right-radius:10px}
+            .ui-corner-all,.ui-corner-bottom,.ui-corner-left,.ui-corner-bl{border-bottom-left-radius:10px}
+            .ui-corner-all,.ui-corner-bottom,.ui-corner-right,.ui-corner-br{border-bottom-right-radius:10px}
+            .ui-widget-overlay{
+                opacity: 0;
+                filter:Alpha(Opacity=0);
+            }
+            
+            .ui-widget-shadow{
+                margin:-8px 0 0 -8px;
+                padding:8px;
+                /*
+                background:#aaa url(../images/jquery-ui/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
+                */
+                opacity:.3;
+                filter:Alpha(Opacity=30);
+                border-radius:8px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="bg_grad">
+            <div class="content">
+                <div class="wrap">                
+                    <h1 class="questionnaireTitle">
+                        <select id="rateableCollectionSelect">
+                            {% for ownedCollection in ownedCollections %}
+                                <option {% if ownedCollection.id == collection.id %}selected="selected"{% endif %}  value="{{ ownedCollection.id }}">{{ ownedCollection.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </h1>
+                    <div id="questionnaireForm" class="questionnaireForm" data-ajax-route="{{ path('_welcome') }}">        
+                    	<div class="upper-menu">
+							<div class="upper-menu-inner">
+								<a href="{{ path('acme_manager_welcome') }}" class="upper-home-btn"></a>
+								<div class="upper-logout-btn">
+									<a href="{{ path('logout') }}"></a>
+									{{ app.user.username }}
+								</div>
+							</div>
+						</div>      
+                        <h2 class="questionnaireSubTitle">{% trans from 'owner' %}ordering{% endtrans %}</h2>
+                        <div class="sequenceOrder">
+                            <div class="seqOptionHoverWrapper"></div>
+                            {% for questionOrder in questionOrders %}
+                                <div class="seqOption">
+                                    {% if 1 == questionOrder.id %}
+                                        <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="fix" class="checkboxInput" type="radio" name="listType">
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="fix">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                    {% elseif 2 == questionOrder.id %}
+                                        <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="random" class="checkboxInput" type="radio" name="listType">
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="random">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                    {% elseif 3 == questionOrder.id %}
+                                        <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="weight" class="checkboxInput" type="radio" name="listType">
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="weight">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                    {% elseif 4 == questionOrder.id %}
+                                        <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="balance" class="checkboxInput" type="radio" name="listType">
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="balance">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}             
+                        </div>
+                        <h2 class="questionnaireSubTitle">{% trans from 'owner' %}questions{% endtrans %}</h2>
+                        <div class="questionTable">
+                            <ul id="sortable">
+                                <li class="ui-state-default ui-state-disabled questionRowHeader">
+                                    <div class="questionTableHeader">
+                                        <div class="col col-1">{% trans from 'owner' %}sequence{% endtrans %}</div>
+                                        <div class="col col-2">{% trans from 'owner' %}title{% endtrans %}</div>
+                                        <div class="col col-3">{% trans from 'owner' %}text{% endtrans %}</div>
+                                        <div class="col col-4">{% trans from 'owner' %}type{% endtrans %}</div>
+                                        <div class="col col-5">{% trans from 'owner' %}target{% endtrans %}</div>
+                                        <div class="col col-6"></div>
+                                    </div>                    
+                                </li>            
+                                {% for question in questions %}
+                                    <li class="ui-state-default questionRow" data-id="{{ question.id }}">
+                                        <div class="border"></div>
+                                        <div class="questionTableRow">
+                                            <div class="col col-1 questionSequence">{{ question.sequence }}</div>
+                                            <div class="col col-2">
+                                                <span data-prev="{{ question.title }}" class="questionSpan questionTitleSpan">{{ question.title }}</span>
+                                                <div class="input-wrapper">
+                                                    <input class="questionInput questionTitleInput" style="display:none;" type="text" value="{{ question.title }}" />
+                                                </div>
+                                            </div>
+                                            <div class="col col-3">
+                                                <span data-prev="{{ question.text }}" class="questionSpan questionTextSpan">{{ question.text }}</span>
+                                                <div class="input-wrapper">
+                                                    <input class="questionInput questionTextInput" style="display:none;" type="text" value="{{ question.text }}" />
+                                                </div>
+                                            </div>
+                                            <div class="col col-4">
+                                                <span data-prev-text="{{ question.questionType.name|trans({}, 'questionType') }}" class="questionSelectSpan questionTypeSpan" data-question-type-id="{{ question.questionType.id }}">{{ question.questionType.name|trans({}, 'questionType') }}</span>
+                                                <select class="selectInput questionTypeSelect" style="display:none;">
+                                                    {% for questionType in questionTypes %}
+                                                        {% if questionType.name == question.questionType.name %}
+                                                            <option value="{{ questionType.id }}" selected="selected">{{ questionType.name|trans({}, 'questionType') }}</option>
+                                                        {% else %}
+                                                            <option value="{{ questionType.id }}">{{ questionType.name|trans({}, 'questionType') }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}                                    
+                                                </select>
+                                            </div>
+                                            <div class="col col-5">
+                                                {% if question.target == constant('Acme\\SubRatingBundle\\Controller\\OwnerController::RATEABLE_TARGET_TYPE')  %}
+                                                    <span data-prev="{{ question.target }}" data-prev-text="{% trans from 'owner' %}employee{% endtrans %}" class="questionSelectSpan targetSpan">
+                                                        {% trans from 'owner' %}employee{% endtrans %}
+                                                    </span>
+                                                {% elseif question.target == constant('Acme\\SubRatingBundle\\Controller\\OwnerController::COLLECTION_TARGET_TYPE') %}
+                                                    <span data-prev="{{ question.target }}" data-prev-text="{% trans from 'owner' %}shop{% endtrans %}" class="questionSelectSpan targetSpan">
+                                                        {% trans from 'owner' %}shop{% endtrans %}
+                                                    </span>
+                                                {% endif %}
+                                                <select class="selectInput targetSelect" style="display:none;">
+                                                    {% if 1 == question.target %}
+                                                        <option value="{{ constant('Acme\\SubRatingBundle\\Controller\\OwnerController::RATEABLE_TARGET_TYPE') }}" selected="selected">{% trans from 'owner' %}employee{% endtrans %}</option>
+                                                    {% else %}
+                                                        <option value="{{ constant('Acme\\SubRatingBundle\\Controller\\OwnerController::RATEABLE_TARGET_TYPE') }}">{% trans from 'owner' %}employee{% endtrans %}</option>
+                                                    {% endif %}
+                                                    
+                                                    {% if 2 == question.target %}
+                                                        <option value="{{ constant('Acme\\SubRatingBundle\\Controller\\OwnerController::COLLECTION_TARGET_TYPE') }}" selected="selected">{% trans from 'owner' %}shop{% endtrans %}</option>
+                                                    {% else %}
+                                                        <option value="{{ constant('Acme\\SubRatingBundle\\Controller\\OwnerController::COLLECTION_TARGET_TYPE') }}">{% trans from 'owner' %}shop{% endtrans %}</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                            <div class="col col-6"><div class="deleteButton"></div></div>
+                                        </div>                        
+                                        <div class="questionAnswerRow"></div>
+                                    </li>            
+                                {% endfor %}
+                                <div id="dialog-delete-confirm" title="Törlés megerősítése" style="display:none;">
+                                    <span class="ui-dialog-content-text">Biztosan törli a kérdést?</span>
+                                </div>
+                                <div id="dialog-cancel-confirm" title="Kilépés megerősítése" style="display:none;">
+                                    <span class="ui-dialog-content-text">Nem mentett változások vannak.<br/> Biztos kilép?</span>
+                                </div>
+                                <div id="dialog-update-confirm" title="Módosítás megerősítése" style="display:none;">
+                                    <span class="ui-dialog-content-text">A módosított kérdéshez már vannak szavazatok.<br/> Hogyan kezeljük a módosított kérdést?</span>
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="btn_cont yellow new-question createNewQuestion" id="createNewQuestionButton">
+                            <div class="btn">
+                                <h3>
+                                    <div>{% trans from 'owner' %}new question{% endtrans %}</div>
+                                </h3>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -60,8 +60,14 @@ security:
         - { path: ^/melysegi/kerdesek, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/melysegi/kovetkezo/kerdes, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/melysegi/koszonjuk, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
-        - { path: ^/melysegi/kerdoiv, roles: 'ROLE_MANAGER' }        
-        - { path: ^/melysegi/kerdestipusok, roles: 'ROLE_MANAGER' }        
-        - { path: ^/melysegi/kerdes/sorrend/valozas, roles: 'ROLE_MANAGER' }        
-        - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  
+        - { path: ^/melysegi/kerdoiv/uj/kerdes/urlap, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/uj/kerdes/alurlap/igennem, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/uj/kerdes/alurlap/skala, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/kerdes/valaszok, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/kerdes/letrehozas, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/kerdes/torles, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/sorrend/tipus/valtozas, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/sorrend/valtozas, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv, roles: 'ROLE_MANAGER' }
+        - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  

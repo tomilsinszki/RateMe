@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS `sub_rating_answer` (
   `is_enabled` TINYINT(1) NOT NULL,
   `created` DATETIME NOT NULL,
   `updated` DATETIME NOT NULL,
-  `deleted` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `IDX_3A82E7731E27F6BF` (`question_id` ASC),
   INDEX `IDX_3A82E773C54C8C93` (`type_id` ASC),

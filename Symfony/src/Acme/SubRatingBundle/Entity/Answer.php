@@ -65,13 +65,6 @@ class Answer
      * @ORM\Column(name="updated", type="datetime", nullable=false)
      */
     private $updated;
-
-    /**
-     * @var \DateTime $deleted
-     *
-     * @ORM\Column(name="deleted", type="datetime", nullable=true)
-     */
-    private $deleted;
     
     
     /**
@@ -193,37 +186,7 @@ class Answer
     {
         return $this->updated;
     }
-
-    /**
-     * Set deleted
-     *
-     * @param \DateTime $deleted
-     * @return Answer
-     */
-    public function setDeleted($deleted)
-    {
-        $this->deleted = $deleted;
     
-        return $this;
-    }
-
-    public function logDeleted()
-    {
-        $this->deleted = new \DateTime("now");
-    
-        return $this;
-    }
-
-    /**
-     * Get deleted
-     *
-     * @return \DateTime 
-     */
-    public function getDeleted()
-    {
-        return $this->deleted;
-    }
-
     /**
      * Set question
      *

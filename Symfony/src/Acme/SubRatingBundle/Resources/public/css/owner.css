@@ -21,13 +21,9 @@
     cursor: pointer;
 }
 
-#QuestionAnswerRow {
-    display: none;
-}
-
-.naAvailableDiasabled {
-    opacity: .6;
-    background-color: #DDDDDD;
+.naInputDisabled {
+    filter:alpha(opacity=60);
+    opacity:.60;
 }
 
 h1.questionnaireTitle {
@@ -47,6 +43,7 @@ h2.questionnaireSubTitle {
     padding-left: 20px;    
     text-align: left;
     font-family: 'DINProH-Regular';
+    text-transform: capitalize;
 }
 
 .questionnaireForm {
@@ -62,7 +59,7 @@ h2.questionnaireSubTitle {
     box-shadow: inset 0px -2px 8px rgba(0, 0, 0, 0.65);
     margin: 0 auto 30px;
     min-width: 800px;
-    padding: 25px 30px;
+    padding: 80px 30px 25px;
     position: relative;
 }
 
@@ -138,6 +135,7 @@ h2.questionnaireSubTitle {
 
 .questionTableHeader .col {
     padding: 10px 0;
+    text-transform: capitalize;
 }
 
 .col {
@@ -191,7 +189,7 @@ h2.questionnaireSubTitle {
     padding-right: 10px;
 }
 
-.deleteBtn {
+.deleteButton {
     background: transparent url('/bundles/acmesubrating/images/pic_holder.png') 0px 0px no-repeat;
     cursor: pointer;
     height: 14px;
@@ -212,6 +210,7 @@ h2.questionnaireSubTitle {
     line-height: 30px;
     table-layout: fixed;
     width: 100%;
+    text-transform: capitalize;
 }
 
 .answerBox .col-2 {
@@ -391,12 +390,14 @@ h2.questionnaireSubTitle {
 .saveButton {
     float: left;
     margin: 15px 0 0 15px;
+    text-transform: capitalize;
 }
 
 .cancelButton,
 .withoutSaveButton {
     float: right;
     margin: 15px 15px 0 0;
+    text-transform: capitalize;
 }
 
 .wrap {
@@ -446,6 +447,7 @@ h2.questionnaireSubTitle {
 .new-question {
     margin: 20px auto 0;
     width: 218px!important;
+    text-transform: capitalize;
 }
 
 .btn_cont.yellow .btn h3:after {

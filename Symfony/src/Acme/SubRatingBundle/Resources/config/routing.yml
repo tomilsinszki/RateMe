@@ -1,12 +1,40 @@
+sub_rating_owner_question_form:
+    pattern:   /melysegi/kerdoiv/uj/kerdes/urlap
+    defaults: { _controller: AcmeSubRatingBundle:Owner:createQuestionForm }
+
+sub_rating_owner_question_yes_no_subform:
+    pattern:   /melysegi/kerdoiv/uj/kerdes/alurlap/igennem
+    defaults: { _controller: AcmeSubRatingBundle:Owner:createYesNoAnswersSubForm }
+
+sub_rating_owner_question_scale_subform:
+    pattern:   /melysegi/kerdoiv/uj/kerdes/alurlap/skala
+    defaults: { _controller: AcmeSubRatingBundle:Owner:createScaleAnswersSubForm }
+
+sub_rating_owner_question_order_change:
+    pattern:   /melysegi/kerdoiv/sorrend/tipus/valtozas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:questionOrderChange }
+
+sub_rating_owner_answers:
+    pattern:    /melysegi/kerdoiv/kerdes/valaszok
+    defaults: { _controller: AcmeSubRatingBundle:Owner:getAnswers }
+
+sub_rating_owner_create:
+    pattern:   /melysegi/kerdoiv/kerdes/letrehozas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:createQuestion }
+
+sub_rating_owner_modify:
+    pattern:   /melysegi/kerdoiv/kerdes/modositas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:modifyQuestion }
+    
+sub_rating_owner_delete:
+    pattern:   /melysegi/kerdoiv/kerdes/torles
+    defaults: { _controller: AcmeSubRatingBundle:Owner:deleteQuestion } 
+
+sub_rating_owner_sequence_change:
+    pattern:   /melysegi/kerdoiv/sorrend/valtozas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:questionSequenceChange } 
+
 sub_rating_owner_main:
     pattern:   /melysegi/kerdoiv/{rateableCollectionId}
-    defaults: { _controller: AcmeSubRatingBundle:Owner:index, rateableCollectionId: null }    
-
-sub_rating_question_types:
-    pattern:   /melysegi/kerdestipusok
-    defaults: { _controller: AcmeSubRatingBundle:Owner:getQuestionTypes }  
-
-sub_rating_question_order_change:
-    pattern:   /melysegi/kerdes/sorrend/valozas
-    defaults: { _controller: AcmeSubRatingBundle:Owner:questionOrderChange }
+    defaults: { _controller: AcmeSubRatingBundle:Owner:owner, rateableCollectionId: null }
 
