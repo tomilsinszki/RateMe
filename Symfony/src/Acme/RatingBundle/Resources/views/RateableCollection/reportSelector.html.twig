@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>RateMe</title>
+	</head>
+	<body>
+        <form action="{{ path('report') }}" method="post">
+            <select name="rateableCollectionId">
+                {% for collection in ownedCollections %}
+                    <option value="{{ collection.id }}">{{ collection.name }}</option>
+                {% endfor %}
+            </select>
+            
+            <input type="date" name="startDateString" value="{{ defaultStartDateString }}" />
+            <input type="date" name="endDateString" value="{{ defaultEndDateString }}" />
+            <input type="submit" value="Megtekintés">
+        <form>
+	</body>
+</html>

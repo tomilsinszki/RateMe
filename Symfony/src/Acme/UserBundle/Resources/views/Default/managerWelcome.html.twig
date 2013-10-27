@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>RateMe</title>
+		<link href="{{ asset('bundles/acmeuser/css/manager_welcome.css') }}" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<div class="bg-grad"></div>
+		<div class="wrapper">
+				<div class="btn_cont yellow save-button">
+					<div class="btn">{{ user.username }}</div>
+				</div>
+
+                <a href='{{ path('report_selector') }}'>
+                    <div class="gray-btn-cont report">
+                        <div class="gray-btn">
+                            <div class="img-container">
+                                <div class="img"></div>
+                            </div>
+                            <h3>Riportok</h3>
+                        </div>
+                    </div>
+                </a>
+				
+				<div class="gray-btn-cont examination">
+					<div class="gray-btn">
+						<div class="img-container">
+							<div class="img"></div>
+						</div>
+						<h3>Ügyfél kérdőív</h3>
+					</div>
+				</div>
+				
+				<div class="gray-btn-cont questionnaire">
+					<div class="gray-btn">
+						<div class="img-container">
+							<div class="img"></div>
+						</div>
+						<h3>Dolgozói kérdőív</h3>
+					</div>
+				</div>
+				
+				<div class="gray-btn-cont rateableCollection">
+					<div class="gray-btn">
+						<div class="img-container">
+							<div class="img"></div>
+						</div>
+						<h3>Üzletek</h3>
+					</div>
+				</div>
+				
+				<div class="clear"></div>
+			</div>
+	</body>
+</html>

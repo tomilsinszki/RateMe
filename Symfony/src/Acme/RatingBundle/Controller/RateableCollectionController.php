@@ -334,11 +334,47 @@ class RateableCollectionController extends Controller
         return $rateable;
     }
 
-    public function reportAction($startDateString, $endDateString)
+    public function reportSelectorAction() {
+        $ownedCollections = $this->getUserFromContext()->getOwnedCollections();
+        if ( empty($ownedCollections) ) {
+            return new Response('<html><body>Nincs hozzáférése egyetlen üzlet riportjának megtekintéséhez sem.</body></html>');
+        }
+        
+        return $this->render('AcmeRatingBundle:RateableCollection:reportSelector.html.twig', array(
+            'ownedCollections' => $ownedCollections,
+            'defaultStartDateString' => date("Y-m-d", strtotime("-1 months")),
+            'defaultEndDateString' => date("Y-m-d"),
+        ));
+    }
+    
+    private function getUserFromContext()
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ( empty($user) === TRUE ) {
+            throw $this->createNotFoundException('Current user could not be found.');
+        }
+
+        return $user;
+    }
+
+    public function reportAction()
+    {
+        if ( !$this->getRequest()->isMethod('POST') ) {
+            return;
+        }
+
+        $this->reportCollection = $this->getRateableCollectionById($this->getRequest()->request->get('rateableCollectionId'));
+
+        if ( empty($this->reportCollection) ) {
+            throw $this->createNotFoundException('Rateable collection not found!');
+        }
+        else if ( !$this->getUserFromContext()->getOwnedCollections()->contains($this->reportCollection) ) {
+            throw $this->createNotFoundException('Current user has no right no access to this rateableCollection.');
+        }
+        
         $this->reportCurrentPeriod = array(
-            'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "$startDateString 00:00:00"),
-            'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "$endDateString 00:00:00"),
+            'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "{$this->getRequest()->request->get('startDateString')} 00:00:00"),
+            'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "{$this->getRequest()->request->get('endDateString')} 00:00:00"),
         );
 
         if ( Validator::isEndDateLaterThanStartDateByAtLeastOneDay($this->reportCurrentPeriod['startDate'], $this->reportCurrentPeriod['endDate']) === FALSE ) {
@@ -380,11 +416,6 @@ class RateableCollectionController extends Controller
     }
 
     private function loadReportDataForPeriod() {
-        $this->reportCollection = CurrentUser::getCollectionIfOwner($this->get('security.context'));
-        if ( empty($this->reportCollection) === TRUE ) {
-            throw $this->createNotFoundException('Rateable collection not found for current user!');
-        }
-
         $this->rateableReportsData = array();
         
         $this->initOverallRatingAverageByDayChartData();

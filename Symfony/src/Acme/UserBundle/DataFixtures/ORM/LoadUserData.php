@@ -26,8 +26,42 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         
         $this->createUserWithGroup($manager, 'somtel.manager', 'manager', $managerGroup);
         $this->createUserWithGroup($manager, 'kspartner.manager', 'manager', $managerGroup);
-        
-        $userNamesForSomtel = array(
+
+        $this->createUserWithGroup($manager, 'vidanet', 'admin123', $managerGroup);
+        $this->createUserWithGroup($manager, 'kspartner', 'ksadmin123', $managerGroup);
+        $this->createUserWithGroup($manager, 'somtel', 'somadmin123', $managerGroup);
+
+        $this->createVidanetUsers($manager, $customerServiceGroup);
+        $this->createSomtelUsers($manager, $customerServiceGroup);
+        $this->createKsPartnerUsers($manager, $customerServiceGroup);
+    }
+
+    private function createVidanetUsers($manager, $customerServiceGroup) {
+        $userNames = array(
+            'baranyaine.herold.andrea',
+            'varga.andrea',
+            'bokor.zsuzsanna',
+            'ihasz.bea',
+            'wachtler.agota',
+            'szoke.veronika',
+            'varga.ibolya',
+            'becsi.nikolett',
+            'vegh.zsuzsanna',
+            'fordos.andrea',
+            'hende.judit',
+            'freyne.anka.zsuzsanna',
+            'nemedi.rita',
+            'eizler.kitti',
+            'szenasy.zoltanne',
+            'nyiri.agnes',
+            'petroviczne.szalai.veronika',
+        );
+
+        $this->createUsers($manager, $customerServiceGroup, $userNames, 'vidanet123');
+    }
+
+    private function createSomtelUsers($manager, $customerServiceGroup) {
+        $userNames = array(
             'barko.renata',
             'gozo.viktoria',
             'jarfas.nora',
@@ -49,9 +83,11 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
             'kotfas.judit',
         );
 
-        $this->createUsersForSomtel($manager, $customerServiceGroup, $userNamesForSomtel, 'somtel123');
+        $this->createUsers($manager, $customerServiceGroup, $userNames, 'somtel123');
+    }
 
-        $userNamesForKsPartner = array(
+    private function createKsPartnerUsers($manager, $customerServiceGroup) {
+        $userNames = array(
             'acs-gergely.zita',
             'adamecz.eva',
             'bekesi.alexandra',
@@ -67,21 +103,15 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
             'arbogaszt.fanni',
         );
         
-        $this->createUsersForKsPartner($manager, $customerServiceGroup, $userNamesForKsPartner, 'kspartner123');
+        $this->createUsers($manager, $customerServiceGroup, $userNames, 'kspartner123');
     }
-
-    private function createUsersForSomtel($manager, $customerServiceGroup, $userNames, $defaultPassword) {
+    
+    private function createUsers($manager, $group, $userNames, $defaultPassword) {
         foreach( $userNames AS $userName ) {
-            $this->createUserWithGroup($manager, $userName, $defaultPassword, $customerServiceGroup);
+            $this->createUserWithGroup($manager, $userName, $defaultPassword, $group);
         }
     }
-
-    private function createUsersForKsPartner($manager, $customerServiceGroup, $userNames, $defaultPassword) {
-        foreach( $userNames AS $userName ) {
-            $this->createUserWithGroup($manager, $userName, $defaultPassword, $customerServiceGroup);
-        }
-    }
-
+    
     private function createRaterGroup(ObjectManager $manager, $name, $roleName) {
         $group = new Group();
         $group->setName($name);
