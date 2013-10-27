@@ -26,7 +26,7 @@ class QuizReply {
      *
      * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Quiz", inversedBy="quizReplies")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="quiz_id", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="quiz_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      * })
      */
     private $quiz;
@@ -36,7 +36,7 @@ class QuizReply {
      *
      * @ORM\ManyToOne(targetEntity="Acme\QuizBundle\Entity\Question", inversedBy="quizReplies")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="question_id", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="question_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      * })
      */
     private $question;
@@ -90,7 +90,7 @@ class QuizReply {
      * @param \Acme\QuizBundle\Entity\Question
      * @return QuizReply
      */
-    public function setQuestion(\Acme\QuestionBundle\Entity\Question $question = null)
+    public function setQuestion(\Acme\QuizBundle\Entity\Question $question = null)
     {
         $this->question = $question;
 
@@ -113,7 +113,7 @@ class QuizReply {
      * @param \Acme\QuizBundle\Entity\WrongAnswer
      * @return QuizReply
      */
-    public function setWrongGivenAnswer(\Acme\QuestionBundle\Entity\WrongAnswer $wrongGivenAnswer = null)
+    public function setWrongGivenAnswer(\Acme\QuizBundle\Entity\WrongAnswer $wrongGivenAnswer = null)
     {
         $this->wrongGivenAnswer = $wrongGivenAnswer;
 

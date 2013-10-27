@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Question
  *
- * @ORM\Table(name="question",
+ * @ORM\Table(name="quiz_question",
  * uniqueConstraints={@ORM\UniqueConstraint(name="unique_question",columns={"text", "rateable_collection_id"})})
  * @ORM\Entity(repositoryClass="Acme\QuizBundle\Entity\QuestionRepository")
  */

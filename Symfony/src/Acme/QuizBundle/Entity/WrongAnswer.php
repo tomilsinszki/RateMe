@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * WrongAnswer
  *
- * @ORM\Table(name="wrong_answer",
+ * @ORM\Table(name="quiz_wrong_answer",
  * uniqueConstraints={@ORM\UniqueConstraint(name="unique_wrong_answer",columns={"text", "question_id"})})
  * @ORM\Entity
  */
