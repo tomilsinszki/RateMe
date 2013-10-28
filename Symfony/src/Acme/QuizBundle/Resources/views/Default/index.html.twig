@@ -3,6 +3,7 @@
 {% block stylesheets %}
     {{ parent() }}
 
+    <link href="{{ asset('css/upper-menu.css') }}" type="text/css" rel="stylesheet" />
     <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmequiz/css/style.css') }}" />
 
 {% endblock %}
@@ -122,7 +123,7 @@
 
     function sendEvaluatedQuizData(quizData) {
         $.ajax({
-            url: '{{ path("quiz_save", {"rateableId": rateableId}) }}',
+            url: '{{ path("quiz_save") }}',
             data: { quizData: JSON.stringify(quizData) },
             dataType: "text",
             type: "POST"
@@ -210,6 +211,16 @@
     </div>
 
 	<div id="evaluation" class="container answers-container" style="display: none;">
+        <div class="upper-menu">
+            <div class="upper-menu-inner">
+                <a href="{{ path('contact_index') }}" class="upper-home-btn"></a>
+                <div class="upper-logout-btn">
+                    <a href="{{ path('logout') }}"></a>
+                    {{ app.user.username }}
+                </div>
+            </div>
+        </div>      
+
 		<h4>Az eredményed:</h4>
 		<h3><span id="correctAnswerNum"></span> helyes válasz</h3>
 	</div>

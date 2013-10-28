@@ -11,9 +11,9 @@ quiz_download:
     defaults: { _controller: AcmeQuizBundle:Default:download }
 
 quiz_save:
-    pattern:   /quiz/save/{rateableId}
+    pattern:   /quiz/save
     defaults: { _controller: AcmeQuizBundle:Default:save }
 
 quiz_main:
-    pattern:   /quiz/{rateableId}
+    pattern:   /quiz
     defaults: { _controller: AcmeQuizBundle:Default:index }

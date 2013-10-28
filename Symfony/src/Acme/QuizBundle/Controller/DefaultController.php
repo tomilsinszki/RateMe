@@ -268,15 +268,21 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/quiz/save/{rateableId}")
+     * @Route("/quiz/save")
      */
-    public function saveAction($rateableId) {
+    public function saveAction() {
+        if ('POST' != $this->getRequest()->getMethod()) {
+            throw $this->createNotFoundException('Expected POST method.');
+            return null;
+        }
+
+        $user = $this->get('security.context')->getToken()->getUser();
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
+        $rateableId = $rateable->getId();
         $quizData = json_decode($this->getRequest()->get('quizData'));
 
         $connection = $this->getDoctrine()->getEntityManager()->getConnection();
-
         $now = date("Y-m-d H:i:s", mktime(0, 0, 0));
-
         $connection->insert('quiz', array(
             'rateable_id' => $rateableId,
             'created' => $now,
@@ -296,23 +302,16 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/quiz/{rateableId}")
+     * @Route("/quiz")
      * @Template()
      */
-    public function indexAction($rateableId) {
-        $doctrine = $this->getDoctrine();
-
-        $rateable = $doctrine
-            ->getRepository('AcmeRatingBundle:Rateable')
-            ->find($rateableId);
-
-        $questionRepo = $doctrine->getRepository('AcmeQuizBundle:Question');
-
-        $questions = $questionRepo->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
-
+    public function indexAction() {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
+        $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
         $questionsWithAnswers = $this->createQuestionsWithAnswersArray($questions);
 
-        return array('rateableId' => $rateableId, 'questions' => $questionsWithAnswers);
+        return array('rateableId' => $rateable->getId(), 'questions' => $questionsWithAnswers);
     }
 
     private function createQuestionsWithAnswersArray($questions) {

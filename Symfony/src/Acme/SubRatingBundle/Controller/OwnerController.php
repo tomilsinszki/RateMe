@@ -22,6 +22,11 @@ class OwnerController extends Controller
     {
         $rateableCollection = $this->getOwnedRateableCollectionById($rateableCollectionId);
         $questions = $this->getQuestionsForCollection($rateableCollection);
+
+        $doSubRatingsExistForQuestionById = array();
+        foreach($questions as $question) {
+            $doSubRatingsExistForQuestionById[$question->getId()] = $this->doSubRatingsExistForQuestion($question);
+        }
         
         return $this->render(
             'AcmeSubRatingBundle:Owner:owner.html.twig',
@@ -29,6 +34,7 @@ class OwnerController extends Controller
                 'ownedCollections' => $this->get('security.context')->getToken()->getUser()->getOwnedCollections(),
                 'collection' => $rateableCollection,
                 'questions' => $questions,
+                'doSubRatingsExistForQuestionById' => $doSubRatingsExistForQuestionById,
                 'questionTypes' => $this->getDoctrine()->getRepository('AcmeSubRatingBundle:QuestionType')->findAll(),
                 'questionOrders' => $this->getDoctrine()->getRepository('AcmeSubRatingBundle:QuestionOrder')->findAll(),
             )

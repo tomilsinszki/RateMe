@@ -1,0 +1,49 @@
+<div class="answerBox">
+    <div class="answerBoxHeader">
+        <div class="col col-2 noCheckbox">{% trans from 'owner' %}answer value{% endtrans %}</div>
+        <div class="col col-3">{% trans from 'owner' %}answer text{% endtrans %}</div>
+        <div class="col col-4"></div>
+    </div>
+
+    {% for answer in question.answers %}
+        {% if 'n/a' != answer.answerType.name %}
+
+            <div class="answerBoxRow">        
+                <div class="col col-2 noCheckbox">{{ answer.answerType.name|trans({}, 'answerType') }}</div>
+                <div class="col col-3">
+                    <span data-prev="{{ answer.text }}" class="spanAnswer_{{ answer.answerType.name }}">{{ answer.text }}</span> 
+                    <div class="input-wrapper">
+                        <input class="questionInput inputAnswer_{{ answer.answerType.name }}" style="display:none;" type="text" value="{{ answer.text }}" />
+                    </div>
+                </div>
+                <div class="col col-4"></div>
+            </div>
+            
+        {% else %}
+
+            <div class="answerBoxRow">
+                <div class="col col-2">
+                    <input id="naAvailable" disabled="disabled" data-prev="{{answer.isEnabled}}" {% if 1 == answer.isEnabled %}checked="checked"{% endif %} class="checkboxInput naAvailableCheckbox" type="checkbox">
+                    <label class="checkboxInputLabel" for="naAvailable">n/a</label>
+                </div>
+                <div class="col col-3">
+                    <span data-prev="{{ answer.text }}" class="spanAnswer_na">{{ answer.text }}</span> 
+                    <div class="input-wrapper">
+                        <input {% if 0 == answer.isEnabled %}disabled="disabled"{% endif %} class="questionInput inputAnswer_na {% if 0 == answer.isEnabled %}naInputDisabled{% endif %}" style="display:none;" type="text" value="{{ answer.text }}" />
+                    </div>
+                </div>
+                <div class="col col-4">
+                    <div class="btnCont yellowDeepQuestion cancelButton cancelQuestionButton">
+                        <div class="btnDeepQuestion">
+                            <h3>
+                                <div>{% trans from 'owner' %}cancel{% endtrans %}</div>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+    {% endfor %}
+    
+</div>

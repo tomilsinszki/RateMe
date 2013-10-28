@@ -307,19 +307,19 @@
                                         <div class="questionTableRow">
                                             <div class="col col-1 questionSequence">{{ question.sequence }}</div>
                                             <div class="col col-2">
-                                                <span data-prev="{{ question.title }}" class="questionSpan questionTitleSpan">{{ question.title }}</span>
+                                                <span data-prev="{{ question.title }}" class="{% if false == attribute(doSubRatingsExistForQuestionById, question.id)%}questionSpan{% endif %} questionTitleSpan">{{ question.title }}</span>
                                                 <div class="input-wrapper">
                                                     <input class="questionInput questionTitleInput" style="display:none;" type="text" value="{{ question.title }}" />
                                                 </div>
                                             </div>
                                             <div class="col col-3">
-                                                <span data-prev="{{ question.text }}" class="questionSpan questionTextSpan">{{ question.text }}</span>
+                                                <span data-prev="{{ question.text }}" class="{% if false == attribute(doSubRatingsExistForQuestionById, question.id)%}questionSpan{% endif %} questionTextSpan">{{ question.text }}</span>
                                                 <div class="input-wrapper">
                                                     <input class="questionInput questionTextInput" style="display:none;" type="text" value="{{ question.text }}" />
                                                 </div>
                                             </div>
                                             <div class="col col-4">
-                                                <span data-prev-text="{{ question.questionType.name|trans({}, 'questionType') }}" class="questionSelectSpan questionTypeSpan" data-question-type-id="{{ question.questionType.id }}">{{ question.questionType.name|trans({}, 'questionType') }}</span>
+                                                <span data-prev-text="{{ question.questionType.name|trans({}, 'questionType') }}" class="{% if false == attribute(doSubRatingsExistForQuestionById, question.id)%}questionSelectSpan{% endif %} questionTypeSpan" data-question-type-id="{{ question.questionType.id }}">{{ question.questionType.name|trans({}, 'questionType') }}</span>
                                                 <select class="selectInput questionTypeSelect" style="display:none;">
                                                     {% for questionType in questionTypes %}
                                                         {% if questionType.name == question.questionType.name %}
@@ -332,11 +332,11 @@
                                             </div>
                                             <div class="col col-5">
                                                 {% if question.target == constant('Acme\\SubRatingBundle\\Controller\\OwnerController::RATEABLE_TARGET_TYPE')  %}
-                                                    <span data-prev="{{ question.target }}" data-prev-text="{% trans from 'owner' %}employee{% endtrans %}" class="questionSelectSpan targetSpan">
+                                                    <span data-prev="{{ question.target }}" data-prev-text="{% trans from 'owner' %}employee{% endtrans %}" class="{% if false == attribute(doSubRatingsExistForQuestionById, question.id)%}questionSelectSpan{% endif %} targetSpan">
                                                         {% trans from 'owner' %}employee{% endtrans %}
                                                     </span>
                                                 {% elseif question.target == constant('Acme\\SubRatingBundle\\Controller\\OwnerController::COLLECTION_TARGET_TYPE') %}
-                                                    <span data-prev="{{ question.target }}" data-prev-text="{% trans from 'owner' %}shop{% endtrans %}" class="questionSelectSpan targetSpan">
+                                                    <span data-prev="{{ question.target }}" data-prev-text="{% trans from 'owner' %}shop{% endtrans %}" class="{% if false == attribute(doSubRatingsExistForQuestionById, question.id)%}questionSelectSpan{% endif %} targetSpan">
                                                         {% trans from 'owner' %}shop{% endtrans %}
                                                     </span>
                                                 {% endif %}

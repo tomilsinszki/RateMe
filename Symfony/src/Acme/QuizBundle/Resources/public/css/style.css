@@ -2,41 +2,41 @@
 
 @font-face {
 	font-family: 'DINProH';
-	src: url('../fonts/dinprohbold.eot');
-	src: url('../fonts/dinprohbold.eot?#iefix') format('embedded-opentype'),
-		 url('../fonts/dinprohbold.woff') format('woff'),
-		 url('../fonts/dinprohbold.ttf') format('truetype'),
-		 url('../fonts/dinprohbold.svg#dinprohbold') format('svg');
+	src: url('/fonts/dinprohbold.eot');
+	src: url('/fonts/dinprohbold.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/dinprohbold.woff') format('woff'),
+		 url('/fonts/dinprohbold.ttf') format('truetype'),
+		 url('/fonts/dinprohbold.svg#dinprohbold') format('svg');
 	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'DINProH';
-	src: url('../fonts/dinprohlight.eot');
-	src: url('../fonts/dinprohlight.eot?#iefix') format('embedded-opentype'),
-		 url('../fonts/dinprohlight.woff') format('woff'),
-		 url('../fonts/dinprohlight.ttf') format('truetype'),
-		 url('../fonts/dinprohlight.svg#dinprohlight') format('svg');
+	src: url('/fonts/dinprohlight.eot');
+	src: url('/fonts/dinprohlight.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/dinprohlight.woff') format('woff'),
+		 url('/fonts/dinprohlight.ttf') format('truetype'),
+		 url('/fonts/dinprohlight.svg#dinprohlight') format('svg');
 	font-weight: 200;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'DINProH';
-	src: url('../fonts/dinprohmedium.eot');
-	src: url('../fonts/dinprohmedium.eot?#iefix') format('embedded-opentype'),
-		 url('../fonts/dinprohmedium.woff') format('woff'),
-		 url('../fonts/dinprohmedium.ttf') format('truetype'),
-		 url('../fonts/dinprohmedium.svg#dinprohmedium') format('svg');
+	src: url('/fonts/dinprohmedium.eot');
+	src: url('/fonts/dinprohmedium.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/dinprohmedium.woff') format('woff'),
+		 url('/fonts/dinprohmedium.ttf') format('truetype'),
+		 url('/fonts/dinprohmedium.svg#dinprohmedium') format('svg');
 	font-weight: 500;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'DINProH';
-	src: url('../fonts/dinprohregular.eot');
-	src: url('../fonts/dinprohregular.eot?#iefix') format('embedded-opentype'),
-		 url('../fonts/dinprohregular.woff') format('woff'),
-		 url('../fonts/dinprohregular.ttf') format('truetype'),
-		 url('../fonts/dinprohregular.svg#dinprohregular') format('svg');
+	src: url('/fonts/dinprohregular.eot');
+	src: url('/fonts/dinprohregular.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/dinprohregular.woff') format('woff'),
+		 url('/fonts/dinprohregular.ttf') format('truetype'),
+		 url('/fonts/dinprohregular.svg#dinprohregular') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -116,7 +116,7 @@
 }
 
 html {
-	background: transparent url('../images/repeater_bg.png') top left repeat;
+	background: transparent url('/bundles/acmequiz/images/repeater_bg.png') top left repeat;
 	height:100%;
 }
 
@@ -157,7 +157,7 @@ body {
 
 
 #timer-bg {
-	background: transparent url('../images/timer.png') center center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/timer.png') center center no-repeat;
 	color: #c39cca;
 	font-size: 48px;
 	font-weight: normal;
@@ -170,7 +170,7 @@ body {
 }
 
 .wrapper {
-	background: transparent url('../images/selector_bottom.png') top center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/selector_bottom.png') top center no-repeat;
 }
 
 .wrapper h2 {
@@ -194,7 +194,7 @@ body {
 }
 
 .question-card {
-	background: transparent url('../images/card_bg_shadow.png') center center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/card_bg_shadow.png') center center no-repeat;
 	float: left;
 	margin-left: 22px;
 	padding-top: 8px;
@@ -230,14 +230,14 @@ body {
 }
 
 .option-btn {
-	background: transparent url('../images/option_off.png') center center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/option_off.png') center center no-repeat;
 	height: 17px;
 	margin: 0 auto 27px;
 	width: 16px;
 }
 
 .option-btn.on {
-	background-image: url('../images/option_on.png');
+	background-image: url('/bundles/acmequiz/images/option_on.png');
 }
 
 .question-card p {
@@ -250,6 +250,7 @@ body {
 }
 
 .answers-container {
+    padding-top: 70px;
 	padding-bottom: 15px;
 }
 
@@ -308,7 +309,7 @@ body {
 }
 
 .answer-right {
-	background: transparent url('../images/answer_right.png') left center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/answer_right.png') left center no-repeat;
 	float: right;
 	width: 70px;
 }
@@ -324,14 +325,14 @@ body {
 }
 
 .answer-right.good div {
-	background: transparent url('../images/check.png') center center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/check.png') center center no-repeat;
 	height: 19px;
 	margin: 0 auto;
 	width: 25px;
 }
 
 .answer-right.bad div {
-	background: transparent url('../images/x.png') center center no-repeat;
+	background: transparent url('/bundles/acmequiz/images/x.png') center center no-repeat;
 	height: 17px;
 	margin: 0 auto;
 	width: 17px;
