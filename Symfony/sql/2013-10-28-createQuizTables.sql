@@ -69,6 +69,23 @@ CREATE TABLE `quiz_question` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
+DROP TABLE IF EXISTS `quiz_wrong_answer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `quiz_wrong_answer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_id` int(11) NOT NULL,
+  `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_wrong_answer` (`text`,`question_id`),
+  KEY `IDX_8B511E6C1E27F6BF` (`question_id`),
+  CONSTRAINT `FK_8B511E6C1E27F6BF` FOREIGN KEY (`question_id`) REFERENCES `quiz_question` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 DROP TABLE IF EXISTS `quiz_reply`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -84,23 +101,6 @@ CREATE TABLE `quiz_reply` (
   CONSTRAINT `FK_1DBBF6091C0F811` FOREIGN KEY (`wrong_given_answer_id`) REFERENCES `quiz_wrong_answer` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_1DBBF601E27F6BF` FOREIGN KEY (`question_id`) REFERENCES `quiz_question` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_1DBBF60853CD175` FOREIGN KEY (`quiz_id`) REFERENCES `quiz` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
-DROP TABLE IF EXISTS `quiz_wrong_answer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `quiz_wrong_answer` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `question_id` int(11) NOT NULL,
-  `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `created` datetime NOT NULL,
-  `deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_wrong_answer` (`text`,`question_id`),
-  KEY `IDX_8B511E6C1E27F6BF` (`question_id`),
-  CONSTRAINT `FK_8B511E6C1E27F6BF` FOREIGN KEY (`question_id`) REFERENCES `quiz_question` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
