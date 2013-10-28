@@ -1,0 +1,38 @@
+<li id="createQuestionContainer" class="ui-state-default ui-state-disabled questionRow">
+    <div class="border"></div>
+    <div class="questionTableRow">
+        <div class="col col-1 questionSequence"></div>
+        <div class="col col-2">
+            <div class="input-wrapper">
+                <input class="questionTitleInput" type="text" />
+            </div>
+        </div>
+        <div class="col col-3">
+            <div class="input-wrapper">
+                <input class="questionTextInput" type="text" />
+            </div>
+        </div>
+        <div class="col col-4">
+            <select class="selectInput questionTypeSelect">
+                {% for questionType in questionTypes %}
+                    <option value="{{ questionType.id }}">{{ questionType.name|trans({}, 'questionType') }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col col-5">
+            <select class="selectInput targetSelect">
+                <option value="{{ constant('Acme\\SubRatingBundle\\Controller\\OwnerController::RATEABLE_TARGET_TYPE') }}">
+                    {% trans from 'owner' %}employee{% endtrans %}
+                </option>
+                <option value="{{ constant('Acme\\SubRatingBundle\\Controller\\OwnerController::COLLECTION_TARGET_TYPE') }}">
+                    {% trans from 'owner' %}shop{% endtrans %}
+                </option>
+            </select>
+        </div>
+        <div class="col col-6"><div class="deleteButton"></div></div>
+    </div>
+    
+    <div class="questionAnswerRow">
+        {{ include('AcmeSubRatingBundle:Owner:createYesNoAnswersSubForm.html.twig') }}
+    </div>
+</li>

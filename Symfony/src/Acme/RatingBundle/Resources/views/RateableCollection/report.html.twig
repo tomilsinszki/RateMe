@@ -7,7 +7,7 @@
         <meta name="keywords" content="report">
         <meta name="author" content="RateMe">
         <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/report.css') }}" />
-        <script type="text/javascript" src="{{ asset('js/jquery-1.10.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
         <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ asset('bundles/acmerating/js/report/excanvas.min.js') }}"></script><![endif]-->
         <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/jqplot.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/acmerating/js/report/jqPlot/plugins/jqplot.dateAxisRenderer.min.js') }}"></script>
@@ -570,7 +570,17 @@
         </script>
     </head>
     <body>
+        <div class="bg-grad"></div>
         <div class="main_wrapper">
+            <div class="upper-menu">
+                <div class="upper-menu-inner">
+                    <a href="{{ path('acme_manager_welcome') }}" class="upper-home-btn"></a>
+                    <div class="upper-logout-btn">
+                        <a href="{{ path('logout') }}"></a>
+                        {{ app.user.username }}
+                    </div>
+                </div>
+            </div>      
             <div class="header">
                 <div class="logo_vidanet"></div>
                 <div class="rateme_logo"></div>
@@ -712,7 +722,7 @@
                 </div>
             </div>
             <div class="footer">
-                További információért lépjen velünk kapcsolatba a <a href="mailto:info@rate.me.uk">info@rate.me.uk</a> e-mail címen – <a href="{{ path('logout') }}">Kilépés</a>
+                További információért lépjen velünk kapcsolatba a <a href="mailto:info@rate.me.uk">info@rate.me.uk</a> e-mail címen
             </div>
         </div>
     </body>

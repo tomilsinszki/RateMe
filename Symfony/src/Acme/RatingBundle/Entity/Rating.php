@@ -53,12 +53,18 @@ class Rating
      * @ORM\JoinColumn(name="rating_user_id", referencedColumnName="id")
      */
     private $ratingUser;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Acme\SubRatingBundle\Entity\SubRating", mappedBy="rating")
+     */
+    private $subRatings;
 
 
     public function __construct() 
     {
         $this->created = new \DateTime("now");
         $this->updated = new \DateTime("now");
+        $this->subRatings = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -164,5 +170,38 @@ class Rating
     public function getRatingUser()
     {
         return $this->ratingUser;
+    }
+
+    /**
+     * Add subRating
+     *
+     * @param \Acme\SubRatingBundle\Entity\SubRating $subRating
+     * @return Rating
+     */
+    public function addSubRating(\Acme\SubRatingBundle\Entity\SubRating $subRating)
+    {
+        $this->subRatings[] = $subRating;
+    
+        return $this;
+    }
+
+    /**
+     * Remove subRating
+     *
+     * @param \Acme\SubRatingBundle\Entity\SubRating $subRating
+     */
+    public function removeSubRating(\Acme\SubRatingBundle\Entity\SubRating $subRating)
+    {
+        $this->subRatings->removeElement($subRating);
+    }
+
+    /**
+     * Get subRatings
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSubRatings()
+    {
+        return $this->subRatings;
     }
 }

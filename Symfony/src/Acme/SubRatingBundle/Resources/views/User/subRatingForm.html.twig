@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>RateMe</title>
+        <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/newRating.css') }}" />
+        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
+	</head>
+	<body>
+		<div class="bg-grad">
+			<div class="container thank-container">
+				<div class="wrapper">
+					<h2>Köszönjük, hogy válaszával segítette munkánkat!</h2>
+					<p>Ha még válaszol további kérdésekre, akkor az esélyei a sorsoláson annyiszorosára nőnek, ahány kérdésre válaszolt. Ha szeretne biztosra menni, vagy csak elmondaná véleményét, kérjük válaszoljon az alábbi kérdésre.</p>
+					<a href="{{ path('sub_rating_user_thank_you') }}">Ennyi elég volt, nem akarok több kérdésre válaszolni</a>
+				</div>
+
+				<div class="wrapper bottom-wrapper">
+					<div class="question-box">
+                        {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
+
+                        <div class="question-promo">
+							<div class="price-img"><img src="{{ asset('bundles/acmerating/images/dvd.png') }}" alt="Philips DVD-lejátszó" /></div>
+                            Van még pár másodperce? Ha igen, válaszojon még egy kérdésre és <strong>Philips DVD-lejátszót nyerhet!</strong>
+                        </div>
+					</div>
+				</div>
+
+                {% if contact is null %}
+                {% if question is not null %}
+                <div class="wrapper bottom-wrapper email-wrapper">
+                    <h3>Kérjük adja meg az email címét, hogy értesíteni<br />tudjuk a nyereményjáték eredményéről.</h3>
+                    
+                    <input type="text" />
+
+                    <div class="btn_wrapper" style="text-align: center;">
+                        <input class="btn_cont yellow send-button" type="button" value="Elküld" />
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+			</div>
+			
+			<div class="footer">
+                <p>
+                    Az értékelés technikai támogatója a RateMe.
+					<span class="rateme-logo"></span>
+                </p>
+                <p>Az Ön üzletének is fontosak a fogyasztói visszajelzések? Írjon nekünk az info@rate.me.uk címre.</p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -8,6 +8,10 @@ login_check:
 logout:
     pattern:   /logout
 
+acme_sub_rating:
+    resource: "@AcmeSubRatingBundle/Resources/config/routing.yml"
+    prefix:   /
+
 acme_rating:
     resource: "@AcmeRatingBundle/Resources/config/routing.yml"
     prefix:   /

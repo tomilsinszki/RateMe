@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Acme\UserBundle\AcmeUserBundle(),
             new Acme\RatingBundle\AcmeRatingBundle(),
+            new Acme\SubRatingBundle\AcmeSubRatingBundle(),
             new Acme\QuizBundle\AcmeQuizBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),

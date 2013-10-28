@@ -3,18 +3,142 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>RateMe</title>
+        
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/reportSelector.css') }}" />
+        <link href="{{ asset('css/upper-menu.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/jquery-ui.min.css') }}" type="text/css" rel="stylesheet" />
+        
+        <script src="{{ asset('js/jquery.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/jquery-ui.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/jquery.ui.datepicker-hu.js') }}" type="text/javascript"></script>
+
+        <script>
+            $(function() {
+                $("#startDatePicker").datepicker({ 
+                    dateFormat: "yy-mm-dd", 
+                    onSelect: function(startDate) { $("#startDateInput").val(startDate) }
+                });
+                $("#startDatePicker").datepicker("setDate", "{{ defaultStartDateString }}");
+                $("#startDatePicker").datepicker($.datepicker.regional["hu"]);
+                
+                $("#endDatePicker").datepicker({ 
+                    dateFormat: "yy-mm-dd", 
+                    onSelect: function(endDate) { $("#endDateInput").val(endDate) } 
+                });
+                $("#endDatePicker").datepicker("setDate", "{{ defaultEndDateString }}");
+                $("#endDatePicker").datepicker($.datepicker.regional["hu"]);
+
+                $("#collectionSelectOpener").click(function() {
+                    if ( $("#collectionOptionsContainer").css('display') == 'block' ) {
+                        $("#collectionOptionsContainer").css('display', 'none');
+                    }
+                    else {
+                        $("#collectionOptionsContainer").css('display', 'block');
+                    }
+                });
+
+                $(".option-widget-chooser-row").click(function() {
+                    $("#rateableCollectionIdInput").val($(this).attr("collection_id"));
+                    $("#collectionSelectName").text($(this).text());
+                    $("#collectionOptionsContainer").css('display', 'none');
+                });
+            });
+        </script>
+        <style>
+            .ui-datepicker .ui-datepicker-title {
+                font-family: 'DINProH';
+                font-size: 14px;
+            }
+            
+            .ui-widget-header {
+                background: #e8f0c6;
+                border: none;
+                color: #222222;
+                font-weight: normal;
+            }
+            
+            .ui-datepicker th {
+                font-weight: normal;
+                text-align: center;
+            }
+
+            .ui-state-default {
+                background: #ffffff !important;
+                border: 1px solid #ffffff !important;
+                color: #555555 !important;
+                font-weight: normal !important;
+            }
+
+            .ui-state-active {
+                background: #ffffff !important;
+                border: 1px solid #000000 !important;
+                color: #555555 !important;
+                font-weight: normal !important;
+            }
+
+            .ui-datepicker-next-hover {
+                background: #e8f0c6 !important;
+                border: 1px solid #000000 !important;
+            }
+
+            .ui-datepicker-prev-hover {
+                background: #e8f0c6 !important;
+                border: 1px solid #000000 !important;
+            }
+        </style>
 	</head>
 	<body>
-        <form action="{{ path('report') }}" method="post">
-            <select name="rateableCollectionId">
-                {% for collection in ownedCollections %}
-                    <option value="{{ collection.id }}">{{ collection.name }}</option>
-                {% endfor %}
-            </select>
+        <div class="bg-grad"></div>
+        <div class="wrapper">
+            <div class="upper-menu">
+                <div class="upper-menu-inner">
+                    <a href="{{ path('acme_manager_welcome') }}" class="upper-home-btn"></a>
+                    <div class="upper-logout-btn">
+                        <a href="{{ path('logout') }}"></a>
+                        {{ app.user.username }}
+                    </div>
+                </div>
+            </div>
             
-            <input type="date" name="startDateString" value="{{ defaultStartDateString }}" />
-            <input type="date" name="endDateString" value="{{ defaultEndDateString }}" />
-            <input type="submit" value="Megtekintés">
-        <form>
+            <div>
+                <div class="option-widget option-widget-chooser place-chooser">
+                    <div id="collectionSelectOpener" class="option-widget-arrow-cont">
+                        <div class="option-widget-arrow"></div>
+                    </div>
+                    <span id="collectionSelectName">
+                        {{ ownedCollections|first.name }}
+                    </span>
+                    
+                    <div id="collectionOptionsContainer" class="option-widget-section">
+                    {% for collection in ownedCollections %}
+                        <div class="option-widget-chooser-row" collection_id="{{ collection.id }}">{{ collection.name }}</div>
+                    {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="datepicker-container">
+                    <div class="datepicker-center">
+                        <div id="startDatePicker"></div>
+                    </div>
+                </div>
+                
+                <div class="datepicker-container">
+                    <div class="datepicker-center">
+                        <div id="endDatePicker"></div>
+                    </div>
+                </div>
+            </div>
+                
+            <form action="{{ path('report') }}" method="post">
+                <input id="rateableCollectionIdInput" type="text" name="rateableCollectionId" value="{{ ownedCollections|first.id }}" style="display: none;" />
+                <input id="startDateInput" type="text" name="startDateString" value="{{ defaultStartDateString }}" style="display: none;" />
+                <input id="endDateInput" type="text" name="endDateString" value="{{ defaultEndDateString }}" style="display: none;" />
+                
+                <div class="btn_cont yellow">
+                    <input type="submit" class="btn" value="Megtekintés" />
+                </div>
+                <div class="clear"></div>
+            <form>
+        </div>
 	</body>
 </html>

@@ -1,0 +1,19 @@
+<div class="answerBox">
+    <div class="answerBoxHeader">
+        <div class="col col-2 noCheckbox">{% trans from 'owner' %}answer value{% endtrans %}</div>
+        <div class="col col-3">{% trans from 'owner' %}answer text{% endtrans %}</div>
+        <div class="col col-4"></div>
+    </div>
+    <div class="answerBoxRow">
+        <div class="col col-2 noCheckbox">{% trans from 'answerType' %}yes{% endtrans %}</div>
+        <div class="col col-3"><div class="input-wrapper"><input class="inputAnswer_yes" type="text" /></div></div>
+        <div class="col col-4"></div>
+    </div>
+    <div class="answerBoxRow">
+        <div class="col col-2 noCheckbox">{% trans from 'answerType' %}no{% endtrans %}</div>
+        <div class="col col-3"><div class="input-wrapper"><input class="inputAnswer_no" type="text" /></div></div>
+        <div class="col col-4"></div>
+    </div>
+    {{ include('AcmeSubRatingBundle:Owner:createQuestionFormBottom.html.twig') }}
+</div>
+

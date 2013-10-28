@@ -1,0 +1,455 @@
+* {	
+    font-family: 'DINProH-Regular';
+    margin: 0;
+    padding: 0;
+}
+
+.selectInput {
+    height: 25px;
+    min-width: 150px;
+}
+
+#sortable {
+    list-style-type: none;
+}
+
+.hoverSpan {    
+    min-width: 50px;
+}
+
+.hoverSpan:hover {
+    cursor: pointer;
+}
+
+.naInputDisabled {
+    filter:alpha(opacity=60);
+    opacity:.60;
+}
+
+h1.questionnaireTitle {
+    color: #fff;
+    font-size: 24px;
+    font-weight: normal;
+    padding: 90px 0 20px;
+    text-align: center;
+    text-shadow: 0px 1px #000;
+}
+
+h2.questionnaireSubTitle {
+    color: #a8d200;
+    font-size: 24px;
+    font-weight: normal;
+    margin-bottom: 24px;
+    padding-left: 20px;    
+    text-align: left;
+    font-family: 'DINProH-Regular';
+    text-transform: capitalize;
+}
+
+.questionnaireForm {
+    background: -webkit-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+    background: -moz-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+    background: -o-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+    background: -ms-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+    background: linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+    border-radius: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: inset 0px -2px 8px rgba(0, 0, 0, 0.65);
+    margin: 0 auto 30px;
+    min-width: 800px;
+    padding: 80px 30px 25px;
+    position: relative;
+}
+
+.sequenceOrder {
+    margin-bottom: 50px;
+}
+
+.seqOptionHoverWrapper {
+    background-color: #585858;
+    background-color: rgba(98, 98, 98, 0.5);
+    border-radius: 10px;
+    box-shadow: inset 0px -2px 1px rgba(255, 255, 255, 0.15), 0px -2px 1px rgba(0, 0, 0, 0.15);
+    color: #bfbebe;
+    float: right;
+    font-size: 14px;
+    font-weight: normal;
+    height: 80px;
+    line-height: 17px;
+    margin-right: 33%;
+    padding: 15px;
+    width: 30%;
+    display: none;
+}
+
+.seqOption {
+    min-height: 19px;
+    margin-bottom: 12px;
+    padding-left: 20px;
+}
+
+.checkboxInput {
+    float: left;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+}
+
+.checkboxInputLabel {
+    background: transparent url('/images/custom_radio_off.png') left center no-repeat;
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    font-size: 14px;
+    height: 19px;
+    line-height: 22px;
+    padding-left: 32px;
+}
+
+.checkboxInput:checked + label {
+    background-image: url('/images/custom_radio_on.png');
+}
+
+.questionTable {
+    background: -webkit-linear-gradient(top, rgba(47, 47, 47, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+    background: -moz-linear-gradient(top, rgba(47, 47, 47, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+    background: -o-linear-gradient(top, rgba(47, 47, 47, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+    background: -ms-linear-gradient(top, rgba(47, 47, 47, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+    background: linear-gradient(top, rgba(47, 47, 47, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+    border-radius: 10px;
+    box-shadow: inset 0px -2px 1px rgba(0, 0, 0, 0.2), 0px -1px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.questionTableHeader {
+    color: #fff;
+    display: table;
+    font-size: 14px;
+    font-weight: bold;
+    height: 36px;
+    line-height: 16px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.questionTableHeader .col {
+    padding: 10px 0;
+    text-transform: capitalize;
+}
+
+.col {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.col-1 {
+    text-align: center;
+    width: 14.3%;
+}
+.col-2 {
+    width: 13%;
+}
+.col-3 {
+    width: 39.1%;
+}
+.col-4 {
+    width: 14.3%;
+}
+.col-5 {
+    width: 13.7%;
+}
+.col-6 {
+    width: 5.6%;
+}
+
+.border {
+    border-top: 1px solid #2f2f2f;
+    border-bottom: 1px solid #595959;
+}
+
+.questionTableRow {
+    display: table;
+    color: #fff;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 16px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.questionTableRow .col {
+    padding: 8px 0;
+}
+
+.col:not(.col-1) {
+    padding-right: 10px;
+}
+
+.deleteButton {
+    background: transparent url('/bundles/acmesubrating/images/pic_holder.png') 0px 0px no-repeat;
+    cursor: pointer;
+    height: 14px;
+    margin: 0 auto;
+    width: 14px;
+}
+
+.answerBox {
+    padding: 0 0 15px;
+}
+
+.answerBoxHeader {
+    color: #a8d200;
+    display: table;
+    font-size: 14px;
+    font-weight: normal;
+    height: 30px;
+    line-height: 30px;
+    table-layout: fixed;
+    width: 100%;
+    text-transform: capitalize;
+}
+
+.answerBox .col-2 {
+    width: 27.3%;
+}
+
+.answerBox .col-3 {
+    width: 20%;
+}
+
+.answerBox .col-4 {
+    width: 52.1%;
+}
+
+.answerBoxRow {
+    display: table;
+    color: #fff;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 22px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.answerBoxRow label {
+    padding-left: 53.7%;
+}
+
+.noCheckbox {
+    padding-left: 14.3%;
+}
+
+.answerBoxRow .checkboxInputLabel {
+    background-position: 40% center;
+}
+
+.answerBoxRow .btnCont {
+    font-size: 16px;
+    height: 26px;
+    position: relative;
+    top: 8px;
+    width: 78px;
+}
+
+.answerBoxRow .btnCont .btnDeepQuestion {
+    height: 23px;	
+}
+.answerBoxRow h3 {
+    line-height: 25px!important;
+}
+
+.answerBoxRow .cancelButton,
+.answerBoxRow .saveButton {
+    float: left;
+    margin: 0 15px 0 0;
+}
+
+.btnCont.yellowDeepQuestion {
+    background-color: #a2ca00;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a2ca00', endColorstr='#9bc100');
+    background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#9bc100)); 
+    background: -moz-linear-gradient(top,  #a2ca00,  #9bc100);	
+    background: -o-linear-gradient(top,  #a2ca00,  #9bc100);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 26px;
+    height: 26px;
+    width: 78px;
+}
+
+.btnCont.yellowDeepQuestion .btnDeepQuestion {
+    background-color: #aad300;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aad300', endColorstr='#c2dc00');
+    background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00)); 
+    background: -moz-linear-gradient(top,  #aad300,  #c2dc00);	
+    background: -o-linear-gradient(top,  #aad300,  #c2dc00);
+    box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.62);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 23px;
+    width: 100%;	
+}
+.btnCont.yellowDeepQuestion .btnDeepQuestion h3 {
+    font-family: 'DINProH-Bold';    
+    line-height: 44px;
+    position: relative;
+    text-align: center;
+}
+.btnCont.yellowDeepQuestion .btnDeepQuestion h3 div {
+    -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(104,104,104,1)), to(rgba(104,104,104,0)));
+    position: absolute;
+    color: #535353;
+    width: 100%;
+}
+.btnCont.yellowDeepQuestion .btnDeepQuestion h3:after {
+    text-shadow: 0px -1px rgba(255, 255, 255, 0.75);
+    color: #535353;
+}
+
+.inputWrapper {
+    background-color: #fff;
+    box-shadow: inset 0px 2px 1px rgba(0, 0, 0, 0.76), 0px 1px 2px #dfff58;
+}
+
+.inputWrapper input {
+    background: -webkit-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: -moz-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: -o-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: -ms-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #000;
+    display: block;
+    font-size: 14px;
+    height: 26px;
+    outline: none;
+    padding: 0 5px;
+    width: 100%;
+}
+
+.newQuestion {
+    margin: 20px auto 0;
+    width: 218px!important;
+}
+
+.deletePopup,
+.quitPopup {
+    background-color: #585858;
+    background-color: rgba(98, 98, 98, 0.5);
+    box-shadow: inset 0px -2px 1px rgba(255, 255, 255, 0.15), 0px -1px 2px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    left: 50%;
+    margin-left: -120px;
+    padding: 15px 0;
+    position: absolute;
+    text-align: center;
+    top: 150px;
+    width: 240px;
+}
+
+.quitPopup {
+    margin-left: -160px;
+    width: 320px;
+}
+
+.deleteSure {
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.deletePopup .btnCont,
+.quitPopup .btnCont {
+    font-size: 16px;
+    height: 30px;
+    width: 94px;
+}
+
+.withoutSaveButton {
+    width: 174px!important;
+}
+
+.deletePopup .btnCont .btn,
+.quitPopup .btnCont .btn {
+    height: 27px;	
+}
+.deletePopup h3,
+.quitPopup h3 {
+    line-height: 30px!important;
+}
+
+.sureButton,
+.saveButton {
+    float: left;
+    margin: 15px 0 0 15px;
+    text-transform: capitalize;
+}
+
+.cancelButton,
+.withoutSaveButton {
+    float: right;
+    margin: 15px 15px 0 0;
+    text-transform: capitalize;
+}
+
+.wrap {
+    max-width: none;
+    width: 80%;
+}
+
+.input-wrapper {
+	background-color: #fff;
+	box-shadow: inset 0px 2px 1px rgba(0, 0, 0, 0.76), 0px 1px 2px #dfff58;
+}
+
+.col input[type="text"] {
+    background: -webkit-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: -moz-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: -o-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: -ms-linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    background: linear-gradient(top, rgba(1, 1, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 60%);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #000;
+    display: block;
+    font-size: 14px;
+    height: 26px;
+    outline: none;
+    padding: 0 5px;
+    width: 100%;
+}
+
+.ui-dialog-content-text {
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.questionTableRow > div {
+    cursor: pointer;
+}
+
+.listTypeRadioLabel {
+    width: 200px;
+    text-transform: capitalize;
+}
+
+.new-question {
+    margin: 20px auto 0;
+    width: 218px!important;
+    text-transform: capitalize;
+}
+
+.btn_cont.yellow .btn h3:after {
+    content: none !important;
+}

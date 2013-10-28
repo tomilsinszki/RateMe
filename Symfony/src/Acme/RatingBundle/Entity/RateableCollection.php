@@ -80,6 +80,17 @@ class RateableCollection
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      */
     private $company;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Acme\SubRatingBundle\Entity\QuestionOrder", inversedBy="collections")
+     * @ORM\JoinColumn(name="question_order_id", referencedColumnName="id", nullable=false)
+     */
+    private $questionOrder;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Acme\SubRatingBundle\Entity\Question", mappedBy="rateableCollection")
+     */
+    private $questions;
     
 
     public function __construct() 
@@ -88,6 +99,7 @@ class RateableCollection
         $this->updated = new \DateTime("now");
         $this->rateables = new \Doctrine\Common\Collections\ArrayCollection();
         $this->owners = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->questions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -265,5 +277,61 @@ class RateableCollection
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set questionOrder
+     *
+     * @param \Acme\SubRatingBundle\Entity\QuestionOrder $questionOrder
+     * @return RateableCollection
+     */
+    public function setQuestionOrder(\Acme\SubRatingBundle\Entity\QuestionOrder $questionOrder = null)
+    {
+        $this->questionOrder = $questionOrder;
+    
+        return $this;
+    }
+
+    /**
+     * Get questionOrder
+     *
+     * @return \Acme\SubRatingBundle\Entity\QuestionOrder
+     */
+    public function getQuestionOrder()
+    {
+        return $this->questionOrder;
+    }
+
+    /**
+     * Add question
+     *
+     * @param \Acme\SubRatingBundle\Entity\Question $question
+     * @return RateableCollection
+     */
+    public function addQuestion(\Acme\SubRatingBundle\Entity\Question $question)
+    {
+        $this->questions[] = $question;
+    
+        return $this;
+    }
+
+    /**
+     * Remove question
+     *
+     * @param \Acme\SubRatingBundle\Entity\Question $question
+     */
+    public function removeQuestion(\Acme\SubRatingBundle\Entity\Question $question)
+    {
+        $this->questions->removeElement($question);
+    }
+
+    /**
+     * Get questions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getQuestions()
+    {
+        return $this->questions;
     }
 }
