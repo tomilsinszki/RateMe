@@ -20,18 +20,14 @@ class DefaultController extends Controller {
      * @Template()
      */
     public function questionnaireAction($rateableCollectionId) {
-        $doctrine = $this->getDoctrine();
-        $em = $doctrine->getManager();
-        $query = $em->createQuery('SELECT rc.id, rc.name FROM AcmeRatingBundle:RateableCollection rc ORDER BY rc.name ASC');
-        $rateableCollections = $query->getArrayResult();
-        if (is_null($rateableCollectionId)) {
-            $rateableCollectionId = $rateableCollections[0]['id'];
-        }
+        $rateableCollection = $this->getOwnedRateableCollectionById($rateableCollectionId);
 
-        $questionRepo = $doctrine->getRepository('AcmeQuizBundle:Question');
-        $questions = $questionRepo->findAllJoinedWithWrongAnswers($rateableCollectionId);
-
-        return array('rateableCollectionId' => $rateableCollectionId, 'rateableCollections' => $rateableCollections, 'questions' => $questions);
+        return array(
+            'rateableCollectionId' => $rateableCollection->getId(),
+            'rateableCollectionName' => $rateableCollection->getName(),
+            'rateableCollections' => $this->get('security.context')->getToken()->getUser()->getOwnedCollections(),
+            'questions' => $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->findAllJoinedWithWrongAnswers($rateableCollection->getId()),
+        );
     }
 
     /**
@@ -254,6 +250,21 @@ class DefaultController extends Controller {
         }
 
         return $errors;
+    }
+    
+    private function getOwnedRateableCollectionById($rateableCollectionId) {
+        $ownedCollections = $this->get('security.context')->getToken()->getUser()->getOwnedCollections();
+        if ( empty($rateableCollectionId) ) {
+            return $ownedCollections->first();
+        }
+
+        $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
+        if ( $ownedCollections->contains($rateableCollection) ) {
+            return $rateableCollection;
+        }
+
+        throw $this->createNotFoundException('RateableCollection could not be found.');
+        return null;
     }
 
     /**

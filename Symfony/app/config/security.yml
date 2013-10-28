@@ -57,6 +57,9 @@ security:
         - { path: ^/jelentes/valaszto, roles: 'ROLE_MANAGER' }
         - { path: ^/jelentes/megtekintes, roles: 'ROLE_MANAGER' }
         - { path: ^/menedzser/nyito, roles: 'ROLE_MANAGER' }
+        - { path: ^/quiz/questionnaire, roles: 'ROLE_MANAGER' }
+        - { path: ^/quiz/upload, roles: 'ROLE_MANAGER' }
+        - { path: ^/quiz/download, roles: 'ROLE_MANAGER' }
         - { path: ^/melysegi/kerdoiv/kovetkezo/kerdes, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/melysegi/kerdoiv/koszonjuk, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/melysegi/kerdoiv/uj/kerdes/urlap, roles: 'ROLE_MANAGER' }

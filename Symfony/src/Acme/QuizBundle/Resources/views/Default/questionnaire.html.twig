@@ -3,6 +3,7 @@
 {% block stylesheets %}
     {{ parent() }}
 
+    <link href="{{ asset('css/select.css') }}" type="text/css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmequiz/css/style.css') }}" />
 
 {% endblock %}
@@ -18,8 +19,6 @@
     function downloadQuestionnaire() {
         {% if questions %}
             window.open('{{ path("quiz_download", {"rateableCollectionId": rateableCollectionId}) }}', '_blank');
-        {% else %}
-            alert('Még nem lettek feltöltve vizsgakérdések!');
         {% endif %}
     }
 
@@ -37,7 +36,6 @@
                     if (data.errors) {
                         showErrors(data.errors);
                     } else {
-                        alert('Kérdőiv sikeresen feltöltődött.');
                         window.open('{{ path("quiz_questionnaire") }}', '_self');
                     }
                 }
@@ -73,19 +71,66 @@
         window.open('{{ path("quiz_questionnaire") }}/' + id, '_self');
     }
 
+    function selectRateableCollection(collectionSelectRow) {
+        var id = collectionSelectRow.getAttribute('collection_id');
+        window.open('{{ path("quiz_questionnaire") }}/' + id, '_self');
+    }
+
+    window.onload = function() {
+        var collectionSelectOpener = document.getElementById("collectionSelectOpener");
+        var collectionOptionsContainer = document.getElementById("collectionOptionsContainer");
+
+        collectionSelectOpener.onclick = function(event) {
+            if ( collectionOptionsContainer.style.display == 'block' ) {
+                collectionOptionsContainer.style.display = 'none';
+            }
+            else {
+                collectionOptionsContainer.style.display = 'block';
+            }
+        }
+    }
+    
     </script>
 {% endblock %}
 
 {% block body %}
     {{ parent() }}
 
-<div class="form">
-    <select onchange="rateableCollectionChange(this);" id="rateableCollection" name="rateableCollection">
+    <div class="option-widget option-widget-chooser place-chooser">
+        <div id="collectionSelectOpener" class="option-widget-arrow-cont">
+            <div class="option-widget-arrow"></div>
+        </div>
+        <span id="collectionSelectName">
+            {{ rateableCollectionName }}
+        </span>
+        
+        <div id="collectionOptionsContainer" class="option-widget-section">
+        {% for collection in rateableCollections %}
+            <div name="collectionSelectRow" class="option-widget-chooser-row" collection_id="{{ collection.id }}" onclick="selectRateableCollection(this)">
+                {{ collection.name }}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    
+    <select onchange="rateableCollectionChange(this);" id="rateableCollection" name="rateableCollection" style="display:none;">
         {% for rateableCollection in rateableCollections %}
             <option value="{{ rateableCollection.id }}" {% if rateableCollectionId == rateableCollection.id %} selected="selected" {% endif %}>{{ rateableCollection.name }}</option>
         {% endfor %}
     </select>
-	<div class="question-table">
+
+<div class="form" style="padding:70px 15px !important; width:1000px;">
+    <div class="upper-menu">
+        <div class="upper-menu-inner">
+            <a href="{{ path('acme_manager_welcome') }}" class="upper-home-btn"></a>
+            <div class="upper-logout-btn">
+                <a href="{{ path('logout') }}"></a>
+                {{ app.user.username }}
+            </div>
+        </div>
+    </div>      
+
+	<div class="question-table" style="width: 100%;">
 	{% if questions %}
     	<div class="question-table-header">
     		<div class="col col-1">Kérdés</div>
@@ -93,6 +138,7 @@
     		<div class="col col-3">Egyéb válasz 1</div>
     		<div class="col col-4">Egyéb válasz 2</div>
     	</div>
+        <div class="border"></div>
 
         {% for question in questions %}
     		<div class="question-table-row">

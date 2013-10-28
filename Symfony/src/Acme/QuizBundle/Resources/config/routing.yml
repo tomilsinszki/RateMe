@@ -10,10 +10,10 @@ quiz_download:
     pattern:   /quiz/download/{rateableCollectionId}
     defaults: { _controller: AcmeQuizBundle:Default:download }
 
-quiz_main:
-    pattern:   /quiz/{rateableId}
-    defaults: { _controller: AcmeQuizBundle:Default:index }
-
 quiz_save:
     pattern:   /quiz/save/{rateableId}
     defaults: { _controller: AcmeQuizBundle:Default:save }
+
+quiz_main:
+    pattern:   /quiz/{rateableId}
+    defaults: { _controller: AcmeQuizBundle:Default:index }

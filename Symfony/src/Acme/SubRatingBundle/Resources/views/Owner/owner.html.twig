@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, user-scalable=no" />
         
         <link href="{{ asset('css/global.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/select.css') }}" type="text/css" rel="stylesheet" />
         <link href="{{ asset('css/upper-menu.css') }}" type="text/css" rel="stylesheet" />
         <link href="{{ asset('css/jquery-ui.min.css') }}" type="text/css" rel="stylesheet" />
         <link href="{{ asset('css/chosen.css') }}" type="text/css" rel="stylesheet" />
@@ -206,18 +207,56 @@
                 border-radius:8px;
             }
         </style>
+
+        <script>
+            $(function() {
+                $("#collectionSelectOpener").click(function() {
+                    if ( $("#collectionOptionsContainer").css('display') == 'block' ) {
+                        $("#collectionOptionsContainer").css('display', 'none');
+                    }
+                    else {
+                        $("#collectionOptionsContainer").css('display', 'block');
+                    }
+                });
+
+                $(".option-widget-chooser-row").click(function() {
+                    var rateableCollectionName = $(this).text();
+                    var rateableCollectionId = $(this).attr('collection_id');
+
+                    $("#collectionSelectName").text(rateableCollectionName);
+                    $("#collectionOptionsContainer").css('display', 'none');
+                    $("#rateableCollectionSelect").val(rateableCollectionId).change();
+                });
+            });
+        </script>
     </head>
     <body>
         <div class="bg_grad">
             <div class="content">
                 <div class="wrap">                
-                    <h1 class="questionnaireTitle">
-                        <select id="rateableCollectionSelect">
+                    <div>
+                        <div class="option-widget option-widget-chooser place-chooser">
+                            <div id="collectionSelectOpener" class="option-widget-arrow-cont">
+                                <div class="option-widget-arrow"></div>
+                            </div>
+                            <span id="collectionSelectName">
+                                {{ collection.name }}
+                            </span>
+                            
+                            <div id="collectionOptionsContainer" class="option-widget-section">
+                            {% for collection in ownedCollections %}
+                                <div class="option-widget-chooser-row" collection_id="{{ collection.id }}">{{ collection.name }}</div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <select id="rateableCollectionSelect" style="display:none;">
                             {% for ownedCollection in ownedCollections %}
                                 <option {% if ownedCollection.id == collection.id %}selected="selected"{% endif %}  value="{{ ownedCollection.id }}">{{ ownedCollection.name }}</option>
                             {% endfor %}
                         </select>
-                    </h1>
+                    </div>
+                    
                     <div id="questionnaireForm" class="questionnaireForm" data-ajax-route="{{ path('_welcome') }}">        
                     	<div class="upper-menu">
 							<div class="upper-menu-inner">
