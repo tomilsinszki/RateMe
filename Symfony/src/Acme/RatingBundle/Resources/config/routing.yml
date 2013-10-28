@@ -66,6 +66,10 @@ rating_new:
     pattern:   /ertekeles/uj
     defaults: { _controller: AcmeRatingBundle:Rating:new }
 
+rating_set_email:
+    pattern:   /ertekeles/email/beallitas
+    defaults: { _controller: AcmeRatingBundle:Rating:setEmail }
+
 contact_index:
     pattern:   /ugyfel/kontakt
     defaults: { _controller: AcmeRatingBundle:Contact:index }

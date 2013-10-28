@@ -5,11 +5,37 @@ namespace Acme\RatingBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Acme\RatingBundle\Entity\Rating;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Acme\RatingBundle\Utility\Validator;
 
 class RatingController extends Controller
 {
     public function indexAction()
     {
+    }
+
+    public function setEmailAction(Request $request)
+    {
+        if ('POST' != $request->getMethod()) {
+            throw $this->createNotFoundException('Expected POST method.');
+            return null;
+        }
+
+        $rating = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:Rating')->find(intval($request->request->get('ratingId')));
+        if ( empty($rating) ) {
+            throw $this->createNotFoundException('No rating found for ID.');
+            return null;
+        }
+
+        $email = $request->request->get('email');
+        if ( Validator::isEmailAddressValid($email) ) {
+            $rating->setEmail($email);
+            $rating->setUpdated(new \DateTime());
+            $this->getDoctrine()->getManager()->persist($rating);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        return new Response('');
     }
 
     public function newAction()

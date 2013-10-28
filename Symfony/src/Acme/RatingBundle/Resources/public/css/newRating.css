@@ -277,6 +277,7 @@ body {
 	font-weight: normal;
 	margin: -13px 0 2px;
 	text-align: center;
+    display: none;
 }
 
 .email-wrapper input {

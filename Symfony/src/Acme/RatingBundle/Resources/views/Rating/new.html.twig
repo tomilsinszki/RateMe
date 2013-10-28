@@ -5,6 +5,37 @@
 		<title>RateMe</title>
         <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/newRating.css') }}" />
         <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
+
+        <script>
+            $(function() {
+                function isEmailValid(email) {
+                    var emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+                    return ( email.search(emailRegExp) != -1 );
+                }
+
+                $('#saveEmailForRatingButton').on('click', function() {
+                    var email = $("#emailInput").val();
+
+                    if ( !isEmailValid(email) ) {
+                        $("#emailErrorContainer").css('display', 'block');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: "{{ path('rating_set_email') }}",
+                        type: 'POST',
+                        data: {
+                            ratingId: $("#ratingIdInput").val(),
+                            email: email
+                        },
+                        dataType: 'html',
+                        async: false
+                    }).done(function(innerHTML) {
+                        $("#emailContainer").html(innerHTML);
+                    });
+                });
+            });
+        </script>
 	</head>
 	<body>
 		<div class="bg-grad">
@@ -45,18 +76,23 @@
                 
                 {% if contact is null %}
                 {% if question is not null %}
-                <div class="wrapper bottom-wrapper email-wrapper">
-                    <h3>Kérjük adja meg az email címét, hogy értesíteni<br />tudjuk a nyereményjáték eredményéről.</h3>
-                    
-                    <input type="text" />
+                {% if rating.email is null %}
+                <div id="emailContainer">
+                    <div class="wrapper bottom-wrapper email-wrapper">
+                        <h3>Kérjük adja meg az email címét, hogy értesíteni<br />tudjuk a nyereményjáték eredményéről.</h3>
+                        <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
+                        
+                        <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
+                        <input id="emailInput" type="text" />
 
-                    <div class="btn_wrapper" style="text-align: center;">
-                        <input class="btn_cont yellow send-button" type="button" value="Elküld" />
+                        <div class="btn_wrapper" style="text-align: center;">
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="Elküld" />
+                        </div>
                     </div>
                 </div>
                 {% endif %}
                 {% endif %}
-
+                {% endif %}
 			</div>
 			
 			<div class="footer">
