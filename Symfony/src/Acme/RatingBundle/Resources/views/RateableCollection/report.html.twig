@@ -224,7 +224,10 @@
                     serieWithoutZeros[serieWithoutZeros.length] = serie[i];
                 }
             }
-            serie = serieWithoutZeros;
+
+            if ( 0 < serieWithoutZeros.length ) {
+                serie = serieWithoutZeros;
+            }
 
 
             var labels = [];
