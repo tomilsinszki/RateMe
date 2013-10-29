@@ -43,6 +43,10 @@
                     $("#collectionSelectName").text($(this).text());
                     $("#collectionOptionsContainer").css('display', 'none');
                 });
+                
+                $("#rateableCollectionIdInput").val("{{ ownedCollections|first.id }}");
+                $("#startDateInput").val("{{ defaultStartDateString }}");
+                $("#endDateInput").val("{{ defaultEndDateString }}");
             });
         </script>
         <style>
