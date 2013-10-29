@@ -36,7 +36,8 @@
                     if (data.errors) {
                         showErrors(data.errors);
                     } else {
-                        window.open('{{ path("quiz_questionnaire") }}', '_self');
+                        var id = document.getElementById("rateableCollection").value;
+                        window.open('{{ path("quiz_questionnaire") }}/' + id, '_self');
                     }
                 }
             },
