@@ -97,29 +97,6 @@
 {% block body %}
     {{ parent() }}
 
-    <div class="option-widget option-widget-chooser place-chooser">
-        <div id="collectionSelectOpener" class="option-widget-arrow-cont">
-            <div class="option-widget-arrow"></div>
-        </div>
-        <span id="collectionSelectName">
-            {{ rateableCollectionName }}
-        </span>
-        
-        <div id="collectionOptionsContainer" class="option-widget-section">
-        {% for collection in rateableCollections %}
-            <div name="collectionSelectRow" class="option-widget-chooser-row" collection_id="{{ collection.id }}" onclick="selectRateableCollection(this)">
-                {{ collection.name }}
-            </div>
-        {% endfor %}
-        </div>
-    </div>
-    
-    <select onchange="rateableCollectionChange(this);" id="rateableCollection" name="rateableCollection" style="display:none;">
-        {% for rateableCollection in rateableCollections %}
-            <option value="{{ rateableCollection.id }}" {% if rateableCollectionId == rateableCollection.id %} selected="selected" {% endif %}>{{ rateableCollection.name }}</option>
-        {% endfor %}
-    </select>
-
 <div class="form" style="padding:70px 15px !important; width:1000px;">
     <div class="upper-menu">
         <div class="upper-menu-inner">
@@ -129,7 +106,34 @@
                 {{ app.user.username }}
             </div>
         </div>
-    </div>      
+    </div>
+
+    <div>
+        <div class="option-widget option-widget-chooser place-chooser">
+            <div id="collectionSelectOpener" class="option-widget-arrow-cont">
+                <div class="option-widget-arrow"></div>
+            </div>
+            <span id="collectionSelectName">
+                {{ rateableCollectionName }}
+            </span>
+            
+            <div id="collectionOptionsContainer" class="option-widget-section">
+            {% for collection in rateableCollections %}
+                <div name="collectionSelectRow" class="option-widget-chooser-row" collection_id="{{ collection.id }}" onclick="selectRateableCollection(this)">
+                    {{ collection.name }}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+        
+        <select onchange="rateableCollectionChange(this);" id="rateableCollection" name="rateableCollection" style="display:none;">
+            {% for rateableCollection in rateableCollections %}
+                <option value="{{ rateableCollection.id }}" {% if rateableCollectionId == rateableCollection.id %} selected="selected" {% endif %}>
+                    {{ rateableCollection.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
 
 	<div class="question-table" style="width: 100%;">
 	{% if questions %}
