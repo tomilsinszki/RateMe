@@ -88,8 +88,8 @@
             
             $(window).on('resize', resizeCharts);
 
-            $('#rateableRatingsCountBarChart').css('display', 'none');
-            $('#rateableReportsContainerSortedByRatingCount').css('display', 'none');
+            $('#rateableRatingsAverageBarChart').css('display', 'none');
+            $('#rateableReportsContainerSortedByRatingAverage').css('display', 'none');
             
             $('#rateableContactCountTitle').click(function() {
                 $('#rateableContactCountTitle').css('color', '#572160');
@@ -224,7 +224,10 @@
                     serieWithoutZeros[serieWithoutZeros.length] = serie[i];
                 }
             }
-            serie = serieWithoutZeros;
+
+            if ( 0 < serieWithoutZeros.length ) {
+                serie = serieWithoutZeros;
+            }
 
 
             var labels = [];
@@ -643,8 +646,8 @@
 
                     <div class="graph">
                         <div style='text-align:center; line-height:300%;'>
-                            <h2 style='display:inline; color:#572160; padding-left:20px; cursor:pointer;' id='rateableRatingsAverageTitle'>Értékelés átlagok</h2>
-                            <h2 style='display:inline; color:#999999; padding-left:20px; cursor:pointer;' id='rateableContactCountTitle'>Értékelések száma</h2>
+                            <h2 style='display:inline; color:#572160; padding-left:20px; cursor:pointer;' id='rateableContactCountTitle'>Értékelések száma</h2>
+                            <h2 style='display:inline; color:#999999; padding-left:20px; cursor:pointer;' id='rateableRatingsAverageTitle'>Értékelés átlagok</h2>
                         </div>
                         <div id='rateableRatingsAverageBarChart' class="graph_wrapper" style="display:block;">
                             <div class="inner_graph">

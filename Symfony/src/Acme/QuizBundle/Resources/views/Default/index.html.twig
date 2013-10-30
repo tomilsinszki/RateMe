@@ -15,7 +15,7 @@
 
     <script type="text/javascript">
 
-    var seconds = 30;
+    var seconds = 60;
     var currentQuestionId, remainedQuestionIds = [];
     var countdown, timer, buttons, question, questionNum, answers;
     var questions = {{ questions|json_encode()|raw }};
@@ -174,7 +174,7 @@
 
     <div id="quiz" class="container">
     	<div class="stopper">
-    		<div id="timer-bg">00:30</div>
+    		<div id="timer-bg">01:00</div>
     	</div>
     	<div class="wrapper">
     		<h2><span id="questionNum">0</span>.</h2>

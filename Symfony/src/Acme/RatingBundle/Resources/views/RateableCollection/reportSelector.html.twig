@@ -15,16 +15,31 @@
 
         <script>
             $(function() {
+                function addDays(inputDateText, dayCount) {
+                    var outputDate = new Date(inputDateText);
+                    outputDate.setDate(outputDate.getDate()+dayCount);
+                    var outputDateText = outputDate.getFullYear()+"-"+(outputDate.getMonth()+1)+"-"+outputDate.getDate();
+                    return outputDateText;
+                }
+
                 $("#startDatePicker").datepicker({ 
                     dateFormat: "yy-mm-dd", 
-                    onSelect: function(startDate) { $("#startDateInput").val(startDate) }
+                    maxDate: addDays("{{ defaultEndDateString }}", -1),
+                    onSelect: function(startDate) { 
+                        $("#startDateInput").val(startDate); 
+                        $("#endDatePicker").datepicker("option", "minDate", addDays(startDate, 1));
+                    }
                 });
                 $("#startDatePicker").datepicker("setDate", "{{ defaultStartDateString }}");
                 $("#startDatePicker").datepicker($.datepicker.regional["hu"]);
                 
                 $("#endDatePicker").datepicker({ 
                     dateFormat: "yy-mm-dd", 
-                    onSelect: function(endDate) { $("#endDateInput").val(endDate) } 
+                    minDate: addDays("{{ defaultStartDateString }}", 1),
+                    onSelect: function(endDate) { 
+                        $("#endDateInput").val(endDate) 
+                        $("#startDatePicker").datepicker("option", "maxDate", addDays(endDate, -1));
+                    } 
                 });
                 $("#endDatePicker").datepicker("setDate", "{{ defaultEndDateString }}");
                 $("#endDatePicker").datepicker($.datepicker.regional["hu"]);
@@ -43,6 +58,10 @@
                     $("#collectionSelectName").text($(this).text());
                     $("#collectionOptionsContainer").css('display', 'none');
                 });
+                
+                $("#rateableCollectionIdInput").val("{{ ownedCollections|first.id }}");
+                $("#startDateInput").val("{{ defaultStartDateString }}");
+                $("#endDateInput").val("{{ defaultEndDateString }}");
             });
         </script>
         <style>

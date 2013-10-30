@@ -74,15 +74,16 @@ class DefaultController extends Controller {
             $rowNum++;
         }
 
-        //create the response
         $response = $excelService->getResponse();
+        $response->headers->set("Content-Description", "File Transfer");
+        $response->headers->set('Expires', 0);
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment;filename=Kérdőív.xls');
+        $response->headers->set("Content-Transfer-Encoding", "Binary");
+        $response->headers->set('Content-Disposition', 'attachment; filename="Kérdőív.xls"');
+        $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
 
         // If you are using a https connection, you have to set those two headers and use sendHeaders() for compatibility with IE <9
         $response->headers->set('Pragma', 'public');
-        $response->headers->set('Cache-Control', 'maxage=1');
-        $response->sendHeaders();
         return $response;
     }
 
