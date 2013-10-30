@@ -233,7 +233,7 @@ body {
 
 .bottom-wrapper {
 	background: url('/bundles/acmerating/images/bottom_wrapper_bg.png') top center no-repeat;
-	padding-top: 25px;
+	padding-top: 2px;
 }
 
 .question-promo {
@@ -248,6 +248,11 @@ body {
 	float: right;
 	text-align: right;
 	width: 190px;
+}
+
+.question-box {
+    margin-top: 20px;
+    margin-bottom: 28px;
 }
 
 .question-box h3 {
@@ -269,6 +274,7 @@ body {
 	line-height: 20px;
 	margin-bottom: 15px;
 	text-align: center;
+    padding-top: 20px;
 }
 
 .email-wrapper .error-msg {

@@ -38,6 +38,10 @@
         </script>
 	</head>
 	<body>
+        <!-- Preloaded images -->
+        <img src="/images/custom_radio_on.png" style="display: none;">
+        
+        
 		<div class="bg-grad">
 			<div class="container">
 				<div class="wrapper">
@@ -64,12 +68,12 @@
                 {% if question is not null %}
 				<div class="wrapper bottom-wrapper">
 					<div class="question-box">
-                        {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
-                        
                         <div class="question-promo">
                             <div class="price-img"><img src="{{ asset('bundles/acmerating/images/dvd.png') }}" alt="Philips DVD-lejátszó" /></div>
                             Van még pár másodperce? Ha igen, válaszojon még egy kérdésre és <strong>Philips DVD-lejátszót nyerhet!</strong>
                         </div>
+                        
+                        {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
 					</div>
 				</div>
                 {% endif %}

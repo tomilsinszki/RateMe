@@ -35,17 +35,6 @@
 	background-image: url('/images/upper_home_hover.png');
 }
 
-.upper-home-btn {
-	background: transparent url('/images/upper_home.png');
-	float: left;
-	height: 27px;
-	margin: 8px 0 0 20px;
-	width: 27px;
-}
-.upper-home-btn:hover {
-	background-image: url('/images/upper_home_hover.png');
-}
-
 .upper-logout-btn {
 	color: #a8d200;
 	float: right;
@@ -54,7 +43,6 @@
 	line-height: 47px;
 	margin-right: 20px;
 }
-
 
 .upper-logout-btn a {
 	background: transparent url('/images/upper_power.png');
