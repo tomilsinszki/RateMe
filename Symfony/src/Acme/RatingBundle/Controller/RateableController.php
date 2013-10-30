@@ -23,8 +23,9 @@ class RateableController extends Controller
     public function profileAction($id)
     {
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
-        if ( empty($rateable) === TRUE )
+        if ( empty($rateable) ) {
             throw $this->createNotFoundException('Rateable could not be found.');
+        }
 
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('rateable' => $rateable), array('created' => 'DESC'));
 
@@ -45,8 +46,9 @@ class RateableController extends Controller
     {
         $imageURL = null;
         $image = $rateable->getImage();
-        if ( empty($image) === FALSE )
+        if ( !empty($image) ) {
             $imageURL = $image->getWebPath();
+        }
         
         return $imageURL;
     }
@@ -54,8 +56,9 @@ class RateableController extends Controller
     public function uploadImageAction($id)
     {
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
-        if ( empty($rateable) === TRUE )
+        if ( empty($rateable) ) {
             throw $this->createNotFoundException('Rateable could not be found.');
+        }
 
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
@@ -94,14 +97,23 @@ class RateableController extends Controller
 
     public function indexByIdAction($id)
     {
-        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneBy(array(
+            'id' => $id,
+            'isActive' => true,
+        ));
+        
+        if ( empty($rateable) ) {
+            throw $this->createNotFoundException('Rateable could not be found or inactive.');
+        }
+        
         return new Response($this->getRateablePageContents($rateable));
     }
 
     private function getRateablePageContents($rateable)
     {
-        if ( empty($rateable) === TRUE )
+        if ( empty($rateable) ) {
             throw $this->createNotFoundException('The rateable does not exists.');
+        }
         
         $content = $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
             'rateable' => $rateable,
