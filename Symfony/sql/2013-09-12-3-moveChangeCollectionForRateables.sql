@@ -9,8 +9,3 @@ UPDATE rateable SET collection_id=(SELECT id FROM rateable_collection WHERE name
 UPDATE rateable SET collection_id=(SELECT id FROM rateable_collection WHERE name='Mosonmmagyaróvár (TESCO)') WHERE name='Bertha Viktória';
 UPDATE rateable SET collection_id=(SELECT id FROM rateable_collection WHERE name='Mosonmmagyaróvár (TESCO)') WHERE name='Major Edith';
 
--- Move Kovács Gyula
--- Move Szilvás Anikó
--- Move Árbogászt Fanni
--- Move Madár Zsanett
-

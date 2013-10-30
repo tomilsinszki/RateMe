@@ -22,10 +22,7 @@ class RateableController extends Controller
 
     public function profileAction($id)
     {
-        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
-        if ( empty($rateable) === TRUE )
-            throw $this->createNotFoundException('Rateable could not be found.');
-
+        $rateable = $this->getActiveRateableById($id);
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('rateable' => $rateable), array('created' => 'DESC'));
 
         $image = new Image();
@@ -45,18 +42,16 @@ class RateableController extends Controller
     {
         $imageURL = null;
         $image = $rateable->getImage();
-        if ( empty($image) === FALSE )
+        if ( !empty($image) ) {
             $imageURL = $image->getWebPath();
+        }
         
         return $imageURL;
     }
 
     public function uploadImageAction($id)
     {
-        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
-        if ( empty($rateable) === TRUE )
-            throw $this->createNotFoundException('Rateable could not be found.');
-
+        $rateable = $this->getActiveRateableById($id);
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
@@ -94,14 +89,15 @@ class RateableController extends Controller
 
     public function indexByIdAction($id)
     {
-        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($id);
+        $rateable = $this->getActiveRateableById($id);
         return new Response($this->getRateablePageContents($rateable));
     }
 
     private function getRateablePageContents($rateable)
     {
-        if ( empty($rateable) === TRUE )
+        if ( empty($rateable) ) {
             throw $this->createNotFoundException('The rateable does not exists.');
+        }
         
         $content = $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
             'rateable' => $rateable,
@@ -110,5 +106,18 @@ class RateableController extends Controller
         ));
 
         return $content;
+    }
+
+    private function getActiveRateableById($id) {
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneBy(array(
+            'id' => $id,
+            'isActive' => true,
+        ));
+
+        if ( empty($rateable) ) {
+            throw $this->createNotFoundException('Rateable could not be found or inactive.');
+        }
+
+        return $rateable;
     }
 }

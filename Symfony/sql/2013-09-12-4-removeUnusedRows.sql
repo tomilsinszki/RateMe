@@ -6,6 +6,3 @@ DELETE FROM user WHERE username='somtel.manager';
 DELETE FROM user_group WHERE user_id=(SELECT id FROM user WHERE username='kspartner.manager');
 DELETE FROM user WHERE username='kspartner.manager';
 
--- DELETE FROM rateable_collection WHERE name='KS Partner';
--- DELETE FROM identifier WHERE alphanumeric_value='2222';
-

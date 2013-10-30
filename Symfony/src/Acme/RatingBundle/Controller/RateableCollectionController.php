@@ -32,6 +32,7 @@ class RateableCollectionController extends Controller
         LEFT JOIN rateable rb ON c.rateable_id=rb.id
         WHERE 
             rb.collection_id=%1$d AND
+            rb.is_active=1 AND 
             c.contact_happened_at BETWEEN "%2$s" AND "%3$s"
         ORDER BY c.contact_happened_at';
     private $getContactsForCollectionStatement = null;
@@ -53,6 +54,7 @@ class RateableCollectionController extends Controller
         LEFT JOIN rating r ON rb.id=r.rateable_id 
         WHERE 
             r.stars IS NOT NULL AND 
+            rb.is_active=1 AND 
             rc.id=%1$d AND
             r.updated BETWEEN "%2$s" AND "%3$s"
         ORDER BY r.updated;';
@@ -94,12 +96,18 @@ class RateableCollectionController extends Controller
         $identifier = $this->getDoctrine()->getRepository('AcmeRatingBundle:Identifier')->findOneByAlphanumericValue($alphanumericValue);
 
         $collection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->findOneByIdentifier($identifier);
-        if ( empty($collection) === TRUE )
+        if ( empty($collection) ) {
             throw $this->createNotFoundException('The rateable collection does not exists.');
+        }
+        
+        $rateables = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findBy(array(
+            'collection' => $collection,
+            'isActive' => true,
+        ));
 
         $content = $this->renderView('AcmeRatingBundle:RateableCollection:index.html.twig', array(
             'collection' => $collection,
-            'rateables' => $collection->getRateables(),
+            'rateables' => $rateables,
             'rateableImageURLs' => $this->getImageURLsForRateablesInCollection($collection),
         ));
 
@@ -161,7 +169,7 @@ class RateableCollectionController extends Controller
             }
         }
         
-        if ( empty($ratings) === FALSE ) {
+        if ( !empty($ratings) ) {
             krsort($ratings, SORT_NUMERIC);
         }
         
@@ -205,8 +213,9 @@ class RateableCollectionController extends Controller
     {
         $collectionImageURL = null;
         $collectionImage = $rateableCollection->getImage();
-        if ( empty($collectionImage) === FALSE )
+        if ( !empty($collectionImage) ) {
             $collectionImageURL = $collectionImage->getWebPath();
+        }
         
         return $collectionImageURL;
     }
@@ -225,8 +234,9 @@ class RateableCollectionController extends Controller
     {
         $imageURL = null;
         $image = $rateable->getImage();
-        if ( empty($image) === FALSE )
+        if ( !empty($image) ) {
             $imageURL = $image->getWebPath();
+        }
         
         return $imageURL;
     }
@@ -257,8 +267,9 @@ class RateableCollectionController extends Controller
     private function getRateableCollectionById($id)
     {
         $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($id);
-        if ( empty($rateableCollection) === TRUE )
+        if ( empty($rateableCollection) ) {
             throw $this->createNotFoundException('RateableCollection could not be found.');
+        }
         
         return $rateableCollection;
     }
@@ -284,8 +295,9 @@ class RateableCollectionController extends Controller
         $rateableName = $this->getRequest()->request->get('rateableName');
         $rateableTypeName = $this->getRequest()->request->get('rateableTypeName');
 
-        if ( ( empty($rateableName) === TRUE ) AND ( empty($rateableTypeName) === TRUE ) )
+        if ( empty($rateableName) and empty($rateableTypeName) ) {
             return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
+        }
 
         $rateable = new Rateable();
         $rateable->setName($rateableName);
@@ -303,8 +315,9 @@ class RateableCollectionController extends Controller
     {
         $rateableCollectionId = $this->getRequest()->request->get('rateableCollectionId');
         $rateableCollection = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
-        if ( empty($rateableCollection) === TRUE )
+        if ( empty($rateableCollection) ) {
             throw $this->createNotFoundException('The rateable collection does not exists.');
+        }
 
         return $rateableCollection;
     }
@@ -328,8 +341,9 @@ class RateableCollectionController extends Controller
     {
         $rateableId = $this->getRequest()->request->get('rateableId');
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($rateableId);
-        if ( empty($rateable) === TRUE )
+        if ( empty($rateable) ) {
             throw $this->createNotFoundException('The rateable does not exists.');
+        }
 
         return $rateable;
     }
@@ -350,7 +364,7 @@ class RateableCollectionController extends Controller
     private function getUserFromContext()
     {
         $user = $this->get('security.context')->getToken()->getUser();
-        if ( empty($user) === TRUE ) {
+        if ( empty($user) ) {
             throw $this->createNotFoundException('Current user could not be found.');
         }
 
@@ -377,7 +391,7 @@ class RateableCollectionController extends Controller
             'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "{$this->getRequest()->request->get('endDateString')} 00:00:00"),
         );
 
-        if ( Validator::isEndDateLaterThanStartDateByAtLeastOneDay($this->reportCurrentPeriod['startDate'], $this->reportCurrentPeriod['endDate']) === FALSE ) {
+        if ( !Validator::isEndDateLaterThanStartDateByAtLeastOneDay($this->reportCurrentPeriod['startDate'], $this->reportCurrentPeriod['endDate']) ) {
             return new Response('<html><body>Hibás kezdő és vég dátumok!</body></html>');
         }
         
@@ -521,7 +535,7 @@ class RateableCollectionController extends Controller
             $this->rateableReportsData[$id]['currentPeriod']['ratingsSum'] = 0;
             $this->rateableReportsData[$id]['currentPeriod']['ratingsAvg'] = 0;
             
-            if ( empty($record['imageFileName']) == FALSE ) {
+            if ( !empty($record['imageFileName']) ) {
                 $this->rateableReportsData[$id]['profilePictureURL'] = "/uploads/images/{$record['imageFileName']}.{$record['imageFileExtension']}";
             }
 
@@ -589,7 +603,7 @@ class RateableCollectionController extends Controller
             $y1 = $this->contactCountByDayChartData['day'][$previousDay->format('Y-m-d')];
             $y2 = $this->contactCountByDayChartData['day'][$nextDay->format('Y-m-d')];
 
-            if ( empty($highestValueInChart) === TRUE ) {
+            if ( empty($highestValueInChart) ) {
                 $this->contactCountByDayChartData['values'][$point] = 0;
             }
             else {
@@ -643,7 +657,7 @@ class RateableCollectionController extends Controller
             $ratingDateTime = new \DateTime();
             $ratingDateTime->setTimestamp($ratingTimestamp);
             
-            if ( array_key_exists($ratingDateTime->format('Y-m'), $this->overallRatingAverageByMonthChartData['dataByMonths']) === TRUE ) {
+            if ( array_key_exists($ratingDateTime->format('Y-m'), $this->overallRatingAverageByMonthChartData['dataByMonths']) ) {
                 $this->overallRatingAverageByMonthChartData['dataByMonths']["{$ratingDateTime->format('Y-m')}"]['sum'] += $record['stars'];
                 ++$this->overallRatingAverageByMonthChartData['dataByMonths']["{$ratingDateTime->format('Y-m')}"]['count'];
             }
@@ -679,7 +693,7 @@ class RateableCollectionController extends Controller
         foreach($this->rateableReportsData AS $id => $rateableData) {
             foreach(array('currentPeriod', 'previousPeriod') AS $periodName) {
                 $avg = 0.0;
-                if ( empty($this->rateableReportsData[$id][$periodName]['ratingCount']) == FALSE ) {
+                if ( !empty($this->rateableReportsData[$id][$periodName]['ratingCount']) ) {
                     $avg = $this->rateableReportsData[$id][$periodName]['ratingsSum'] / $this->rateableReportsData[$id][$periodName]['ratingCount'];
                 }
 
@@ -693,7 +707,7 @@ class RateableCollectionController extends Controller
         }
 
         foreach($this->overallRatingAverageByMonthChartData['dataByMonths'] AS $date => $statistics) {
-            if ( empty($statistics['count']) === TRUE ) {
+            if ( empty($statistics['count']) ) {
                 $this->overallRatingAverageByMonthChartData['dataByMonths'][$date]['avg'] = 0;
             }
             else {
@@ -702,7 +716,7 @@ class RateableCollectionController extends Controller
         }
 
         foreach(array('currentPeriod', 'previousPeriod') AS $periodName) {
-            if ( empty($this->overallRatingsCount[$periodName]) === TRUE ) {
+            if ( empty($this->overallRatingsCount[$periodName]) ) {
                 $this->overallRatingsAvg[$periodName] = 0;
             }
             else {
@@ -739,7 +753,7 @@ class RateableCollectionController extends Controller
             $y1 = $this->ratingCountByDayChartData['day'][$previousDay->format('Y-m-d')];
             $y2 = $this->ratingCountByDayChartData['day'][$nextDay->format('Y-m-d')];
 
-            if ( empty($highestValueInChart) === TRUE ) {
+            if ( empty($highestValueInChart) ) {
                 $this->ratingCountByDayChartData['values'][$point] = 0;
             }
             else {
@@ -749,7 +763,7 @@ class RateableCollectionController extends Controller
         
         $maxRatingAvg = 0;
         foreach($this->ratingAvgByDayChartData['day'] AS $dateString => $stats) {
-            if ( empty($this->ratingAvgByDayChartData['day'][$dateString]['count']) === TRUE ) {
+            if ( empty($this->ratingAvgByDayChartData['day'][$dateString]['count']) ) {
                 $this->ratingAvgByDayChartData['day'][$dateString]['avg'] = 0;
             }
             else {
@@ -785,7 +799,7 @@ class RateableCollectionController extends Controller
             $y1 = $this->ratingAvgByDayChartData['day'][$previousDay->format('Y-m-d')]['avg'];
             $y2 = $this->ratingAvgByDayChartData['day'][$nextDay->format('Y-m-d')]['avg'];
 
-            if ( empty($highestValueInChart) === TRUE ) {
+            if ( empty($highestValueInChart) ) {
                 $this->ratingAvgByDayChartData['values'][$point] = 0;
             }
             else {
@@ -796,18 +810,18 @@ class RateableCollectionController extends Controller
 
     private function isTimestampInPreviousPeriod($timestamp) {
         if ( ( $this->reportPreviousPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportPreviousPeriod['endDate']->getTimestamp() ) ) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     private function isTimestampInCurrentPeriod($timestamp) {
         if ( ( $this->reportCurrentPeriod['startDate']->getTimestamp() <= $timestamp ) AND ( $timestamp < $this->reportCurrentPeriod['endDate']->getTimestamp() ) ) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     private function calcRatingsByStarsChartConfig() {
