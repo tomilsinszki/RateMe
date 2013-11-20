@@ -78,41 +78,6 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(Validator::isDateTimeObject($dateTimeObject));
         }
     }
-
-    public function testIfEndDateLaterThanStartDateByAtLeastOneDay() {
-        $datePairs = array(
-            array('start' => '2013-01-01 00:00:00', 'end' => '2013-01-02 00:00:00'),
-            array('start' => '2013-01-01 00:00:00', 'end' => '2013-01-03 00:00:00'),
-            array('start' => '2013-01-01 00:00:00', 'end' => '2013-02-01 00:00:00'),
-            array('start' => '2013-01-01 00:00:00', 'end' => '2013-02-03 00:00:00'),
-        );
-
-        foreach($datePairs AS $datePair) {
-            $this->assertTrue(Validator::isEndDateLaterThanStartDateByAtLeastOneDay(
-                \DateTime::createFromFormat("Y-m-d H:i:s", $datePair['start']),
-                \DateTime::createFromFormat("Y-m-d H:i:s", $datePair['end'])
-            ));
-        }
-    }
-
-    public function testIfEndDateNotLaterThanStartDateByAtLeastOneDay() {
-        $datePairs = array(
-            array('start' => '2013-01-15 00:00:00', 'end' => '2013-01-15 00:00:00'),
-            array('start' => '2013-01-15 00:00:00', 'end' => '2013-01-15 12:00:00'),
-            array('start' => '2013-01-15 00:00:00', 'end' => '2013-01-15 23:59:59'),
-            array('start' => '2013-01-15 00:00:00', 'end' => '2013-01-14 23:59:59'),
-            array('start' => '2013-01-15 00:00:00', 'end' => ''),
-            array('start' => '', 'end' => '2013-01-14 23:59:59'),
-            array('start' => '', 'end' => ''),
-        );
-
-        foreach($datePairs AS $datePair) {
-            $this->assertFalse(Validator::isEndDateLaterThanStartDateByAtLeastOneDay(
-                \DateTime::createFromFormat("Y-m-d H:i:s", $datePair['start']),
-                \DateTime::createFromFormat("Y-m-d H:i:s", $datePair['end'])
-            ));
-        }
-    }
 }
 
 ?>

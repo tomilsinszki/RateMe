@@ -388,10 +388,10 @@ class RateableCollectionController extends Controller
         
         $this->reportCurrentPeriod = array(
             'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "{$this->getRequest()->request->get('startDateString')} 00:00:00"),
-            'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "{$this->getRequest()->request->get('endDateString')} 00:00:00"),
+            'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", "{$this->getRequest()->request->get('endDateString')} 23:59:59"),
         );
 
-        if ( !Validator::isEndDateLaterThanStartDateByAtLeastOneDay($this->reportCurrentPeriod['startDate'], $this->reportCurrentPeriod['endDate']) ) {
+        if ( !Validator::isEndDateLaterThanStartDateByAlmostOneDay($this->reportCurrentPeriod['startDate'], $this->reportCurrentPeriod['endDate']) ) {
             return new Response('<html><body>Hibás kezdő és vég dátumok!</body></html>');
         }
         

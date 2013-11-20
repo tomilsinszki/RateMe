@@ -15,19 +15,12 @@
 
         <script>
             $(function() {
-                function addDays(inputDateText, dayCount) {
-                    var outputDate = new Date(inputDateText);
-                    outputDate.setDate(outputDate.getDate()+dayCount);
-                    var outputDateText = outputDate.getFullYear()+"-"+(outputDate.getMonth()+1)+"-"+outputDate.getDate();
-                    return outputDateText;
-                }
-
                 $("#startDatePicker").datepicker({ 
                     dateFormat: "yy-mm-dd", 
-                    maxDate: addDays("{{ defaultEndDateString }}", -1),
+                    maxDate: "{{ defaultEndDateString }}",
                     onSelect: function(startDate) { 
                         $("#startDateInput").val(startDate); 
-                        $("#endDatePicker").datepicker("option", "minDate", addDays(startDate, 1));
+                        $("#endDatePicker").datepicker("option", "minDate", startDate);
                     }
                 });
                 $("#startDatePicker").datepicker("setDate", "{{ defaultStartDateString }}");
@@ -35,10 +28,10 @@
                 
                 $("#endDatePicker").datepicker({ 
                     dateFormat: "yy-mm-dd", 
-                    minDate: addDays("{{ defaultStartDateString }}", 1),
+                    minDate: "{{ defaultStartDateString }}",
                     onSelect: function(endDate) { 
                         $("#endDateInput").val(endDate) 
-                        $("#startDatePicker").datepicker("option", "maxDate", addDays(endDate, -1));
+                        $("#startDatePicker").datepicker("option", "maxDate", endDate);
                     } 
                 });
                 $("#endDatePicker").datepicker("setDate", "{{ defaultEndDateString }}");
