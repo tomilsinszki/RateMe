@@ -81,9 +81,10 @@
 
             .ui-dialog .ui-dialog-buttonpane{
                 text-align:left;
-                border-width:1px 0 0;
-                background-image:none;
+                border:none;
+                background:none;                
                 margin-top:1em;
+                padding: 0em 1em 0em 0.4em;
             }
 
             .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
@@ -113,6 +114,9 @@
             }
 
             .ui-widget-content{
+                background: none;
+                background-color: rgba(98, 98, 98, 0.7);
+                border: none;
             }
 
             .ui-widget-content a{
@@ -132,7 +136,15 @@
                 opacity: 100;
                 filter:Alpha(Opacity=1);
             }
-
+            
+            .ui-dialog-buttonset .ui-state-default {
+                background-color: #a2ca00;
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a2ca00', endColorstr='#c2dc00');
+                background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#c2dc00)); 
+                background: -moz-linear-gradient(top,  #a2ca00,  #c2dc00);	
+                background: -o-linear-gradient(top,  #a2ca00,  #c2dc00);                
+            }
+            
             .ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus{}
 
             .ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active{}
@@ -262,19 +274,19 @@
                                 <div class="seqOption">
                                     {% if 1 == questionOrder.id %}
                                         <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="fix" class="checkboxInput" type="radio" name="listType">
-                                        <label class="checkboxInputLabel listTypeRadioLabel" for="fix">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="fix" data-hover-message-text="{% trans from 'owner' %}Questions will appear for customers in a sequential order.{% endtrans %}">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
                                     {% elseif 2 == questionOrder.id %}
                                         <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="random" class="checkboxInput" type="radio" name="listType">
-                                        <label class="checkboxInputLabel listTypeRadioLabel" for="random">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="random" data-hover-message-text="{% trans from 'owner' %}Questions will appear for customers in a random order.{% endtrans %}">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
                                     {% elseif 3 == questionOrder.id %}
                                         <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="weight" class="checkboxInput" type="radio" name="listType">
-                                        <label class="checkboxInputLabel listTypeRadioLabel" for="weight">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="weight" data-hover-message-text="{% trans from 'owner' %}Questions will appear for customers in a random order, however the first question will have the highest chance of showing first, while the last question will have the highest chance of showing last.{% endtrans %}">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
                                     {% elseif 4 == questionOrder.id %}
                                         <input data-id="{{ questionOrder.id }}" {% if collection.questionOrder.id == questionOrder.id %}checked="checked"{% endif %} id="balance" class="checkboxInput" type="radio" name="listType">
-                                        <label class="checkboxInputLabel listTypeRadioLabel" for="balance">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
+                                        <label class="checkboxInputLabel listTypeRadioLabel" for="balance" data-hover-message-text="{% trans from 'owner' %}The order of questions will be determined by how many customer ratings they have received so far. Questions with the least ratings will appear first.{% endtrans %}">{{ questionOrder.name|trans({}, 'questionOrder') }}</label>
                                     {% endif %}
                                 </div>
-                            {% endfor %}             
+                            {% endfor %}
                         </div>
                         <h2 class="questionnaireSubTitle">{% trans from 'owner' %}questions{% endtrans %}</h2>
                         <div class="questionTable">
@@ -347,14 +359,14 @@
                                         <div class="questionAnswerRow"></div>
                                     </li>            
                                 {% endfor %}
-                                <div id="dialog-delete-confirm" title="Törlés megerősítése" style="display:none;">
-                                    <span class="ui-dialog-content-text">Biztosan törli a kérdést?</span>
+                                <div id="dialog-delete-confirm" title="" style="display:none;">
+                                    <span class="ui-dialog-content-text">{% trans from 'owner' %}Delete question?{% endtrans %}</span>
                                 </div>
-                                <div id="dialog-cancel-confirm" title="Kilépés megerősítése" style="display:none;">
-                                    <span class="ui-dialog-content-text">Nem mentett változások vannak.<br/> Biztos kilép?</span>
-                                </div>
-                                <div id="dialog-update-confirm" title="Módosítás megerősítése" style="display:none;">
-                                    <span class="ui-dialog-content-text">A módosított kérdéshez már vannak szavazatok.<br/> Hogyan kezeljük a módosított kérdést?</span>
+                                <div id="dialog-cancel-confirm" title="" style="display:none;">
+                                    <span class="ui-dialog-content-text">{% trans from 'owner' %}There are unsaved changes for this question. Cancel anyway?{% endtrans %}</span>
+                                </div>                                
+                                <div id="dialog-save-failed" title="" style="display:none;">
+                                    <span class="ui-dialog-content-text">{% trans from 'owner' %}Data was incorrectly entered!{% endtrans %}</span>
                                 </div>
                             </ul>
                         </div>

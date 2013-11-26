@@ -46,7 +46,7 @@ $('document').ready(function() {
             type: 'POST',
             data: {
                 questionOrderId: $(that).attr('data-id'),
-                rateableCollectionId: $('#rateableCollectionSelect').val(),
+                rateableCollectionId: $('#rateableCollectionSelect').val()
             },
             async: true
         });
@@ -156,6 +156,7 @@ $('document').ready(function() {
         var parameters = getParametersForYesNoQuestion(questionContainer);
         
         if ( areParametersValid(parameters) == false ) {
+            showSaveFailedDialog();
             return;
         }
         
@@ -174,6 +175,7 @@ $('document').ready(function() {
         var parameters = getParametersForScaleQuestion(questionContainer);
         
         if ( areParametersValid(parameters) == false ) {
+            showSaveFailedDialog();
             return;
         }
         
@@ -192,6 +194,7 @@ $('document').ready(function() {
         var parameters = getParametersForYesNoQuestion(questionContainer);
         
         if ( areParametersValid(parameters) == false ) {
+            showSaveFailedDialog();
             return;
         }
         
@@ -210,6 +213,7 @@ $('document').ready(function() {
         var parameters = getParametersForScaleQuestion(questionContainer);
         
         if ( areParametersValid(parameters) == false ) {
+            showSaveFailedDialog();
             return;
         }
         
@@ -421,7 +425,7 @@ $('document').ready(function() {
                     url: ajaxBaseUrl + "melysegi/kerdoiv/kerdes/valaszok",
                     type: 'POST',
                     data: {
-                        questionId: questionId,
+                        questionId: questionId
                     },
                     async: false
                 }).done(function(innerHTML) {
@@ -459,6 +463,39 @@ $('document').ready(function() {
 
     function unbindQuestionSelectSpanClickEvent() {
         $("li.questionRow .questionSelectSpan").off("click");
+    }
+    
+    function bindQuestionOrderHoverMessages() {
+        $('.listTypeRadioLabel').on({
+            mouseenter: function() {
+                showQuestionOrderMessages($(this));
+            },
+            mouseleave: function() {
+                $('.seqOptionHoverWrapper').hide();
+            }
+        });        
+    }
+    bindQuestionOrderHoverMessages();
+    
+    function unbindQuestionOrderMessages() {
+        $( '.listTypeRadioLabel' ).off('mouseenter');
+        $( '.listTypeRadioLabel' ).off('mouseleave');
+    }
+    
+    function bindQuestionOrderClickMessages() {
+        $('.listTypeRadioLabel').on({
+            click: function() {
+                showQuestionOrderMessages($(this));
+                setTimeout(function(){
+                    $('.seqOptionHoverWrapper').hide();
+                }, 3000);
+            }
+        });
+    }
+    bindQuestionOrderClickMessages();
+
+    function unbindQuestionOrderClickMessages() {
+        $( '.listTypeRadioLabel' ).off('click');
     }
 
     function hideSpanAndShowInput(spanElement) {
@@ -506,6 +543,38 @@ $('document').ready(function() {
                 $(this).text("–");
             }
         });
+    }
+    
+    function showSaveFailedDialog() {
+        $("#dialog-save-failed").dialog({
+            resizable: false,
+            modal: true ,
+            buttons: {
+                "Ok": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+    
+    function showQuestionOrderMessages(orderTypeLabel) {
+        var listType         = $(orderTypeLabel).attr('for');
+        var hoverMessageText = $(orderTypeLabel).attr('data-hover-message-text');
+        
+        switch(listType) {
+            case 'fix':
+                $('.seqOptionHoverWrapper').text(hoverMessageText).show();
+            break;
+            case 'random':
+                $('.seqOptionHoverWrapper').text(hoverMessageText).show();
+            break;
+            case 'weight':
+                $('.seqOptionHoverWrapper').text(hoverMessageText).show();
+            break;
+            case 'balance':
+                $('.seqOptionHoverWrapper').text(hoverMessageText).show();
+            break;
+        }
     }
 
     function bindAllEvents() {

@@ -235,6 +235,10 @@ h2.questionnaireSubTitle {
     width: 100%;
 }
 
+.answerBoxRow .col-3 {
+    cursor: pointer;
+}
+
 .answerBoxRow label {
     padding-left: 53.7%;
 }
