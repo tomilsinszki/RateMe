@@ -14,6 +14,10 @@ quiz_save:
     pattern:   /quiz/save
     defaults: { _controller: AcmeQuizBundle:Default:save }
 
+quiz_entrance:
+    pattern:   /quiz/entrance
+    defaults: { _controller: AcmeQuizBundle:Default:entrance }
+
 quiz_main:
     pattern:   /quiz
     defaults: { _controller: AcmeQuizBundle:Default:index }

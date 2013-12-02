@@ -296,7 +296,16 @@ class DefaultController extends Controller
         $securityContext = $this->get('security.context');
 
         if ( CurrentUser::isOfRole($securityContext, 'ROLE_CUSTOMERSERVICE') ) {
-            return $this->redirect($this->generateUrl('contact_index'));
+            $user = $securityContext->getToken()->getUser();
+            $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
+            $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
+
+            if ( 3 <= count($questions) ) {
+                return $this->redirect($this->generateUrl('quiz_entrance'));
+            }
+            else {
+                return $this->redirect($this->generateUrl('contact_index'));
+            }
         }
         else if ( CurrentUser::isOfRole($securityContext, 'ROLE_MANAGER') ) {
             return $this->redirect($this->generateUrl('acme_manager_welcome'));

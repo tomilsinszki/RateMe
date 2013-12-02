@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    
+    <form action="{{ path('quiz_main') }}" method="get" class="form form-with-upper-menu">
+        <div class="upper-menu">
+            <div class="upper-menu-inner">
+                <a href="#" class="upper-home-btn"></a>
+                <div class="upper-logout-btn">
+                    <a href="{{ path('logout') }}"></a>
+                    {{ app.user.username }}
+                </div>
+            </div>
+        </div>      
+        
+        <div class="btn_cont kviz_starter_cancel yellow">
+            <button type="submit" class="btn"><h3><div>Kvíz kitöltése</div></h3></button>
+        </div>
+
+        <div>
+            <a class="quizStarterCancel" href="{{ path('contact_index') }}">
+                Most nem szeretnék részt venni!
+            </a>
+        </div>
+    </form>
+{% endblock %}

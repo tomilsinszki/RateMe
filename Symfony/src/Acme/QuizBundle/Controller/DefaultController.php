@@ -297,6 +297,14 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/quiz/entrance")
+     * @Template()
+     */
+    public function entranceAction() {
+        return array();
+    }
+
+    /**
      * @Route("/quiz")
      * @Template()
      */

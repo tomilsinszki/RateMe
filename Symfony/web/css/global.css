@@ -254,6 +254,10 @@
 	content: 'Bejelentkezem';
 }
 
+.form .btn_cont.kviz_starter_cancel .btn h3:after {
+	content: 'Kvíz kitöltése';
+}
+
 .form .btn_cont.write_us {
 	margin-bottom: 16px;
 }
@@ -1181,4 +1185,8 @@ p {
     padding-top: 80px;
 }
 
+.quizStarterCancel {
+    text-align: right !important;
+    margin-top: 20px;
+}
 

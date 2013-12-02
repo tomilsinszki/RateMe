@@ -110,6 +110,7 @@
         $('#questionNum', ev).html(correctAnswerNum);
         $('#quiz').hide();
         ev.show();
+        $('#finishButton').show();
     }
 
     function getWrongAnswerId(question, wrongAnswerText) {
@@ -224,5 +225,11 @@
 		<h4>Az eredményed:</h4>
 		<h3><span id="correctAnswerNum"></span> helyes válasz</h3>
 	</div>
+
+    <form id="finishButton" method="get" action="{{ path('contact_index') }}" style="display: none;">
+        <div class="btn_cont yellow">
+            <button type="submit" class="btn"><h3><div>OK</div></h3></button>
+        </div>
+    </form>
 
 {% endblock %}

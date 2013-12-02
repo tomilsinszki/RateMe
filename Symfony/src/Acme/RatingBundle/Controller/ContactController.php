@@ -81,11 +81,9 @@ class ContactController extends Controller
         
         $user = $this->get('security.context')->getToken()->getUser();
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
-        $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
 
         return $this->render('AcmeRatingBundle:Contact:index.html.twig', array(
             'form' => $contactForm->createView(),
-            'quizQuestions' => $questions,
         ));
     }
     

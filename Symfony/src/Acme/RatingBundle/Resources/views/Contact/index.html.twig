@@ -31,12 +31,6 @@
                     {{ app.user.username }}
                 </div>
             </div>
-
-            {% if 3 <= quizQuestions|length  %}
-            <div style="background-color:gray; padding-top:3px;">
-                <a href='{{ path('quiz_main') }}'>Teszteld tudásod egy gyors kvíz kitöltésével!</a>
-            </div>
-            {% endif %}
         </div>      
         
         <h3>E-mail</h3>

@@ -78,16 +78,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.3.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449"
+                "reference": "ff36d4216fef8242c3d8ee97fceee977e3c9b9a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/e16d7adf45664a50fa86f515b6d5e7f670130449",
-                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/ff36d4216fef8242c3d8ee97fceee977e3c9b9a6",
+                "reference": "ff36d4216fef8242c3d8ee97fceee977e3c9b9a6",
                 "shasum": ""
             },
             "require": {
@@ -103,7 +103,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.4.x-dev"
                 }
             },
             "autoload": {
@@ -119,7 +119,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -147,7 +148,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2013-10-25 19:04:14"
+            "time": "2013-11-23 16:10:06"
         },
         {
             "name": "doctrine/collections",
@@ -333,7 +334,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 }
@@ -351,12 +352,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "59c310ba2aeea882c0fde6f47462462ba9ce9878"
+                "reference": "69e91a3ea72c120f2516cf7983df6e9b550d00ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/59c310ba2aeea882c0fde6f47462462ba9ce9878",
-                "reference": "59c310ba2aeea882c0fde6f47462462ba9ce9878",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/69e91a3ea72c120f2516cf7983df6e9b550d00ea",
+                "reference": "69e91a3ea72c120f2516cf7983df6e9b550d00ea",
                 "shasum": ""
             },
             "require": {
@@ -382,7 +383,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -406,7 +408,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2013-09-26 21:18:35"
+            "time": "2013-11-13 00:02:59"
         },
         {
             "name": "doctrine/doctrine-bundle",
@@ -586,7 +588,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -608,12 +610,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/lexer.git",
-                "reference": "bc0e1f0cc285127a38c6c8ea88bc5dba2fd53e94"
+                "reference": "57d5a024b48709c56ce5bb93072948359220f36c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/lexer/zipball/bc0e1f0cc285127a38c6c8ea88bc5dba2fd53e94",
-                "reference": "bc0e1f0cc285127a38c6c8ea88bc5dba2fd53e94",
+                "url": "https://api.github.com/repos/doctrine/lexer/zipball/57d5a024b48709c56ce5bb93072948359220f36c",
+                "reference": "57d5a024b48709c56ce5bb93072948359220f36c",
                 "shasum": ""
             },
             "require": {
@@ -647,7 +649,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -657,7 +659,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2013-03-07 12:15:25"
+            "time": "2013-11-19 06:15:26"
         },
         {
             "name": "doctrine/orm",
@@ -705,7 +707,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -735,12 +738,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/l3pp4rd/DoctrineExtensions.git",
-                "reference": "395d0f909facf2ba7937cfa9802d62ca729017d1"
+                "reference": "f51987e4a11862cdf4225672777f745f8f7534f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/395d0f909facf2ba7937cfa9802d62ca729017d1",
-                "reference": "395d0f909facf2ba7937cfa9802d62ca729017d1",
+                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/f51987e4a11862cdf4225672777f745f8f7534f5",
+                "reference": "f51987e4a11862cdf4225672777f745f8f7534f5",
                 "shasum": ""
             },
             "require": {
@@ -807,7 +810,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2013-10-29 14:22:34"
+            "time": "2013-11-20 14:15:28"
         },
         {
             "name": "irongit/symfony2-stream-response",
@@ -1187,12 +1190,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liuggio/ExcelBundle.git",
-                "reference": "1a1bdc0c69f583e8fc9311bed08b7a8ee4afee64"
+                "reference": "cf0ecbeea411d7c3bdc8abab14c3407afdf530c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liuggio/ExcelBundle/zipball/1a1bdc0c69f583e8fc9311bed08b7a8ee4afee64",
-                "reference": "1a1bdc0c69f583e8fc9311bed08b7a8ee4afee64",
+                "url": "https://api.github.com/repos/liuggio/ExcelBundle/zipball/cf0ecbeea411d7c3bdc8abab14c3407afdf530c4",
+                "reference": "cf0ecbeea411d7c3bdc8abab14c3407afdf530c4",
                 "shasum": ""
             },
             "require": {
@@ -1230,7 +1233,7 @@
                 "excel",
                 "xls"
             ],
-            "time": "2013-09-18 15:59:40"
+            "time": "2013-10-31 21:15:33"
         },
         {
             "name": "monolog/monolog",
@@ -1867,12 +1870,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions.git",
-                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
+                "reference": "0fdc8ca874d415b65c7a0d31376cac9c9ed775af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
-                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/0fdc8ca874d415b65c7a0d31376cac9c9ed775af",
+                "reference": "0fdc8ca874d415b65c7a0d31376cac9c9ed775af",
                 "shasum": ""
             },
             "require": {
@@ -1906,7 +1909,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2013-10-18 19:37:15"
+            "time": "2013-11-27 18:19:39"
         },
         {
             "name": "twig/twig",
@@ -1914,12 +1917,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8fcde6a0914ca7b134ed5bc43bfd31e37f50c127"
+                "reference": "cab9fd9a100e74aafa201a03ca31aeeb4097c9bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8fcde6a0914ca7b134ed5bc43bfd31e37f50c127",
-                "reference": "8fcde6a0914ca7b134ed5bc43bfd31e37f50c127",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/cab9fd9a100e74aafa201a03ca31aeeb4097c9bc",
+                "reference": "cab9fd9a100e74aafa201a03ca31aeeb4097c9bc",
                 "shasum": ""
             },
             "require": {
@@ -1928,7 +1931,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14-dev"
+                    "dev-master": "1.15-dev"
                 }
             },
             "autoload": {
@@ -1955,7 +1958,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-30 08:31:01"
+            "time": "2013-11-24 18:36:20"
         }
     ],
     "packages-dev": [
