@@ -21,13 +21,9 @@ class QuestionFile {
 
     function setFile($file) {
         $this->file = $file;
-        //Rossz mime type-ot határoz meg a MimeTypeGuesser; msword-öt mond application/vnd.openxmlformats-officedocument.spreadsheetml.sheet helyett
-        //$this->extension = $this->file->guessExtension();
-
+        
         if ($file->getClientMimeType() === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             $this->extension = 'xlsx';
-        } elseif ($file->getClientMimeType() === 'application/vnd.ms-excel') {
-            $this->extension = 'xls';
         } else {
             $this->extension = $this->file->guessExtension();
         }

@@ -34,7 +34,7 @@ class DefaultController extends Controller {
      * @Route("/quiz/download/{rateableCollectionId}")
      */
     public function downloadAction($rateableCollectionId) {
-        $excelService = $this->get('xls.service_xls5');
+        $excelService = $this->get('xls.service_xls2007');
         $excelService->excelObj->getProperties()->setCreator("RateMe")
                             ->setLastModifiedBy("RateMe")
                             ->setTitle("RateMe Kérdőív")
@@ -77,9 +77,9 @@ class DefaultController extends Controller {
         $response = $excelService->getResponse();
         $response->headers->set("Content-Description", "File Transfer");
         $response->headers->set('Expires', 0);
-        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
         $response->headers->set("Content-Transfer-Encoding", "Binary");
-        $response->headers->set('Content-Disposition', 'attachment; filename="Kérdőív.xls"');
+        $response->headers->set('Content-Disposition', 'attachment; filename="Kérdőív.xlsx"');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
 
         // If you are using a https connection, you have to set those two headers and use sendHeaders() for compatibility with IE <9
@@ -97,7 +97,7 @@ class DefaultController extends Controller {
             $questionFile = new QuestionFile();
             $questionFile->setFile($this->getRequest()->files->get('file'));
             if (!$questionFile->isValid()) {
-                return new Response(json_encode(array('invalid' => 'Kérlek tölts fel egy valódi Excel fájlt!')), 200, array('Content-Type' => 'application/json'));
+                return new Response(json_encode(array('invalid' => 'Kérlek, tölts fel egy helyes .xlsx fájlt!')), 200, array('Content-Type' => 'application/json'));
             }
             $questionFile->upload();
             $absPath = $questionFile->getAbsolutePath();
@@ -105,9 +105,6 @@ class DefaultController extends Controller {
             switch ($questionFile->getExtension()) {
                 case ('xlsx'):
                     $excelObj = $this->get('xls.load_xls2007')->load($absPath);
-                    break;
-                case ('xls'):
-                    $excelObj = $this->get('xls.load_xls5')->load($absPath);
                     break;
                 default:
                     break;
