@@ -95,9 +95,6 @@ class DefaultController extends Controller {
 
         if ($this->getRequest()->isMethod('POST')) {
             $questionFile = new QuestionFile();
-            //$questionUploadForm = $this->createFormBuilder($questionFile, array('csrf_protection' => false))->add('file', 'file', array('required' => true))->getForm();
-            //$questionUploadForm->bind($this->getRequest());
-            //if ($questionUploadForm->isValid()) {
             $questionFile->setFile($this->getRequest()->files->get('file'));
             if (!$questionFile->isValid()) {
                 return new Response(json_encode(array('invalid' => 'Kérlek tölts fel egy valódi Excel fájlt!')), 200, array('Content-Type' => 'application/json'));
@@ -239,12 +236,12 @@ class DefaultController extends Controller {
     		$cellIterator = $row->getCellIterator();
     		$cellIterator->setIterateOnlyExistingCells(false);
             foreach ($cellIterator as $i => $cell) {
-                if ($i >= $validHeaderOrigSize && $cell->getValue()) {
+                if ($i >= $validHeaderOrigSize and $cell->getValue()) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a megengedettnél ('.$validHeaderOrigSize.') több mező van kitöltve (' . ($i+1) . '. cella)!';
                     break;
                 }
-
-                if ($i < $validHeaderOrigSize && !$cell->getValue()) {
+                
+                if ($i < $validHeaderOrigSize and ( $cell->getValue()===null or $cell->getValue()==='' )) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella nincs kitöltve!';
                 }
             }
