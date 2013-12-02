@@ -1190,3 +1190,10 @@ p {
     margin-top: 20px;
 }
 
+.quizStarterTitle {
+    text-align: center;
+    color: #BBBBBB;
+    font-family: 'DINProH-Bold';
+    font-size: 20px;
+}
+

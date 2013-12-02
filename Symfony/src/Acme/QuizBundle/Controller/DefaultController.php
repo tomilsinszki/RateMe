@@ -277,7 +277,7 @@ class DefaultController extends Controller {
         $quizData = json_decode($this->getRequest()->get('quizData'));
 
         $connection = $this->getDoctrine()->getEntityManager()->getConnection();
-        $now = date("Y-m-d H:i:s", mktime(0, 0, 0));
+        $now = date("Y-m-d H:i:s");
         $connection->insert('quiz', array(
             'rateable_id' => $rateableId,
             'created' => $now,
