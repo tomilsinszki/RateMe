@@ -294,18 +294,9 @@ class DefaultController extends Controller
     public function loadWelcomePageAction()
     {
         $securityContext = $this->get('security.context');
-
+        
         if ( CurrentUser::isOfRole($securityContext, 'ROLE_CUSTOMERSERVICE') ) {
-            $user = $securityContext->getToken()->getUser();
-            $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
-            $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
-
-            if ( 3 <= count($questions) ) {
-                return $this->redirect($this->generateUrl('quiz_entrance'));
-            }
-            else {
-                return $this->redirect($this->generateUrl('contact_index'));
-            }
+            return $this->redirect($this->generateUrl('quiz_entrance'));
         }
         else if ( CurrentUser::isOfRole($securityContext, 'ROLE_MANAGER') ) {
             return $this->redirect($this->generateUrl('acme_manager_welcome'));
@@ -313,7 +304,7 @@ class DefaultController extends Controller
         
         return $this->redirect($this->generateUrl('identifier_main'));
     }
-
+    
     public function managerWelcomeAction()
     {
         return $this->render('AcmeUserBundle:Default:managerWelcome.html.twig', array(

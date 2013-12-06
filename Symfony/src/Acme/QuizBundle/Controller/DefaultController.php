@@ -301,6 +301,10 @@ class DefaultController extends Controller {
      * @Template()
      */
     public function entranceAction() {
+        if ( !$this->isCurrentUserAllowedToDoQuiz() ) {
+            return $this->redirect($this->generateUrl('contact_index'));
+        }
+
         return array();
     }
 
@@ -309,6 +313,10 @@ class DefaultController extends Controller {
      * @Template()
      */
     public function indexAction() {
+        if ( !$this->isCurrentUserAllowedToDoQuiz() ) {
+            return $this->redirect($this->generateUrl('contact_index'));
+        }
+        
         $user = $this->get('security.context')->getToken()->getUser();
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
         $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
@@ -316,7 +324,40 @@ class DefaultController extends Controller {
 
         return array('rateableId' => $rateable->getId(), 'questions' => $questionsWithAnswers);
     }
-
+    
+    private function isCurrentUserAllowedToDoQuiz() {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
+        $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
+        
+        if ( 3 <= count($questions) ) {
+            $completedQuizes = $this->getDoctrine()->getRepository('AcmeQuizBundle:Quiz')->createQueryBuilder('q')
+                ->where('q.rateable = :rateable')
+                ->setParameter('rateable', $rateable)
+                ->orderBy('q.created', 'DESC')
+                ->getQuery()
+                ->getResult();
+            
+            if ( empty($completedQuizes) ) {
+                return true;
+            }
+            
+            $nowDate = new \DateTime();
+            $nowDateString = $nowDate->format('Y-m-d');
+            
+            $lastCompletedQuiz = $completedQuizes[0];
+            $lastCompletedQuizDateString = $lastCompletedQuiz->getCreated()->format('Y-m-d');
+            
+            if ( strlen($lastCompletedQuizDateString) === strlen($nowDateString) ) {
+                if ( $lastCompletedQuiz->getCreated()->format('Y-m-d') != $nowDate->format('Y-m-d') ) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
     private function createQuestionsWithAnswersArray($questions) {
         $questionsWithAnswers = array();
 
@@ -334,30 +375,5 @@ class DefaultController extends Controller {
 
         return $questionsWithAnswers;
     }
-
-    private function craeteTestQuizData() {
-        $rateable = $this->getDoctrine()
-            ->getRepository('AcmeRatingBundle:Rateable')
-            ->find($rateableId);
-
-        $answer = new Answer();
-        $answer->setText('Első kérdés');
-
-        $question = new Question();
-        $question->setText('Első kérdés');
-        $question->setCorrectAnswer($answer);
-        $question->setWrongAnswer1($answer);
-        $question->setWrongAnswer2($answer);
-
-        $quiz = new Quiz();
-        $quiz->setRateable($rateable);
-        $quiz->setQuestion($question);
-        $quiz->setGivenAnswer($answer);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($answer);
-        $em->persist($question);
-        $em->persist($quiz);
-        $em->flush();
-    }
 }
+
