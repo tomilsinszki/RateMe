@@ -263,6 +263,10 @@ body {
 	text-align: center;
 }
 
+a.promotionRules {
+    color: #791f7e !important;
+}
+
 .answer-wrapper {
 	display: table;
 	margin: 0 auto 10px;
