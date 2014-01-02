@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Acme\RatingBundle\Entity\Rating;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Cookie;
 use Acme\RatingBundle\Utility\Validator;
 
 class RatingController extends Controller
@@ -37,10 +38,14 @@ class RatingController extends Controller
 
         return new Response('');
     }
-
+    
     public function newAction()
     {
         $rateable = $this->getRateableFromRequest();
+
+        if ( $this->wasLastNonContactRatingWithinAWeekForRateable($rateable) ) {
+            return new Response($this->renderView('AcmeRatingBundle:Rating:alreadyRated.html.twig', array()));
+        }
 
         $rating = new Rating();
         $rating->setStars($this->getStarsFromRequest());
@@ -50,18 +55,82 @@ class RatingController extends Controller
             $user = $this->getUserFromContext();
             $rating->setRatingUser($user);
         }
+
+        $rating->setRatingIpAddress($this->getRequest()->getClientIp());
         
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($rating);
         $entityManager->flush();
-
-        return $this->render('AcmeRatingBundle:Rating:new.html.twig', array(
+        
+        $html = $this->renderView('AcmeRatingBundle:Rating:new.html.twig', array(
             'rating' => $rating,
             'rateable' => $rateable,
             'question' => $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating),
             'contact' => $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating),
             'profileImageURL' => $this->getImageURL($rateable),
         ));
+        
+        $response = new Response($html);
+        
+        $response->headers->setCookie(new Cookie(
+            'noncontact_ratings', 
+            $this->getValueOfNonContactRatingsCookie($rateable),
+            time() + (365 * 24 * 60 * 60)
+        ));
+
+        return $response; 
+    }
+
+    private function wasLastNonContactRatingWithinAWeekForRateable($rateable)
+    {
+        $cookies = $this->getRequest()->cookies;
+
+        if ( !$cookies->has('noncontact_ratings') ) {
+            return false;
+        }
+
+        $nonContactRatingsByRateableId = json_decode($cookies->get('noncontact_ratings'), true);
+
+        if ( !is_array($nonContactRatingsByRateableId) ) {
+            return false;
+        }
+        
+        if ( !array_key_exists($rateable->getId(), $nonContactRatingsByRateableId) ) {
+            return false;
+        }
+
+        foreach($nonContactRatingsByRateableId[$rateable->getId()] as $nonContactRatingDateTimeString) {
+            $currentDateTime = new \DateTime('now');
+            $pastDatetime = \DateTime::createFromFormat('Y-m-d H:i:s', $nonContactRatingDateTimeString);
+            $diff = $currentDateTime->getTimestamp() - $pastDatetime->getTimestamp();
+            $diffInDays = (float)$diff/(float)(60.0*60.0*24.0);
+            
+            if ( $diffInDays < 7.0 ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getValueOfNonContactRatingsCookie($rateable)
+    {
+        $cookies = $this->getRequest()->cookies;
+        if ( $cookies->has('noncontact_ratings') ) {
+            $nonContactRatingsByRateableId = json_decode($cookies->get('noncontact_ratings'), true);
+        }
+        
+        if ( !is_array($nonContactRatingsByRateableId) ) {
+            $nonContactRatingsByRateableId = array();
+        }
+        
+        if ( !array_key_exists($rateable->getId(), $nonContactRatingsByRateableId) ) {
+            $nonContactRatingsByRateableId[$rateable->getId()] = array();
+        }
+        
+        $nonContactRatingsByRateableId[$rateable->getId()][] = date_format(date_create(), 'Y-m-d H:i:s');
+
+        return json_encode($nonContactRatingsByRateableId);
     }
 
     private function getStarsFromRequest()

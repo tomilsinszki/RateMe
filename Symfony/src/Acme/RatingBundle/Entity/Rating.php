@@ -27,7 +27,14 @@ class Rating
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
     private $email;
-
+    
+    /**
+     * @var string $ratingIpAddress
+     *
+     * @ORM\Column(name="rating_ip_address", type="string", length=255, nullable=true)
+     */
+    private $ratingIpAddress;
+    
     /**
      * @var integer $stars
      *
@@ -105,6 +112,29 @@ class Rating
     public function getEmail()
     {
         return $this->email;
+    }
+    
+    /**
+     * Set ratingIpAddress
+     *
+     * @param string $ratingIpAddress
+     * @return Rating
+     */
+    public function setRatingIpAddress($ratingIpAddress)
+    {
+        $this->ratingIpAddress = $ratingIpAddress;
+    
+        return $this;
+    }
+
+    /**
+     * Get ratingIpAddress
+     *
+     * @return string 
+     */
+    public function getRatingIpAddress()
+    {
+        return $this->ratingIpAddress;
     }
 
     /**

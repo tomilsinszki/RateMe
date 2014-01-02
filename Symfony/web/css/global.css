@@ -1197,3 +1197,7 @@ p {
     font-size: 20px;
 }
 
+h3.centeredTitle {
+    text-align: center;
+}
+

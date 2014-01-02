@@ -490,8 +490,8 @@ class ContactController extends Controller
     private static function daysPassedSince($pastDatetime) {
         $currentDateTime = new \DateTime('now');
         $diff = $currentDateTime->getTimestamp() - $pastDatetime->getTimestamp();
-        $diffInMins = (float)$diff/(float)(60.0*60.0*24.0);
-        return $diffInMins;
+        $diffInDays = (float)$diff/(float)(60.0*60.0*24.0);
+        return $diffInDays;
     }
     
     private function createRatingForContact($contact, $stars) {
@@ -499,6 +499,7 @@ class ContactController extends Controller
         $rating = new Rating();
         $rating->setRateable($contact->getRateable());
         $rating->setStars($stars);
+        $rating->setRatingIpAddress($this->getRequest()->getClientIp());
         $rating->setCreated(new \DateTime());
         $rating->setUpdated(new \DateTime());
         $contact->setRating($rating);
