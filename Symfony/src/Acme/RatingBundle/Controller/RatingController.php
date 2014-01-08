@@ -15,6 +15,54 @@ class RatingController extends Controller
     {
     }
 
+    public function addSuggestionForCompanyAction(Request $request)
+    {
+        if ('POST' != $request->getMethod()) {
+            throw $this->createNotFoundException('Expected POST method.');
+            return null;
+        }
+        
+        $response = false;
+        
+        $suggestionForCompany = $request->request->get('suggestionForCompany');
+        $suggestionForCompany = substr($suggestionForCompany, 0, 500);
+
+        if ( !empty($suggestionForCompany) ) {
+            $directoryPath = realpath($this->get('kernel')->getRootDir()."/logs");
+            $filePath = "$directoryPath/suggestionForCompany.csv";
+            
+            $bytesWrittenToFile = file_put_contents($filePath, "$suggestionForCompany\n-----\n", FILE_APPEND);
+            if ( !empty($bytesWrittenToFile) ) {
+                $response = true;
+            }
+        }
+        
+        return new Response(json_encode($response));
+    }
+
+    public function addEmailForSuggestionAction(Request $request)
+    {
+        if ('POST' != $request->getMethod()) {
+            throw $this->createNotFoundException('Expected POST method.');
+            return null;
+        }
+        
+        $response = false;
+        
+        $email = $request->request->get('email');
+        if ( Validator::isEmailAddressValid($email) ) {
+            $directoryPath = realpath($this->get('kernel')->getRootDir()."/logs");
+            $filePath = "$directoryPath/emailForSuggestion.csv";
+            
+            $bytesWrittenToFile = file_put_contents($filePath, "$email\n-----\n", FILE_APPEND);
+            if ( !empty($bytesWrittenToFile) ) {
+                $response = true;
+            }
+        }
+        
+        return new Response(json_encode($response));
+    }
+
     public function setEmailAction(Request $request)
     {
         if ('POST' != $request->getMethod()) {

@@ -34,6 +34,49 @@
                         $("#emailContainer").html(innerHTML);
                     });
                 });
+
+                $('#suggestionForCompanyButton').on('click', function() {
+                    var suggestionForCompany = $("#suggestionForCompanyText").val();
+                    
+                    $.ajax({
+                        url: "{{ path('add_suggestion_for_new_company') }}",
+                        type: 'POST',
+                        data: {
+                            suggestionForCompany: suggestionForCompany
+                        },
+                        dataType: 'json',
+                        async: false
+                    }).done(function(response) {
+                        if (response == true) {
+                            $("#suggestion-for-new-companies-textarea-container").css('display', 'none');
+                            $("#suggestion-for-new-companies-email-container").css('display', 'block');
+                        }
+                    });
+                });
+
+                $('#saveEmailForSuggestionButton').on('click', function() {
+                    var email = $("#suggestion-for-new-companies-email-text").val();
+                    
+                    $.ajax({
+                        url: "{{ path('add_email_for_suggestion') }}",
+                        type: 'POST',
+                        data: {
+                            email: email
+                        },
+                        dataType: 'json',
+                        async: false
+                    }).done(function(response) {
+                        if (response == true) {
+                            $("#suggestion-for-new-companies-email-container").css('display', 'none');
+                            $("#suggestion-for-new-companies-email-error").css('display', 'none');
+                            $("#suggestion-for-new-companies-textarea-container").css('display', 'none');
+                            $("#suggestion-container").css('display', 'none');
+                        }
+                        else {
+                            $("#suggestion-for-new-companies-email-error").css('display', 'block');
+                        }
+                    });
+                });
             });
         </script>
 	</head>
@@ -76,7 +119,7 @@
                                 Van még pár másodperce? Ha igen, válaszoljon még egy kérdésre és <strong>Philips DVD-lejátszót nyerhet!</strong>
                             </div>
                             <div>
-                                <a class="promotionRules" href='http://www.vidanet.hu/segitseg/dokumentumok/akcio-szabalyzatok/aktualis-akciok/ugyintezo-ertekeles-nyeremenyjatek-szabalyzat.pdf'>
+                                <a class="promotion-rules" href='http://www.vidanet.hu/segitseg/dokumentumok/akcio-szabalyzatok/aktualis-akciok/ugyintezo-ertekeles-nyeremenyjatek-szabalyzat.pdf'>
                                     A nyereményjáték részletes szabályzata
                                 </a>
                             </div>
@@ -85,10 +128,8 @@
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
 					</div>
 				</div>
-                {% endif %}
                 
                 {% if contact is null %}
-                {% if question is not null %}
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
@@ -105,6 +146,53 @@
                 </div>
                 {% endif %}
                 {% endif %}
+
+                {% else %}
+				<div id="suggestion-container"  class="wrapper bottom-wrapper">
+					<div class="question-box">
+                        <div class="question-promo">
+                            <div class="price-img">
+                                <img src="{{ asset('bundles/acmerating/images/dvd.png') }}" alt="Philips DVD-lejátszó" />
+                            </div>
+                            
+                            <div>
+                                <div>
+                                    <strong>Jó ötletnek tartja a vásárlói visszajelzések gyűjtését?</strong>
+                                </div>
+                                <div class="suggestion-for-new-companies-container">
+                                    Ha igen, Ön szerint még hol kellene ugyanilyen rendszert használni?
+                                </div>
+                                <div class="suggestion-for-new-companies-container">
+                                    Írja meg nekünk a javaslatát, és a beküldők között 2014. február 28-án egy <strong>Philips hordozható DVD-lejátszót</strong> sorsolunk ki.
+                                    <a class="promotion-rules" href='http://www.vidanet.hu/segitseg/dokumentumok/akcio-szabalyzatok/aktualis-akciok/ugyintezo-ertekeles-nyeremenyjatek-szabalyzat.pdf'>
+                                        A nyereményjáték részletes szabályzata
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div id="suggestion-for-new-companies-textarea-container">
+                                <textarea id="suggestionForCompanyText" placeholder="Ön hol látná még szívesen ezt a vásárlói értékelő rendszert?"></textarea>
+
+                                <div class="btn_wrapper" style="text-align: center;">
+                                    <input id="suggestionForCompanyButton" class="btn_cont yellow send-button" type="button" value="Elküld" />
+                                </div>
+                            </div>
+                            
+                            <div id="suggestion-for-new-companies-email-container" class="email-wrapper">
+                                <h3>Kérjük adja meg az email címét, hogy értesíteni<br />tudjuk a nyereményjáték eredményéről.</h3>
+                                <h4 id="suggestion-for-new-companies-email-error" class="error-msg">Hibás e-mail cím!</h4>
+                                
+                                <input id="suggestion-for-new-companies-email-text" type="text" />
+
+                                <div class="btn_wrapper" style="text-align: center;">
+                                    <input id="saveEmailForSuggestionButton" class="btn_cont yellow send-button" type="button" value="Elküld" />
+                                </div>
+                            </div>
+                            
+                        </div>
+					</div>
+				</div>
+                
                 {% endif %}
 			</div>
 			
