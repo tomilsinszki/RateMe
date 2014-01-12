@@ -5,14 +5,75 @@ namespace Acme\SubRatingBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 
 class QuestionRepository extends EntityRepository {
+    
     public function getNextQuestionForRating($rating) {
         $questions = $this->getQuestionsWithoutSubRatingsForRating($rating);
-
         if ( empty($questions) ) {
             return;
         }
-
-        return $questions[0];
+        
+        $questionOrderTypeName = $rating->getRateable()->getCollection()->getQuestionOrder()->getName();
+        $nextQuestion = $this->getNextQuestionByOrderType($questions, $questionOrderTypeName);
+        
+        return $nextQuestion;
+    }
+    
+    private function getNextQuestionByOrderType($questions, $questionOrderTypeName) {
+        $nextQuestion = null;
+        
+        switch ($questionOrderTypeName) {
+            case 'sequential':
+                $nextQuestion = $questions[0];
+            break;
+            case 'random':
+                $nextQuestion = $questions[rand(0, (count($questions)-1))];
+            break;
+            case 'weighted random':
+                $nextQuestion = $this->getNextWeightedRandomQuestion($questions);
+            break;
+            case 'balanced':
+                $nextQuestion = $this->getNextBalancedQuestion($questions);
+            break;
+            default:
+                throw $this->createNotFoundException('Invalid question order type.');
+            break;
+        }
+        
+        return $nextQuestion;
+    }
+    
+    private function getNextWeightedRandomQuestion($questions) {
+        $weightQuestions = array();
+        $questionCount = count($questions);
+        $sequence = 1;
+        
+        foreach ($questions as $question) {            
+            for($i = 0; $i < ($questionCount-$sequence+1); $i++) {
+                $weightQuestions[] = $question;                
+            }
+            $sequence++;
+        }
+        
+        return $weightQuestions[rand(0, (count($weightQuestions)-1))];
+    }
+    
+    private function getNextBalancedQuestion($questions) {
+        $minRatingCount    = null;
+        $minRatingQuestion = null;
+        
+        foreach ($questions as $question) {
+            $answerRatingCount = 0;
+            foreach ($question->getAnswers() as $answer) {
+                $answerRatingCount += count($answer->getSubRatings());                
+            }
+            
+            if($answerRatingCount < $minRatingCount || null === $minRatingCount) {
+                $minRatingCount    = $answerRatingCount;
+                $minRatingQuestion = $question;
+            }
+        }
+        
+        return $minRatingQuestion;
     }
     
     private function getQuestionsWithoutSubRatingsForRating($rating) {
