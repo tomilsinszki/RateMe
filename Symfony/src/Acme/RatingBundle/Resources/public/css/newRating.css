@@ -275,21 +275,21 @@ div.suggestion-for-new-companies-textarea-container {
     margin-top: 35px;
 }
 
+div#suggestion-for-new-companies-title {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 18px;
+}
+
 div#suggestion-for-new-companies-textarea-container textarea {
-	background-color: #f6f0f7;
-	background: -webkit-linear-gradient(top, #f4edf6 0%, #fff 100%);
-	background: -moz-linear-gradient(top, #f4edf6 0%, #fff 100%);
-	background: -o-linear-gradient(top, #f4edf6 0%, #fff 100%);
-	background: -ms-linear-gradient(top, #f4edf6 0%, #fff 100%);
-	background: linear-gradient(top, #f4edf6 0%, #fff 100%);
-	border: 1px solid #e4d2e5;
+	border: 2px solid #e4d2e5;
 	border-radius: 1px;
 	display: block;
     width: 100%;
 	margin: 20px auto 20px;
 	height: 50px;
     font-size: 16px;
-    padding: 4px 0px 0px 0px;
+    padding: 4px 4px 4px 4px;
 }
 div#suggestion-for-new-companies-textarea-container textarea::-webkit-input-placeholder {
     color: #791f7e;

@@ -77,6 +77,8 @@
                         }
                     });
                 });
+                
+                $('#suggestionForCompanyText').focus();
             });
         </script>
 	</head>
@@ -160,7 +162,7 @@
                                     <strong>Jó ötletnek tartja a vásárlói visszajelzések gyűjtését?</strong>
                                 </div>
                                 <div class="suggestion-for-new-companies-container">
-                                    Ha igen, Ön szerint még hol kellene ugyanilyen rendszert használni?
+                                    Ön szerint hol kéne még ilyen rendszert használni?
                                 </div>
                                 <div class="suggestion-for-new-companies-container">
                                     Írja meg nekünk a javaslatát, és a beküldők között 2014. február 28-án egy <strong>Philips hordozható DVD-lejátszót</strong> sorsolunk ki.
@@ -171,8 +173,12 @@
                             </div>
 
                             <div id="suggestion-for-new-companies-textarea-container">
-                                <textarea id="suggestionForCompanyText" placeholder="Ön hol látná még szívesen ezt a vásárlói értékelő rendszert?"></textarea>
+                                <div id="suggestion-for-new-companies-title">
+                                    Hol kéne még ilyen rendszert használni?
+                                </div>
 
+                                <textarea id="suggestionForCompanyText"></textarea>
+                                
                                 <div class="btn_wrapper" style="text-align: center;">
                                     <input id="suggestionForCompanyButton" class="btn_cont yellow send-button" type="button" value="Elküld" />
                                 </div>
