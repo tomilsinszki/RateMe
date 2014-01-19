@@ -120,11 +120,10 @@ class DefaultController extends Controller {
                     $questions = $questionRepo->getAllQuestionsWithWrongAnswersByText($rateableCollectionId);
                     $em = $doctrine->getManager();
 
-                    // save questions into the database
                     $activeSheet = $excelObj->getSheet();
                     $rowIterator = $activeSheet->getRowIterator(2);
                     $answers = array();
-
+                    
                     $query = $em->createQuery('SELECT rc FROM AcmeRatingBundle:RateableCollection rc');
                     $rateableCollections = $query->getResult();
                     $rateableCollectionsById = array();
@@ -132,17 +131,19 @@ class DefaultController extends Controller {
                         $rateableCollectionsById[$rateableCollection->getId()] = $rateableCollection;
                     }
                     unset($rateableCollections);
+                    
                     foreach ($rowIterator as $row) {
                 		$cellIterator = $row->getCellIterator();
                 		$qText = $cellIterator->current()->getValue();
+                        $qTextKey = mb_strtolower($qText, 'UTF-8');
                 		$question = null;
-                		if (!isset($questions[$qText])) {
+                		if (!isset($questions[$qTextKey])) {
                     		$question = new Question();
                     		$question->setText($qText);
-                    		$questions[$qText]['question'] = $question;
-                    		$questions[$qText]['wrongAnswers'] = array();
+                    		$questions[$qTextKey]['question'] = $question;
+                    		$questions[$qTextKey]['wrongAnswers'] = array();
                 		} else {
-                		    $question = $questions[$qText]['question'];
+                		    $question = $questions[$qTextKey]['question'];
                 		    $question->logUnDeleted();
                 		}
                 		$question->setRateableCollection($rateableCollectionsById[$rateableCollectionId]);
@@ -161,8 +162,9 @@ class DefaultController extends Controller {
                 		$aTexts[] = $cellIterator->current()->getValue();
 
                 		foreach ($aTexts as $aText) {
-                		    if (isset($questions[$qText]['wrongAnswers'][$aText])) {
-                		        unset($questions[$qText]['wrongAnswers'][$aText]);
+                            $aTextKey = mb_strtolower($aText, 'UTF-8');
+                		    if (isset($questions[$qTextKey]['wrongAnswers'][$aTextKey])) {
+                		        unset($questions[$qTextKey]['wrongAnswers'][$aTextKey]);
                 		    } else {
                                 $answer = new WrongAnswer();
                                 $answer->setQuestion($question);
@@ -170,14 +172,14 @@ class DefaultController extends Controller {
                                 $em->persist($answer);
                 		    }
                 		}
-                		foreach ($questions[$qText]['wrongAnswers'] as $answer) {
+                		foreach ($questions[$qTextKey]['wrongAnswers'] as $answer) {
     		                $answer->logDeleted();
     		                $em->persist($answer);
                 		}
 
                 		$em->persist($question);
 
-                		unset($questions[$qText]);
+                		unset($questions[$qTextKey]);
                     }
 
                     foreach ($questions as $question) {
@@ -225,6 +227,7 @@ class DefaultController extends Controller {
             $errors['HEADER'][] = 'A fejlécből hiányznak a következő mezők: "' . implode('","', $validHeader) . '"!';
         }
 
+        $questionTexts = array();
         foreach ($rowIterator as $row) {
             $rowNum = $rowIterator->key();
             if (1 === $rowNum) {
@@ -240,10 +243,31 @@ class DefaultController extends Controller {
                 
                 if ($i < $validHeaderOrigSize and ( $cell->getValue()===null or $cell->getValue()==='' )) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella nincs kitöltve!';
+                    break;
+                }
+
+                if ( 0 === $i ) {
+                    $lowerCaseCellValue = mb_strtolower($cell->getValue(), 'UTF-8');
+
+                    if (in_array($lowerCaseCellValue, $questionTexts)) {
+                        $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban lévő kérdés kétszer szerepel.';
+                        break;
+                    }
+
+                    $questionTexts[] = $lowerCaseCellValue;
+                }
+                
+                if ( 255 < mb_strlen($cell->getValue()) ) {
+                    $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella 255 karakternél hosszabb!';
+                    break;
                 }
             }
         }
 
+        if (array_key_exists('QUESTIONS', $errors)) {
+            $errors['QUESTIONS'] = array_reverse($errors['QUESTIONS']);
+        }
+        
         return $errors;
     }
     

@@ -479,3 +479,9 @@ input.file {
     cursor: pointer;
     left:0;
 }
+
+div#errors {
+    padding-top:10px;
+    color:red;
+}
+

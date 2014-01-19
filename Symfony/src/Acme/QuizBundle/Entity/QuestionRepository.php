@@ -16,14 +16,17 @@ class QuestionRepository extends EntityRepository {
     public function getAllQuestionsWithWrongAnswersByText($rateableCollectionId) {
         $questions = $this->findAllJoinedWithWrongAnswers($rateableCollectionId, true);
         $results = array();
+        
         foreach ($questions as $question) {
-            $qText = $question->getText();
-            $results[$qText]['question'] = $question;
-            $results[$qText]['wrongAnswers'] = array();
+            $questionTextKey = mb_strtolower($question->getText(), 'UTF-8');
+            $results[$questionTextKey]['question'] = $question;
+            $results[$questionTextKey]['wrongAnswers'] = array();
             foreach ($question->getWrongAnswers() as $wrongAnswer) {
-                $results[$qText]['wrongAnswers'][$wrongAnswer->getText()] = $wrongAnswer;
+                $wrongAnswerTextKey = mb_strtolower($wrongAnswer->getText(), 'UTF-8');
+                $results[$questionTextKey]['wrongAnswers'][$wrongAnswerTextKey] = $wrongAnswer;
             }
         }
+        
         return $results;
     }
 
