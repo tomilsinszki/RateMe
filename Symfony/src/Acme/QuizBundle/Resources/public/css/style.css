@@ -194,12 +194,10 @@ body {
 }
 
 .question-card {
-	background: transparent url('/bundles/acmequiz/images/card_bg_shadow.png') center center no-repeat;
-	float: left;
 	margin-left: 22px;
+	margin-right: 22px;
 	padding-top: 8px;
 	padding-left: 4px;
-	width: 154px;
 	cursor: pointer;
 }
 
@@ -214,10 +212,10 @@ body {
 	background: -ms-linear-gradient(top, #ffffff 0%, #f6f0f7 100%);
 	background: linear-gradient(top, #ffffff 0%, #f6f0f7 100%);
 	border-radius: 10px;
-	height: 126px;
-	padding-top: 14px;
-	width: 150px;
+	padding-top: 8px;
+	padding-bottom: 8px;
 	z-index: 2;
+    margin-bottom: 5px;
 }
 
 .question-card h6 {
@@ -232,7 +230,7 @@ body {
 .option-btn {
 	background: transparent url('/bundles/acmequiz/images/option_off.png') center center no-repeat;
 	height: 17px;
-	margin: 0 auto 27px;
+	margin: 0 auto 10px;
 	width: 16px;
 }
 
