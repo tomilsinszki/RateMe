@@ -304,8 +304,7 @@ h2.questionnaireSubTitle {
     position: relative;
     text-align: center;
 }
-.btnCont.yellowDeepQuestion .btnDeepQuestion h3 div {
-    -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(104,104,104,1)), to(rgba(104,104,104,0)));
+.btnCont.yellowDeepQuestion .btnDeepQuestion h3 div {    
     position: absolute;
     color: #535353;
     width: 100%;

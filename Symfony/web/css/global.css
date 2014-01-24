@@ -89,8 +89,7 @@
 .btn_cont.yellow.ok .btn h3 {
 	font-size: 30px;
 }
-.btn_cont.yellow .btn h3 div {
-	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(104,104,104,1)), to(rgba(104,104,104,0)));
+.btn_cont.yellow .btn h3 div {	
     position: absolute;
     color: #535353;
     width: 100%;
@@ -160,8 +159,7 @@
 	position: relative;
 	text-align: center;
 }
-.btn_cont.gray .btn h3 div {
-	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(171,211,0,1)), to(rgba(171,211,0,0)));
+.btn_cont.gray .btn h3 div {	
     position: absolute;
     color: #bcda00;
     width: 100%;
