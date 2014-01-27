@@ -135,7 +135,8 @@ class DefaultController extends Controller {
                     foreach ($rowIterator as $row) {
                 		$cellIterator = $row->getCellIterator();
                 		$qText = $cellIterator->current()->getValue();
-                        $qTextKey = mb_strtolower($qText, 'UTF-8');
+                        $qTextKey = $qText;
+                        
                 		$question = null;
                 		if (!isset($questions[$qTextKey])) {
                     		$question = new Question();
@@ -162,7 +163,7 @@ class DefaultController extends Controller {
                 		$aTexts[] = $cellIterator->current()->getValue();
 
                 		foreach ($aTexts as $aText) {
-                            $aTextKey = mb_strtolower($aText, 'UTF-8');
+                            $aTextKey = $aText;
                 		    if (isset($questions[$qTextKey]['wrongAnswers'][$aTextKey])) {
                 		        unset($questions[$qTextKey]['wrongAnswers'][$aTextKey]);
                 		    } else {
@@ -236,28 +237,28 @@ class DefaultController extends Controller {
     		$cellIterator = $row->getCellIterator();
     		$cellIterator->setIterateOnlyExistingCells(false);
             foreach ($cellIterator as $i => $cell) {
-                if ($i >= $validHeaderOrigSize and $cell->getValue()) {
+                $cellValue = trim($cell->getValue());
+                
+                if ($i >= $validHeaderOrigSize and $cellValue) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a megengedettnél ('.$validHeaderOrigSize.') több mező van kitöltve (' . ($i+1) . '. cella)!';
                     break;
                 }
                 
-                if ($i < $validHeaderOrigSize and ( $cell->getValue()===null or $cell->getValue()==='' )) {
+                if ($i < $validHeaderOrigSize and ( $cellValue===null or $cellValue==='' )) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella nincs kitöltve!';
                     break;
                 }
-
+                
                 if ( 0 === $i ) {
-                    $lowerCaseCellValue = mb_strtolower($cell->getValue(), 'UTF-8');
-
-                    if (in_array($lowerCaseCellValue, $questionTexts)) {
+                    if (in_array($cellValue, $questionTexts)) {
                         $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban lévő kérdés kétszer szerepel.';
                         break;
                     }
 
-                    $questionTexts[] = $lowerCaseCellValue;
+                    $questionTexts[] = $cellValue;
                 }
                 
-                if ( 255 < mb_strlen($cell->getValue()) ) {
+                if ( 255 < mb_strlen($cellValue) ) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella 255 karakternél hosszabb!';
                     break;
                 }

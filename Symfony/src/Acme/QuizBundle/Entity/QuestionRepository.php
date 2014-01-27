@@ -18,12 +18,12 @@ class QuestionRepository extends EntityRepository {
         $results = array();
         
         foreach ($questions as $question) {
-            $questionTextKey = mb_strtolower($question->getText(), 'UTF-8');
-            $results[$questionTextKey]['question'] = $question;
-            $results[$questionTextKey]['wrongAnswers'] = array();
+            $qTextKey = $question->getText();
+            $results[$qTextKey]['question'] = $question;
+            $results[$qTextKey]['wrongAnswers'] = array();
             foreach ($question->getWrongAnswers() as $wrongAnswer) {
-                $wrongAnswerTextKey = mb_strtolower($wrongAnswer->getText(), 'UTF-8');
-                $results[$questionTextKey]['wrongAnswers'][$wrongAnswerTextKey] = $wrongAnswer;
+                $wrongAnswerTextKey = $wrongAnswer->getText();
+                $results[$qTextKey]['wrongAnswers'][$wrongAnswerTextKey] = $wrongAnswer;
             }
         }
         

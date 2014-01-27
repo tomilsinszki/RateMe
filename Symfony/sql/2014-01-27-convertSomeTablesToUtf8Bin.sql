@@ -1,0 +1,3 @@
+ALTER TABLE quiz_question CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;
+ALTER TABLE quiz_wrong_answer CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;
+
