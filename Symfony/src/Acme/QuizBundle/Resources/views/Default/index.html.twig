@@ -15,7 +15,7 @@
 
     <script type="text/javascript">
 
-    var seconds = 60;
+    var seconds = 180;
     var currentQuestionId, remainedQuestionIds = [];
     var countdown, timer, buttons, question, questionNum, answers;
     var questions = {{ questions|json_encode()|raw }};
@@ -69,7 +69,11 @@
 
     function timerHandler() {
         --seconds;
-        countdown.html('00:' + String(seconds).lpad('0', 2));
+
+        var min = Math.floor(parseFloat(seconds) / 60.0);
+        var sec = seconds - (min * 60);
+        countdown.html(String(min).lpad('0', 2) + ':' + String(sec).lpad('0', 2));
+
         if (seconds === 0) {
             evaluateQuiz(true);
         }
@@ -175,7 +179,7 @@
     
     <div id="quiz" class="container">
     	<div class="stopper">
-    		<div id="timer-bg">01:00</div>
+    		<div id="timer-bg">03:00</div>
     	</div>
     	<div class="wrapper">
     		<h2><span id="questionNum">0</span>.</h2>
