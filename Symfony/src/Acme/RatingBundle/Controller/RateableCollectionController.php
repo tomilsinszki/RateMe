@@ -8,6 +8,7 @@ use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Entity\Image;
 use Acme\RatingBundle\Utility\Validator;
 use Acme\UserBundle\Utility\CurrentUser;
+use Doctrine\Common\Collections\Criteria;
 
 class RateableCollectionController extends Controller
 {
@@ -421,7 +422,306 @@ class RateableCollectionController extends Controller
             'ratingAvgByDayChartData' => $this->ratingAvgByDayChartData,
         ));
     }
+    
+    public function reportDownloadAction($rateableCollectionId, $startDateTime, $endDateTime) {          
+        $rateableCollection    = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
+        $startDateTimeRawParts = explode('_', $startDateTime);        
+        $startDateTime         = new \DateTime($startDateTimeRawParts[0] . ' ' . str_replace('-', ':', $startDateTimeRawParts[1]));
+        $endDateTimeRawParts   = explode('_', $endDateTime);
+        $endDateTime           = new \DateTime($endDateTimeRawParts[0] . ' ' . str_replace('-', ':', $endDateTimeRawParts[1]));
+        
+        $excelService = $this->getExcelReport($rateableCollection, $startDateTime, $endDateTime);        
+        
+        $response = $excelService->getResponse();
+        $response->headers->set("Content-Description", "File Transfer");
+        $response->headers->set('Expires', 0);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+        $response->headers->set("Content-Transfer-Encoding", "Binary");
+        $response->headers->set('Content-Disposition', 'attachment; filename="RateMe - Excel riport.xlsx"');
+        $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
 
+        // If you are using a https connection, you have to set those two headers and use sendHeaders() for compatibility with IE <9
+        $response->headers->set('Pragma', 'public');
+        return $response;
+    }
+    
+    private function getExcelReport($rateableCollection, $startDateTime, $endDateTime) {
+        $excelService = $this->get('xls.service_xls2007');
+        $excelService->excelObj->getProperties()->setCreator('RateMe')
+                            ->setLastModifiedBy('RateMe')
+                            ->setTitle('RateMe Heti Jelentés')
+                            ->setSubject('RateMe Heti Jelentés')
+                            ->setDescription('RateMe Heti Jelentés')
+                            ->setKeywords('RateMe Heti Jelentés')
+                            ->setCategory('RateMe Heti Jelentés');
+
+        $excelService->excelObj->setActiveSheetIndex(0);
+        $activeSheet = $excelService->excelObj->getActiveSheet();
+        $activeSheet->setTitle('Jelentés');
+        for($col = 'A'; $col != 'G'; $col++) {
+            $activeSheet->getColumnDimension($col)->setWidth(35);            
+        }        
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, 1);
+        $headerTitle->setValueExplicit('HETI RIPORT ' . $startDateTime->format('Y.m.d.') . ' - ' . $endDateTime->format('Y.m.d.'));
+        $rowCount = $this->setClientRatings($activeSheet, $rateableCollection, $startDateTime, $endDateTime);        
+        $rowCount = $this->setWorkerQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
+        $rowCount = $this->setClientQuestionnaire($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
+        $activeSheet->getStyle('B1:F' . $rowCount)->getAlignment()->setHorizontal('center');
+        return $excelService;
+    }
+    
+    private function setClientQuestionnaire($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
+        $this->setClientQuestionnaireHeader($activeSheet, $rowCount);
+        $rowCount = $rowCount + 4;        
+        $quizQuestionsForRateableCollectionByInterval = $this->getQuizQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime);
+        if(empty($quizQuestionsForRateableCollectionByInterval)) {
+            $questionNotFountCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $questionNotFountCell->setValueExplicit('Nem találhatóak kérdések a megadott intervallumban!');
+        }
+        foreach($quizQuestionsForRateableCollectionByInterval as $quizQuestion) {
+            $correctAnswerCell = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+            $correctAnswerCell->setValueExplicit($quizQuestion->getCorrectAnswerText());
+            $columnCount = 2;
+            foreach($quizQuestion->getWrongAnswers() as $wrongAnswer) {
+                $wrongAnswerCell = $activeSheet->getCellByColumnAndRow($columnCount, $rowCount);
+                $wrongAnswerCell->setValueExplicit($wrongAnswer->getText());
+                $columnCount++;
+            }
+            $rowCount++;
+            $questionCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $questionCell->setValueExplicit($quizQuestion->getText());
+            $correctAnswerCriteria  = Criteria::create()->where(Criteria::expr()->isNull('wrongGivenAnswer'));
+            $correctAnswerCountCell = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+            $correctAnswerCountCell->setValue(count($quizQuestion->getQuizReplies()->matching($correctAnswerCriteria)));
+            $columnCount = 2;
+            foreach($quizQuestion->getWrongAnswers() as $wrongAnswer) {
+                $wrongAnswerCriteria  = Criteria::create()->where(Criteria::expr()->eq('wrongGivenAnswer', $wrongAnswer));
+                $wrongAnswerCountCell = $activeSheet->getCellByColumnAndRow($columnCount, $rowCount);
+                $wrongAnswerCountCell->setValue(count($quizQuestion->getQuizReplies()->matching($wrongAnswerCriteria)));
+                $columnCount++;
+            }
+            $rowCount += 2;
+        }
+        return ++$rowCount;
+    }
+    
+    private function setClientQuestionnaireHeader($activeSheet, $rowCount) {
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount+2);
+        $headerTitle->setValueExplicit('Ügyfél kérdőív');
+        $activeSheet->getStyle('A' . ($rowCount+2))->getFont()->setBold(true);
+    }
+    
+    private function getQuizQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime) {
+        $quizQuestionsForRateableCollectionByInterval = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->createQueryBuilder('q')                                                
+                                ->where('q.rateableCollection = :rateableCollection')            
+                                ->setParameter('rateableCollection', $rateableCollection)
+                                ->andWhere('q.updated >= :date_from') 
+                                ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                ->andWhere('q.updated <= :date_to') 
+                                ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)                                                 
+                                ->getQuery()
+                                ->getResult();
+        return $quizQuestionsForRateableCollectionByInterval;
+    }
+    
+    private function setWorkerQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
+        $this->setWorkerQuizHeader($activeSheet, $rowCount);
+        $startRowCount = $rowCount + 5;
+        $rowCount      = $rowCount + 5;
+        $rateablesForRateableCollectionId = $this->getDoctrine()
+                                            ->getRepository('AcmeRatingBundle:Rateable')
+                                            ->findBy(array('collection' => $rateableCollection), 
+                                                     array('name' => 'ASC'));
+        foreach($rateablesForRateableCollectionId as $rateable) {
+            $nameCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $nameCell->setValueExplicit($rateable->getName());
+            
+            $correctAnswersForRateableByInterval = $this->getCorrectAnswersForRateable($rateable, $startDateTime, $endDateTime);            
+            $correctAnswerCell                   = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+            $correctAnswerCell->setValue(count($correctAnswersForRateableByInterval));
+            
+            $wrongAnswersForRateableByInterval = $this->getWrongAnswersForRateable($rateable, $startDateTime, $endDateTime);            
+            $wrongAnswerCell                   = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+            $wrongAnswerCell->setValue(count($wrongAnswersForRateableByInterval));
+            
+            $correctAnswerRatioCell = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+            $correctAnswerRatioCell->setValue($this->getCorrectAnswerRatio($correctAnswersForRateableByInterval, $wrongAnswersForRateableByInterval));
+            $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+                array( 
+                    'code' => '0.00%',
+                )
+            );
+            
+            $rowCount++;
+        }
+        $this->setWorkerQuizSum($activeSheet, $rowCount, $startRowCount);
+        return ++$rowCount;
+    }
+    
+    private function getCorrectAnswersForRateable($rateable, $startDateTime, $endDateTime) {
+        $correctAnswersForRateable = $this->getDoctrine()->getRepository('AcmeQuizBundle:QuizReply')->createQueryBuilder('qr')
+                                    ->leftJoin('AcmeQuizBundle:Quiz', 'q', 'WITH', 'q=qr.quiz')                                    
+                                    ->where('q.rateable = :rateable')            
+                                    ->setParameter('rateable', $rateable)
+                                    ->andWhere('q.created >= :date_from') 
+                                    ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('q.created <= :date_to') 
+                                    ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('qr.wrongGivenAnswer IS NULL') 
+                                    ->getQuery()
+                                    ->getResult();
+        return $correctAnswersForRateable;
+    }
+    
+    private function getWrongAnswersForRateable($rateable, $startDateTime, $endDateTime) {
+        $wrongAnswersForRateable = $this->getDoctrine()->getRepository('AcmeQuizBundle:QuizReply')->createQueryBuilder('qr')
+                                    ->leftJoin('AcmeQuizBundle:Quiz', 'q', 'WITH', 'q=qr.quiz')                                    
+                                    ->where('q.rateable = :rateable')            
+                                    ->setParameter('rateable', $rateable)
+                                    ->andWhere('q.created >= :date_from') 
+                                    ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('q.created <= :date_to') 
+                                    ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('qr.wrongGivenAnswer IS NOT NULL') 
+                                    ->getQuery()
+                                    ->getResult();
+        return $wrongAnswersForRateable;
+    }
+    
+    private function setWorkerQuizHeader($activeSheet, $rowCount) {
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount+2);
+        $headerTitle->setValueExplicit('Dolgozói kvíz');
+        $activeSheet->getStyle('A'.($rowCount+2))->getFont()->setBold(true);
+        $correctAnswerHeaderTitle = $activeSheet->getCellByColumnAndRow(1, $rowCount+4);
+        $correctAnswerHeaderTitle->setValueExplicit('Helyes válaszok');
+        $wrongAnswerHeaderTitle = $activeSheet->getCellByColumnAndRow(2, $rowCount+4);
+        $wrongAnswerHeaderTitle->setValueExplicit('Helytelen válaszok');
+        $correctAnswerRatioHeaderTitle = $activeSheet->getCellByColumnAndRow(3, $rowCount+4);
+        $correctAnswerRatioHeaderTitle->setValueExplicit('Helyes válasz arány');
+    }
+    
+    private function setWorkerQuizSum($activeSheet, $rowCount, $startRowCount) {
+        $sumWorkerDataHeaderTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+        $sumWorkerDataHeaderTitle->setValueExplicit('Összesen');               
+        $sumCorrectAnswerCount = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+        $sumCorrectAnswerCount->setValue('=SUM(B' . ($startRowCount) . ':B' . ($rowCount-1) . ')');
+        $sumWrongAnswerCount = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+        $sumWrongAnswerCount->setValue('=SUM(C' . ($startRowCount) . ':C' . ($rowCount-1) . ')');
+        $sumCorrectAnswerRatioAvg = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+        $sumCorrectAnswerRatioAvg->setValue('=ROUND(B' . ($rowCount) . '/(B' . ($rowCount) . '+C' . ($rowCount) . '),2)');
+        $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+            array( 
+                'code' => '0.00%',
+            )
+        );
+        $activeSheet->getStyle('A' . $rowCount . ':F' . $rowCount)->getFont()->setBold(true);
+    }
+    
+    private function getCorrectAnswerRatio($correctAnswersForRateable, $wrongAnswersForRateable) {
+        $allAnswersCount = count($correctAnswersForRateable) + count($wrongAnswersForRateable);
+        return (0 == $allAnswersCount) ? 0 : count($correctAnswersForRateable) / $allAnswersCount;
+    }
+    
+    private function setClientRatings($activeSheet, $rateableCollection, $startDateTime, $endDateTime) {
+        $this->setClientRatingsHeader($activeSheet);
+        $rowCount = 7;
+        $rateablesForRateableCollectionId = $this->getDoctrine()
+                                            ->getRepository('AcmeRatingBundle:Rateable')
+                                            ->findBy(array('collection' => $rateableCollection), 
+                                                     array('name' => 'ASC'));
+        foreach($rateablesForRateableCollectionId as $rateable) {
+            $nameCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $nameCell->setValueExplicit($rateable->getName());
+            
+            $contactsForRatableByInterval = $this->getContactsForRatableByInterval($rateable, $startDateTime, $endDateTime);
+            $contactCountCell             = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+            $contactCountCell->setValue(count($contactsForRatableByInterval));
+            
+            $ratingsForRatableByInterval = $this->getRatingsForRatableByInterval($rateable, $startDateTime, $endDateTime);            
+            $ratingCountCell             = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+            $ratingCountCell->setValue(count($ratingsForRatableByInterval));
+            
+            $ratingAvgCell = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+            $avgForRatings = $this->getAvgForRatings($ratingsForRatableByInterval);
+            $ratingAvgCell->setValue($avgForRatings);            
+            $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+                array( 
+                    'code' => '0.00',
+                )
+            );
+            
+            $rowCount++;
+        }
+        $this->setClientRatingsSum($activeSheet, $rowCount);
+        return ++$rowCount;
+    }
+    
+    private function getRatingsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
+        $ratingsForRatableByInterval = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->createQueryBuilder('q')                                                                                                
+                                        ->where('q.rateable = :rateable')            
+                                        ->setParameter('rateable', $rateable)
+                                        ->andWhere('q.updated >= :date_from') 
+                                        ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                        ->andWhere('q.updated <= :date_to') 
+                                        ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                        ->getQuery()
+                                        ->getResult();
+        return $ratingsForRatableByInterval;
+    }
+    
+    private function getContactsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
+        $contactsForRatableByInterval = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->createQueryBuilder('q')
+                                            ->where('q.rateable = :rateable')            
+                                            ->setParameter('rateable', $rateable)
+                                            ->andWhere('q.contactHappenedAt >= :date_from') 
+                                            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                            ->andWhere('q.contactHappenedAt <= :date_to') 
+                                            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                            ->getQuery()
+                                            ->getResult();
+        return $contactsForRatableByInterval;
+    }
+    
+    private function setClientRatingsSum($activeSheet, $rowCount) {
+        $sumClientDataHeaderTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+        $sumClientDataHeaderTitle->setValueExplicit('Összesen');         
+        $sumClientContactCount = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+        $sumClientContactCount->setValue('=SUM(B7:B'.($rowCount-1).')');
+        $sumClientRatingCount = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+        $sumClientRatingCount->setValue('=SUM(C7:C' . ($rowCount-1) . ')');
+        $sumClientRatingAvg = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+        $sumClientRatingAvg->setValue('=AVERAGEIF(D7:D' . ($rowCount-1) . ',">0")');          
+        $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+            array( 
+                'code' => '0.00',
+            )
+        );
+        $activeSheet->getStyle('A' . $rowCount . ':F' . $rowCount)->getFont()->setBold(true);
+    }
+    
+    private function setClientRatingsHeader($activeSheet) {
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, 4);
+        $headerTitle->setValueExplicit('Ügyfél értékelések');
+        $activeSheet->getStyle('A4')->getFont()->setBold(true);
+        $contactCountHeaderTitle = $activeSheet->getCellByColumnAndRow(1, 6);
+        $contactCountHeaderTitle->setValueExplicit('Rögzített kontaktusok');
+        $ratingCountHeaderTitle = $activeSheet->getCellByColumnAndRow(2, 6);
+        $ratingCountHeaderTitle->setValueExplicit('Beérkezett értékelések');
+        $ratingAvgHeaderTitle = $activeSheet->getCellByColumnAndRow(3, 6);
+        $ratingAvgHeaderTitle->setValueExplicit('Átlagos értékelés');
+    }
+    
+    private function getAvgForRatings($ratings) {
+        if(empty($ratings)) {
+            return 0;
+        }
+        $sumStars = 0;
+        foreach($ratings as $rating) {
+            $sumStars += $rating->getStars();
+        }
+        return $sumStars / count($ratings);
+    }
+    
     private function calcPreviousPeriodWithSameLength() {
         $diffTimestamp = $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp();
         $this->reportPreviousPeriod['startDate'] = new \DateTime();

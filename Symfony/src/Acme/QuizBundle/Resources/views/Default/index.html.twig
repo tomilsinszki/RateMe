@@ -129,7 +129,10 @@
     function sendEvaluatedQuizData(quizData) {
         $.ajax({
             url: '{{ path("quiz_save") }}',
-            data: { quizData: JSON.stringify(quizData) },
+            data: { 
+                quizData: JSON.stringify(quizData),
+                quizRemainingTime: seconds
+            },
             dataType: "text",
             type: "POST"
         }).done(function(data) {

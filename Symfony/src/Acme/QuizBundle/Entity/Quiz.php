@@ -46,7 +46,14 @@ class Quiz {
      * @ORM\OneToMany(targetEntity="QuizReply", mappedBy="quiz")
      */
     private $quizReplies;
-
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="elapsed_seconds", type="integer", nullable=false)
+     */
+    private $elapsedSeconds;
+    
     public function __construct() {
         $this->quizReplies = new ArrayCollection();
     }
@@ -138,5 +145,51 @@ class Quiz {
     public function getQuizReplies()
     {
         return $this->quizReplies;
+    }
+
+    /**
+     * Set elapsedSeconds
+     *
+     * @param integer $elapsedSeconds
+     * @return Quiz
+     */
+    public function setElapsedSeconds($elapsedSeconds)
+    {
+        $this->elapsedSeconds = $elapsedSeconds;
+    
+        return $this;
+    }
+
+    /**
+     * Get elapsedSeconds
+     *
+     * @return integer 
+     */
+    public function getElapsedSeconds()
+    {
+        return $this->elapsedSeconds;
+    }
+
+    /**
+     * Add quizReplies
+     *
+     * @param \Acme\QuizBundle\Entity\QuizReply $quizReplies
+     * @return Quiz
+     */
+    public function addQuizReplie(\Acme\QuizBundle\Entity\QuizReply $quizReplies)
+    {
+        $this->quizReplies[] = $quizReplies;
+    
+        return $this;
+    }
+
+    /**
+     * Remove quizReplies
+     *
+     * @param \Acme\QuizBundle\Entity\QuizReply $quizReplies
+     */
+    public function removeQuizReplie(\Acme\QuizBundle\Entity\QuizReply $quizReplies)
+    {
+        $this->quizReplies->removeElement($quizReplies);
     }
 }

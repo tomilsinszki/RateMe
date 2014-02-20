@@ -110,3 +110,6 @@ report:
     pattern:   /jelentes/megtekintes
     defaults: { _controller: AcmeRatingBundle:RateableCollection:report }
 
+report_download:
+    pattern:   /jelentes/letoltes/{rateableCollectionId}/{startDateTime}/{endDateTime}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:reportDownload }

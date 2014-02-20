@@ -14,7 +14,8 @@ use Acme\QuizBundle\Entity\QuizReply;
 use Acme\QuizBundle\Entity\QuestionFile;
 
 class DefaultController extends Controller {
-
+    
+    const FILLING_TIME_SECONDS = 180;
     /**
      * @Route("/quiz/questionnaire/{rateableCollectionId}")
      * @Template()
@@ -295,26 +296,28 @@ class DefaultController extends Controller {
             throw $this->createNotFoundException('Expected POST method.');
             return null;
         }
-
-        $user = $this->get('security.context')->getToken()->getUser();
-        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
-        $rateableId = $rateable->getId();
-        $quizData = json_decode($this->getRequest()->get('quizData'));
+        $quizRemainingSeconds = $this->getRequest()->get('quizRemainingTime');
+        $quizElpasedSeconds   = DefaultController::FILLING_TIME_SECONDS - $quizRemainingSeconds;
+        $user                 = $this->get('security.context')->getToken()->getUser();
+        $rateable             = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
+        $rateableId           = $rateable->getId();
+        $quizData             = json_decode($this->getRequest()->get('quizData'));
 
         $connection = $this->getDoctrine()->getEntityManager()->getConnection();
-        $now = date("Y-m-d H:i:s");
+        $now        = date("Y-m-d H:i:s");
         $connection->insert('quiz', array(
-            'rateable_id' => $rateableId,
-            'created' => $now,
+            'rateable_id'     => $rateableId,
+            'created'         => $now,
+            'elapsed_seconds' => $quizElpasedSeconds,
         ));
 
         $lastInsertedQuizId = $connection->lastInsertId();
 
         foreach ($quizData as $questionId => $wongAnswerId) {
             $connection->insert('quiz_reply', array(
-                'quiz_id' => $lastInsertedQuizId,
-                'question_id' => $questionId,
-                'wrong_given_answer_id' => $wongAnswerId
+                'quiz_id'               => $lastInsertedQuizId,
+                'question_id'           => $questionId,
+                'wrong_given_answer_id' => $wongAnswerId,                
             ));
         }
 

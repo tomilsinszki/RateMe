@@ -74,7 +74,11 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\OneToMany(targetEntity="Acme\RatingBundle\Entity\VerifiedClient", mappedBy="user")
      */
     private $clients;
-
+    
+    /**
+     * @ORM\Column(name="email_address", type="string", length=255, unique=true, nullable=true)
+     */
+    private $emailAddress;
 
     public function serialize()
     {
@@ -193,5 +197,160 @@ class User implements AdvancedUserInterface, \Serializable
     public function isEnabled()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set firstName
+     *
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Set emailAddress
+     *
+     * @param string $emailAddress
+     * @return User
+     */
+    public function setEmailAddress($emailAddress)
+    {
+        $this->emailAddress = $emailAddress;
+    
+        return $this;
+    }
+
+    /**
+     * Get emailAddress
+     *
+     * @return string 
+     */
+    public function getEmailAddress()
+    {
+        return $this->emailAddress;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * Add ownedCollections
+     *
+     * @param \Acme\RatingBundle\Entity\RateableCollection $ownedCollections
+     * @return User
+     */
+    public function addOwnedCollection(\Acme\RatingBundle\Entity\RateableCollection $ownedCollections)
+    {
+        $this->ownedCollections[] = $ownedCollections;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ownedCollections
+     *
+     * @param \Acme\RatingBundle\Entity\RateableCollection $ownedCollections
+     */
+    public function removeOwnedCollection(\Acme\RatingBundle\Entity\RateableCollection $ownedCollections)
+    {
+        $this->ownedCollections->removeElement($ownedCollections);
+    }
+
+    /**
+     * Add clients
+     *
+     * @param \Acme\RatingBundle\Entity\VerifiedClient $clients
+     * @return User
+     */
+    public function addClient(\Acme\RatingBundle\Entity\VerifiedClient $clients)
+    {
+        $this->clients[] = $clients;
+    
+        return $this;
+    }
+
+    /**
+     * Remove clients
+     *
+     * @param \Acme\RatingBundle\Entity\VerifiedClient $clients
+     */
+    public function removeClient(\Acme\RatingBundle\Entity\VerifiedClient $clients)
+    {
+        $this->clients->removeElement($clients);
+    }
+
+    /**
+     * Get clients
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getClients()
+    {
+        return $this->clients;
     }
 }
