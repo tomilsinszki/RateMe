@@ -213,15 +213,22 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
     }
     
     private function embedImagesIntoMessage($mostFiveRateForRateable, $mostQuizCorrectAnswerByRateable, $leastAmountContactsFixedByRateable, $worstRatedRateable, $message) {
-        $webRootPath = $this->getContainer()->get('kernel')->getRootDir() . "/../web";
+        $webRootPath = $this->getContainer()->get('kernel')->getRootDir() . '/../web';
+        $images = array();
         
-        $images = array(
-            'mostFiveRateForRateable'            => $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$mostFiveRateForRateable['imageFileName']}.{$mostFiveRateForRateable['imageFileExtension']}")),
-            'mostQuizCorrectAnswerByRateable'    => $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$mostQuizCorrectAnswerByRateable['imageFileName']}.{$mostQuizCorrectAnswerByRateable['imageFileExtension']}")),
-            'leastAmountContactsFixedByRateable' => $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$leastAmountContactsFixedByRateable['imageFileName']}.{$leastAmountContactsFixedByRateable['imageFileExtension']}")),
-            'worstRatedRateable'                 => $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$worstRatedRateable['imageFileName']}.{$worstRatedRateable['imageFileExtension']}")),        
-            'logo'                               => $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailLogo.png")),            
-        );
+        if(null != $mostFiveRateForRateable) { 
+            $images['mostFiveRateForRateable'] = $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$mostFiveRateForRateable['imageFileName']}.{$mostFiveRateForRateable['imageFileExtension']}"));                 
+        }
+        if(null != $mostQuizCorrectAnswerByRateable) { 
+            $images['mostQuizCorrectAnswerByRateable'] = $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$mostQuizCorrectAnswerByRateable['imageFileName']}.{$mostQuizCorrectAnswerByRateable['imageFileExtension']}"));                 
+        }
+        if(null != $leastAmountContactsFixedByRateable) { 
+            $images['leastAmountContactsFixedByRateable'] = $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$leastAmountContactsFixedByRateable['imageFileName']}.{$leastAmountContactsFixedByRateable['imageFileExtension']}"));                 
+        }
+        if(null != $worstRatedRateable) { 
+            $images['worstRatedRateable'] = $message->embed(\Swift_Image::fromPath("{$webRootPath}/uploads/images/{$worstRatedRateable['imageFileName']}.{$worstRatedRateable['imageFileExtension']}"));                 
+        }
+        $images['logo'] = $message->embed(\Swift_Image::fromPath("{$webRootPath}/images/emailLogo.png"));        
             
         return $images;
     }
