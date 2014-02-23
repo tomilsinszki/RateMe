@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EmailRiportForLastWeekCommand extends ContainerAwareCommand {    
+class EmailReportForLastWeekCommand extends ContainerAwareCommand {    
     
     private $managerStatement           = null;
     private $managersDataToSendEmailsTo = null;
@@ -52,7 +52,7 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
             array(
                 'manager'                       => $manager, 
                 'images'                        => $embeddedImages,
-                'excelRiportUrl'                => $this->getExcelRiportUrl($manager, $startDateTime, $endDateTime),
+                'excelRiportUrl'                => $this->getExcelReportUrl($manager, $startDateTime, $endDateTime),
                 'ratingCount'                   => $ratingCountAndAvg['count'],
                 'ratingAvg'                     => round($ratingCountAndAvg['ratingAvg']),
                 'quizAvgResult'                 => $this->getQuizAvgResult($manager, $startDateTime, $endDateTime),
@@ -201,8 +201,8 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
         return (empty($ratingCount)) ? null : $ratingCount[0];         
     }
     
-    private function getExcelRiportUrl($manager, $startDateTime, $endDateTime) {        
-        $excelRiportUrl = 'http://www.rate.me.uk' . 
+    private function getExcelReportUrl($manager, $startDateTime, $endDateTime) {        
+        $excelReportUrl = 'http://www.rate.me.uk' . 
                           $this->getContainer()->get('router')->generate('report_download', 
                                 array(
                                     'rateableCollectionId' => $manager['rateableCollectionId'],
@@ -210,7 +210,7 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                     'endDateTime'          => $endDateTime->format('Y-m-d_H-i-s'),
                                 )
                           );
-        return $excelRiportUrl;
+        return $excelReportUrl;
     }
     
     private function embedImagesIntoMessage($mostFiveRateForRateable, $mostQuizCorrectAnswerByRateable, $leastAmountContactsFixedByRateable, $worstRatedRateable, $message) {
