@@ -164,11 +164,12 @@ class RatingController extends Controller
     private function getValueOfNonContactRatingsCookie($rateable)
     {
         $cookies = $this->getRequest()->cookies;
+        $nonContactRatingsByRateableId = null;
         if ( $cookies->has('noncontact_ratings') ) {
             $nonContactRatingsByRateableId = json_decode($cookies->get('noncontact_ratings'), true);
         }
         
-        if ( !is_array($nonContactRatingsByRateableId) ) {
+        if(!is_array($nonContactRatingsByRateableId) ) {
             $nonContactRatingsByRateableId = array();
         }
         
