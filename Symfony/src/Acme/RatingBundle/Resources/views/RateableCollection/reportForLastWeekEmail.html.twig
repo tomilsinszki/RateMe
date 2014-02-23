@@ -2,43 +2,43 @@
 <html>
 <head></head>
 <body>
-    <p>Kedves 
+    <p>{% trans from 'riport' %}Dear{% endtrans %} 
         {% if null != manager.lastName and null != manager.firstName %}
             {{ manager.lastName }} {{ manager.firstName }}
         {% else %}
             {{ manager.userName }}
         {% endif %}!
     </p>
-    <p>Ezen a héten az alábbi eredmények születtek a RateMe rendszerében:</p>
+    <p>{% trans from 'riport' %}TheFollowingResultsThisWeek{% endtrans %}</p>
     <ul>
-        <li>Összesen {{ ratingCount }} értékelés érkezett be, ezek átlaga {{ ratingAvg }} volt.</li>
-        <li>A kollégák által kitöltött tesztek átalagosan {{ quizAvgResult }}%-osra sikerültek</li>
+        <li>{% trans with {'%ratingCount%': ratingCount, '%ratingAvg%': ratingAvg } from 'riport' %}RatingCountAndAvgThisWeek{% endtrans %}</li>
+        <li>{% trans with {'%quizAvgResult%': quizAvgResult } from 'riport' %}ClientQuizAvgThisWeek{% endtrans %}</li>
         {% if null != mostFiveRateName %}
             <li>
-                A legtöbb ötös értékelést ({{ mostFiveRateCount }} db)  {{ mostFiveRateName }} kapta. <br/>
+                {% trans with {'%mostFiveRateCount%': mostFiveRateCount, '%mostFiveRateName%': mostFiveRateName } from 'riport' %}MostFiveRateCountThisWeek{% endtrans %}<br/>
                 <img src="{{ images.mostFiveRateForRateable }}" style="width: 120px; height: 120px;" alt="{{ mostFiveRateName }}" />
             </li>        
         {% endif %}
         {% if null != mostQuizCorrectAnswerName %}
             <li>
-                A legjobb teszteredményeket ({{ mostQuizCorrectAnswerPercent }}%): {{ mostQuizCorrectAnswerName }} érte el. <br/>
+                {% trans with {'%mostQuizCorrectAnswerPercent%': mostQuizCorrectAnswerPercent, '%mostQuizCorrectAnswerName%': mostQuizCorrectAnswerName } from 'riport' %}MostQuizCorrectAnswerThisWeek{% endtrans %}<br/>
                 <img src="{{ images.mostQuizCorrectAnswerByRateable }}" style="width: 120px; height: 120px;" alt="{{ mostQuizCorrectAnswerName }}" />
             </li>
         {% endif %}        
         {% if null != leastAmountContactsFixedName %}
             <li>
-                A legkevesebb kontaktust ({{ leastAmountContactsFixedCount }} db) {{ leastAmountContactsFixedName }} rögzítette. <br/>
+                {% trans with {'%leastAmountContactsFixedCount%': leastAmountContactsFixedCount, '%leastAmountContactsFixedName%': leastAmountContactsFixedName } from 'riport' %}LeastAmountContactsFixedThisWeek{% endtrans %}<br/>
                 <img src="{{ images.leastAmountContactsFixedByRateable }}" style="width: 120px; height: 120px;" alt="{{ leastAmountContactsFixedName }}" />
             </li>
         {% endif %}
         {% if null != leastAmountContactsFixedName %}
             <li>
-                A legrosszabb értékelést ({{ worstRatedRateableAvg }}) {{ worstRatedRateableName }} kapta. <br/>
+                {% trans with {'%worstRatedRateableAvg%': worstRatedRateableAvg, '%worstRatedRateableName%': worstRatedRateableName } from 'riport' %}WorstRatedRateableThisWeek{% endtrans %}<br/>
                 <img src="{{ images.worstRatedRateable }}" style="width: 120px; height: 120px;" alt="{{ worstRatedRateableName }}" />
             </li>
         {% endif %}
     </ul>
-    <p>A részletes eredmények (excel formátumú) megtekintéséhez kattints <a href="{{ excelRiportUrl }}" style="font-weight: bold; text-decoration: underline;">ide</a>.</p>
-    <p>Üdvözlettel, <br/>A RateMe csapata</p>
+    <p>{% trans with {'%excelRiportUrl%': excelRiportUrl } from 'riport' %}ExcelToDownload{% endtrans %}</p>
+    <p>{% trans from 'riport' %}BestRegards{% endtrans %}</p>
 </body>
 </html>

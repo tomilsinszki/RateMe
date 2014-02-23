@@ -34,11 +34,12 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
     }
     
     private function sendEmailToManager($manager, $startDateTime, $endDateTime) {
-        $message = \Swift_Message::newInstance();
+        $translator = $this->getContainer()->get('translator');
+        $message    = \Swift_Message::newInstance();
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
-        $message->setSubject('RateMe - Heti Értesítő');
-        $message->setFrom(array('report@rate.me.uk' => 'RateMe riport'));
+        $message->setSubject($translator->trans('emailTitle', array(), 'riport') . '(' . $manager['rateableCollectionName'] . ')');
+        $message->setFrom(array('report@rate.me.uk' => $translator->trans('emailFrom', array(), 'riport')));
         $message->setTo($manager['emailAddress']);                 
         $ratingCountAndAvg                  = $this->getRatingCountAndAvg($manager, $startDateTime, $endDateTime);
         $mostFiveRateForRateable            = $this->getMostFiveRate($manager, $startDateTime, $endDateTime);
@@ -78,8 +79,8 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                                                 FROM rateable ra                                                            
                                                                 LEFT JOIN rating r ON r.rateable_id=ra.id
                                                                 LEFT JOIN image i ON i.id=ra.image_id
-                                                                WHERE r.updated >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
-                                                                  AND r.updated <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'                                                                                                                            
+                                                                WHERE r.created >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
+                                                                  AND r.created <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'                                                                                                                            
                                                                   AND ra.collection_id = \'' . $manager['rateableCollectionId'] . '\'
                                                                 GROUP BY ra.name
                                                                 HAVING count(r.stars) >= 10 
@@ -143,9 +144,9 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                                                 i.path AS imageFileExtension
                                                             FROM rateable ra                                                            
                                                             LEFT JOIN rating r ON r.rateable_id=ra.id
-                                                            LEFT JOIN image i ON i.id=ra.image_id
-                                                            WHERE r.updated >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
-                                                              AND r.updated <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
+                                                            LEFT JOIN image i ON i.id=ra.image_id                                                           
+                                                            WHERE r.created >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
+                                                              AND r.created <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
                                                               AND r.stars = 5                                                               
                                                               AND ra.collection_id = \'' . $manager['rateableCollectionId'] . '\'
                                                             GROUP BY ra.name
@@ -161,8 +162,9 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                                                 count(*) AS count
                                                             FROM quiz_reply qr                                                            
                                                             LEFT JOIN quiz_question qq ON qq.id=qr.question_id
-                                                            WHERE qq.updated >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
-                                                              AND qq.updated <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
+                                                            LEFT JOIN quiz q ON q.id=qr.quiz_id
+                                                            WHERE q.created >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
+                                                              AND q.created <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
                                                               AND qq.rateable_collection_id = \'' . $manager['rateableCollectionId'] . '\'');
         $allReplyCountStatement->execute();
         $allReplyCount = $allReplyCountStatement->fetchAll();
@@ -170,8 +172,9 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                                                 count(*) AS count
                                                             FROM quiz_reply qr                                                            
                                                             LEFT JOIN quiz_question qq ON qq.id=qr.question_id
-                                                            WHERE qq.updated >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
-                                                              AND qq.updated <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
+                                                            LEFT JOIN quiz q ON q.id=qr.quiz_id
+                                                            WHERE q.created >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
+                                                              AND q.created <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
                                                               AND qr.wrong_given_answer_id IS NULL 
                                                               AND qq.rateable_collection_id = \'' . $manager['rateableCollectionId'] . '\'');
         $correctReplyCountStatement->execute();
@@ -190,8 +193,8 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                                             FROM rating r                                                            
                                                             LEFT JOIN rateable ra ON ra.id=r.rateable_id
                                                             LEFT JOIN rateable_collection rc ON rc.id=ra.collection_id
-                                                            WHERE r.updated >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
-                                                              AND r.updated <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
+                                                            WHERE r.created >= \'' . $startDateTime->format('Y-m-d H:i:s') . '\'
+                                                              AND r.created <= \'' . $endDateTime->format('Y-m-d H:i:s') . '\'
                                                               AND rc.id = \'' . $manager['rateableCollectionId'] . '\'');
         $ratingCountStatement->execute();
         $ratingCount = $ratingCountStatement->fetchAll();
@@ -231,7 +234,8 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
                                                                 u.last_name AS lastName,
                                                                 u.first_name AS firstName,
                                                                 u.email_address AS emailAddress,                                                                
-                                                                rc.id AS rateableCollectionId
+                                                                rc.id AS rateableCollectionId,
+                                                                rc.name AS rateableCollectionName
                                                             FROM user u
                                                             LEFT JOIN user_group ug ON ug.user_id=u.id
                                                             LEFT JOIN role r ON r.id=ug.group_id

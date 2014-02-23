@@ -1,0 +1,31 @@
+excelCreator: RateMe
+excelModifiedBy: RateMe
+excelTitle: RateMe Heti Jelentés
+Riport: Jelentés
+WeeklyRiport: HETI RIPORT
+QuestionsNotFound: Nem találhatóak kérdések a megadott intervallumban!
+ClientQuestionnaire: Ügyfél kérdőív
+WorkerQuiz: Dolgozói kvíz
+CorrectAnswers: Helyes válaszok
+WrongAnswers: Helytelen válaszok
+CorrectAnswerRatio: Helyes válasz arány
+Sum: Összesen
+ClientRatings: Ügyfél értékelések
+ContactCount: Rögzített kontaktusok
+ReceivedRatings: Beérkezett értékelések
+AverageRatings: Átlagos értékelés
+
+#For Command
+emailTitle: RateMe - Heti Értesítő
+emailFrom: RateMe riport
+#For Command template
+Dear: Kedves
+TheFollowingResultsThisWeek: "Ezen a héten az alábbi eredmények születtek a RateMe rendszerében:"
+RatingCountAndAvgThisWeek: Összesen %ratingCount% értékelés érkezett be, ezek átlaga %ratingAvg% volt.
+ClientQuizAvgThisWeek: A kollégák által kitöltött tesztek átalagosan %quizAvgResult%%%-osra sikerültek
+MostFiveRateCountThisWeek: A legtöbb ötös értékelést (%mostFiveRateCount% db)  %mostFiveRateName% kapta.
+MostQuizCorrectAnswerThisWeek: "A legjobb teszteredményeket (%mostQuizCorrectAnswerPercent%%%): %mostQuizCorrectAnswerName% érte el."
+LeastAmountContactsFixedThisWeek: A legkevesebb kontaktust (%leastAmountContactsFixedCount% db) %leastAmountContactsFixedName% rögzítette. 
+WorstRatedRateableThisWeek: A legrosszabb értékelést (%worstRatedRateableAvg%) %worstRatedRateableName% kapta. 
+ExcelToDownload: "A részletes eredmények (excel formátumú) megtekintéséhez kattints <a href=\"%excelRiportUrl%\" style=\"font-weight: bold; text-decoration: underline;\">ide</a>."
+BestRegards: Üdvözlettel, <br/>A RateMe csapata

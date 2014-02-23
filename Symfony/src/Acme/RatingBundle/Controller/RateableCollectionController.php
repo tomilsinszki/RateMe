@@ -433,10 +433,10 @@ class RateableCollectionController extends Controller
         $excelService = $this->getExcelReport($rateableCollection, $startDateTime, $endDateTime);        
         
         $response = $excelService->getResponse();
-        $response->headers->set("Content-Description", "File Transfer");
+        $response->headers->set('Content-Description', 'File Transfer');
         $response->headers->set('Expires', 0);
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
-        $response->headers->set("Content-Transfer-Encoding", "Binary");
+        $response->headers->set('Content-Transfer-Encoding', 'Binary');
         $response->headers->set('Content-Disposition', 'attachment; filename="RateMe - Excel riport.xlsx"');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
 
@@ -447,22 +447,22 @@ class RateableCollectionController extends Controller
     
     private function getExcelReport($rateableCollection, $startDateTime, $endDateTime) {
         $excelService = $this->get('xls.service_xls2007');
-        $excelService->excelObj->getProperties()->setCreator('RateMe')
-                            ->setLastModifiedBy('RateMe')
-                            ->setTitle('RateMe Heti Jelentés')
-                            ->setSubject('RateMe Heti Jelentés')
-                            ->setDescription('RateMe Heti Jelentés')
-                            ->setKeywords('RateMe Heti Jelentés')
-                            ->setCategory('RateMe Heti Jelentés');
+        $excelService->excelObj->getProperties()->setCreator($this->get('translator')->trans('excelCreator', array(), 'riport'))
+                            ->setLastModifiedBy($this->get('translator')->trans('excelModifiedBy', array(), 'riport'))
+                            ->setTitle($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setSubject($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setDescription($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setKeywords($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setCategory($this->get('translator')->trans('excelTitle', array(), 'riport'));
 
         $excelService->excelObj->setActiveSheetIndex(0);
         $activeSheet = $excelService->excelObj->getActiveSheet();
-        $activeSheet->setTitle('Jelentés');
+        $activeSheet->setTitle($this->get('translator')->trans('Riport', array(), 'riport'));
         for($col = 'A'; $col != 'G'; $col++) {
             $activeSheet->getColumnDimension($col)->setWidth(35);            
         }        
         $headerTitle = $activeSheet->getCellByColumnAndRow(0, 1);
-        $headerTitle->setValueExplicit('HETI RIPORT ' . $startDateTime->format('Y.m.d.') . ' - ' . $endDateTime->format('Y.m.d.'));
+        $headerTitle->setValueExplicit($this->get('translator')->trans('WeeklyRiport', array(), 'riport') . ' ' . $startDateTime->format('Y.m.d.') . ' - ' . $endDateTime->format('Y.m.d.'));
         $rowCount = $this->setClientRatings($activeSheet, $rateableCollection, $startDateTime, $endDateTime);        
         $rowCount = $this->setWorkerQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
         $rowCount = $this->setClientQuestionnaire($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
@@ -476,7 +476,7 @@ class RateableCollectionController extends Controller
         $quizQuestionsForRateableCollectionByInterval = $this->getQuizQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime);
         if(empty($quizQuestionsForRateableCollectionByInterval)) {
             $questionNotFountCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
-            $questionNotFountCell->setValueExplicit('Nem találhatóak kérdések a megadott intervallumban!');
+            $questionNotFountCell->setValueExplicit($this->get('translator')->trans('QuestionsNotFound', array(), 'riport'));
         }
         foreach($quizQuestionsForRateableCollectionByInterval as $quizQuestion) {
             $correctAnswerCell = $activeSheet->getCellByColumnAndRow(1, $rowCount);
@@ -507,7 +507,7 @@ class RateableCollectionController extends Controller
     
     private function setClientQuestionnaireHeader($activeSheet, $rowCount) {
         $headerTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount+2);
-        $headerTitle->setValueExplicit('Ügyfél kérdőív');
+        $headerTitle->setValueExplicit($this->get('translator')->trans('ClientQuestionnaire', array(), 'riport'));
         $activeSheet->getStyle('A' . ($rowCount+2))->getFont()->setBold(true);
     }
     
@@ -515,9 +515,9 @@ class RateableCollectionController extends Controller
         $quizQuestionsForRateableCollectionByInterval = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->createQueryBuilder('q')                                                
                                 ->where('q.rateableCollection = :rateableCollection')            
                                 ->setParameter('rateableCollection', $rateableCollection)
-                                ->andWhere('q.updated >= :date_from') 
+                                ->andWhere('q.created >= :date_from') 
                                 ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                ->andWhere('q.updated <= :date_to') 
+                                ->andWhere('q.created <= :date_to') 
                                 ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)                                                 
                                 ->getQuery()
                                 ->getResult();
@@ -590,19 +590,19 @@ class RateableCollectionController extends Controller
     
     private function setWorkerQuizHeader($activeSheet, $rowCount) {
         $headerTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount+2);
-        $headerTitle->setValueExplicit('Dolgozói kvíz');
+        $headerTitle->setValueExplicit($this->get('translator')->trans('WorkerQuiz', array(), 'riport'));
         $activeSheet->getStyle('A'.($rowCount+2))->getFont()->setBold(true);
         $correctAnswerHeaderTitle = $activeSheet->getCellByColumnAndRow(1, $rowCount+4);
-        $correctAnswerHeaderTitle->setValueExplicit('Helyes válaszok');
+        $correctAnswerHeaderTitle->setValueExplicit($this->get('translator')->trans('CorrectAnswers', array(), 'riport'));
         $wrongAnswerHeaderTitle = $activeSheet->getCellByColumnAndRow(2, $rowCount+4);
-        $wrongAnswerHeaderTitle->setValueExplicit('Helytelen válaszok');
+        $wrongAnswerHeaderTitle->setValueExplicit($this->get('translator')->trans('WrongAnswers', array(), 'riport'));
         $correctAnswerRatioHeaderTitle = $activeSheet->getCellByColumnAndRow(3, $rowCount+4);
-        $correctAnswerRatioHeaderTitle->setValueExplicit('Helyes válasz arány');
+        $correctAnswerRatioHeaderTitle->setValueExplicit($this->get('translator')->trans('CorrectAnswerRatio', array(), 'riport'));
     }
     
     private function setWorkerQuizSum($activeSheet, $rowCount, $startRowCount) {
         $sumWorkerDataHeaderTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount);
-        $sumWorkerDataHeaderTitle->setValueExplicit('Összesen');               
+        $sumWorkerDataHeaderTitle->setValueExplicit($this->get('translator')->trans('Sum', array(), 'riport'));               
         $sumCorrectAnswerCount = $activeSheet->getCellByColumnAndRow(1, $rowCount);
         $sumCorrectAnswerCount->setValue('=SUM(B' . ($startRowCount) . ':B' . ($rowCount-1) . ')');
         $sumWrongAnswerCount = $activeSheet->getCellByColumnAndRow(2, $rowCount);
@@ -660,9 +660,9 @@ class RateableCollectionController extends Controller
         $ratingsForRatableByInterval = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->createQueryBuilder('q')                                                                                                
                                         ->where('q.rateable = :rateable')            
                                         ->setParameter('rateable', $rateable)
-                                        ->andWhere('q.updated >= :date_from') 
+                                        ->andWhere('q.created >= :date_from') 
                                         ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                        ->andWhere('q.updated <= :date_to') 
+                                        ->andWhere('q.created <= :date_to') 
                                         ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
                                         ->getQuery()
                                         ->getResult();
@@ -684,7 +684,7 @@ class RateableCollectionController extends Controller
     
     private function setClientRatingsSum($activeSheet, $rowCount) {
         $sumClientDataHeaderTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount);
-        $sumClientDataHeaderTitle->setValueExplicit('Összesen');         
+        $sumClientDataHeaderTitle->setValueExplicit($this->get('translator')->trans('Sum', array(), 'riport'));         
         $sumClientContactCount = $activeSheet->getCellByColumnAndRow(1, $rowCount);
         $sumClientContactCount->setValue('=SUM(B7:B'.($rowCount-1).')');
         $sumClientRatingCount = $activeSheet->getCellByColumnAndRow(2, $rowCount);
@@ -701,14 +701,14 @@ class RateableCollectionController extends Controller
     
     private function setClientRatingsHeader($activeSheet) {
         $headerTitle = $activeSheet->getCellByColumnAndRow(0, 4);
-        $headerTitle->setValueExplicit('Ügyfél értékelések');
+        $headerTitle->setValueExplicit($this->get('translator')->trans('ClientRatings', array(), 'riport'));
         $activeSheet->getStyle('A4')->getFont()->setBold(true);
         $contactCountHeaderTitle = $activeSheet->getCellByColumnAndRow(1, 6);
-        $contactCountHeaderTitle->setValueExplicit('Rögzített kontaktusok');
+        $contactCountHeaderTitle->setValueExplicit($this->get('translator')->trans('ContactCount', array(), 'riport'));
         $ratingCountHeaderTitle = $activeSheet->getCellByColumnAndRow(2, 6);
-        $ratingCountHeaderTitle->setValueExplicit('Beérkezett értékelések');
+        $ratingCountHeaderTitle->setValueExplicit($this->get('translator')->trans('ReceivedRatings', array(), 'riport'));
         $ratingAvgHeaderTitle = $activeSheet->getCellByColumnAndRow(3, 6);
-        $ratingAvgHeaderTitle->setValueExplicit('Átlagos értékelés');
+        $ratingAvgHeaderTitle->setValueExplicit($this->get('translator')->trans('AverageRatings', array(), 'riport'));
     }
     
     private function getAvgForRatings($ratings) {
