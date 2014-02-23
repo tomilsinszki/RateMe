@@ -202,7 +202,7 @@ class EmailRiportForLastWeekCommand extends ContainerAwareCommand {
     }
     
     private function getExcelRiportUrl($manager, $startDateTime, $endDateTime) {        
-        $excelRiportUrl = $this->container->get('router')->getContext()->getBaseUrl() . 
+        $excelRiportUrl = 'http://www.rate.me.uk' . 
                           $this->getContainer()->get('router')->generate('report_download', 
                                 array(
                                     'rateableCollectionId' => $manager['rateableCollectionId'],
