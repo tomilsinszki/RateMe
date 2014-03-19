@@ -38,18 +38,29 @@ class UserController extends Controller {
         $subRating->setAnswer($answer);
         $this->getDoctrine()->getManager()->persist($subRating);
         $this->getDoctrine()->getManager()->flush();
-
-        $question = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating);
-        if ( empty($question) ) {
+        
+        $contact               = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating);
+        $question              = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating);
+        $maximumQuestionCount  = $rating->getRateable()->getCollection()->getMaxQuestionCount();
+        $ratedQuestionsCount   = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getRatedQuestionsCountByRating($rating);        
+        $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);                
+        
+        if(empty($question)) {
             return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
         }
-        
+        if(NULL != $maximumQuestionCount && $maximumQuestionCount == $ratedQuestionsCount) {
+            return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
+        }
+        if(NULL != $maximumQuestionCount  && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount) {
+            $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
+        }        
         return $this->render(
             'AcmeSubRatingBundle:User:subRatingForm.html.twig',
             array(
-                'rating' => $rating,
-                'question' => $question,
-                'contact' => $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating),
+                'rating'         => $rating,
+                'question'       => $question,
+                'questionsCount' => $unratedQuestionsCount - 1,                
+                'contact'        => $contact,
             )
         );
     }

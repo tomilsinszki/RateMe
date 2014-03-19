@@ -18,6 +18,22 @@ class QuestionRepository extends EntityRepository {
         return $nextQuestion;
     }
     
+    public function getRatedQuestionsCountByRating($rating) {
+        $questions = $this->getQuestionsWithSubRatingsForRating($rating);        
+        if(empty($questions)) {
+            return 0;
+        }        
+        return count($questions);
+    }
+    
+    public function getUnratedQuestionsCountByRating($rating) {
+        $questions = $this->getQuestionsWithoutSubRatingsForRating($rating);
+        if(empty($questions)) {
+            return 0;
+        }        
+        return count($questions);
+    }
+    
     private function getNextQuestionByOrderType($questions, $questionOrderTypeName) {
         $nextQuestion = null;
         
@@ -121,6 +137,50 @@ class QuestionRepository extends EntityRepository {
         }
         
         return $questionsWithoutSubRatings;
+    }
+    
+    private function getQuestionsWithSubRatingsForRating($rating) {
+        $rateableCollection = $rating->getRateable()->getCollection();
+        if(empty($rateableCollection)) {
+            throw $this->createNotFoundException('Collection not found for rating.');
+            return null;
+        }
+        
+        $allQuestions = $this->createQueryBuilder('q')
+            ->where('q.rateableCollection = :collection')
+            ->setParameter('collection', $rateableCollection)
+            ->andWhere('q.deleted IS NULL')
+            ->orderBy('q.sequence', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $hasSubRatingsQuestions = $this->createQueryBuilder('q')
+            ->leftJoin('q.answers', 'a')
+            ->leftJoin('a.subRatings', 'sr')
+            ->where('q.rateableCollection = :collection')
+            ->setParameter('collection', $rateableCollection)
+            ->andWhere('sr.rating = :rating')
+            ->setParameter('rating', $rating)
+            ->andWhere('q.deleted IS NULL')
+            ->andWhere('sr IS NOT NULL')
+            ->orderBy('q.sequence', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $questionsWithSubRatings = array();
+        
+        foreach($allQuestions as $question) {
+            $hasSubRatings = false;
+            foreach($hasSubRatingsQuestions as $hasSubRatingsQuestion) {
+                if ( $hasSubRatingsQuestion->getId() == $question->getId() ) {
+                    $hasSubRatings = true;
+                }
+            }
+            if($hasSubRatings) {
+                $questionsWithSubRatings[] = $question;
+            }
+        }        
+        return $questionsWithSubRatings;
     }
 }
 

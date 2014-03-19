@@ -75,6 +75,7 @@ security:
         - { path: ^/melysegi/kerdoiv/kerdes/torles, roles: 'ROLE_MANAGER' }
         - { path: ^/melysegi/kerdoiv/sorrend/tipus/valtozas, roles: 'ROLE_MANAGER' }
         - { path: ^/melysegi/kerdoiv/sorrend/valtozas, roles: 'ROLE_MANAGER' }
+        - { path: ^/melysegi/kerdoiv/maximum/kerdesszam/valtozas, roles: 'ROLE_MANAGER' }
         - { path: ^/melysegi/kerdoiv, roles: 'ROLE_MANAGER' }
         - { path: ^/_wdt, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/$, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }  

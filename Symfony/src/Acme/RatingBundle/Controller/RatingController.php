@@ -110,11 +110,22 @@ class RatingController extends Controller
         $entityManager->persist($rating);
         $entityManager->flush();
         
+        $contact               = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating);
+        $question              = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating);
+        $maximumQuestionCount  = $rating->getRateable()->getCollection()->getMaxQuestionCount();
+        $ratedQuestionsCount   = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getRatedQuestionsCountByRating($rating);        
+        $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);                
+        
+        if ( NULL != $maximumQuestionCount && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount ) {
+            $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
+        } 
+        
         $html = $this->renderView('AcmeRatingBundle:Rating:new.html.twig', array(
-            'rating' => $rating,
-            'rateable' => $rateable,
-            'question' => $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating),
-            'contact' => $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating),
+            'rating'          => $rating,
+            'rateable'        => $rateable,
+            'question'        => $question,
+            'questionsCount'  => $unratedQuestionsCount - 1,
+            'contact'         => $contact,
             'profileImageURL' => $this->getImageURL($rateable),
         ));
         
@@ -168,7 +179,7 @@ class RatingController extends Controller
             $nonContactRatingsByRateableId = json_decode($cookies->get('noncontact_ratings'), true);
         }
         
-        if ( !is_array($nonContactRatingsByRateableId) ) {
+        if ( !isset($nonContactRatingsByRateableId) || !is_array($nonContactRatingsByRateableId) ) {
             $nonContactRatingsByRateableId = array();
         }
         

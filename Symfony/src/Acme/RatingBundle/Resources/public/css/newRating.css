@@ -511,3 +511,8 @@ div#suggestion-for-new-companies-email-container {
 	top: 7px;
 	width: 30px;
 }
+
+.remainingQuestions {
+    color: #791f7e;
+    margin-top: 10px;
+}

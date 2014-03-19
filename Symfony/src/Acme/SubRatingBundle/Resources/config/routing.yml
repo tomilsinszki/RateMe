@@ -46,3 +46,7 @@ sub_rating_owner_main:
     pattern:   /melysegi/kerdoiv/{rateableCollectionId}
     defaults: { _controller: AcmeSubRatingBundle:Owner:owner, rateableCollectionId: null }
 
+sub_rating_owner_maximum_question_count_change:
+    pattern:   /melysegi/kerdoiv/maximum/kerdesszam/valtozas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:maximumQuestionCountChange } 
+

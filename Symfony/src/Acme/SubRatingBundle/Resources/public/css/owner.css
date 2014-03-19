@@ -300,7 +300,6 @@ h2.questionnaireSubTitle {
 }
 .btnCont.yellowDeepQuestion .btnDeepQuestion h3 {
     font-family: 'DINProH-Bold';    
-    line-height: 44px;
     position: relative;
     text-align: center;
 }
@@ -455,4 +454,39 @@ h2.questionnaireSubTitle {
 
 .btn_cont.yellow .btn h3:after {
     content: none !important;
+}
+
+.maxQuestionCountContainer {
+    margin-left: 8px;
+    margin-bottom: 50px;
+}
+
+.maximumQuestionCountCheckboxLabel {
+    display: inline-block;
+}
+
+.maximumQuestionCountToggleWrapper {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.maximumQuestionCountTextboxWrapper {
+    display: inline-block;
+}
+
+.maximumQuestionCountOkButton {
+    display: inline-block; 
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
+
+.maximumQuestionCountDisplay {
+    color: #fff;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.maximumQuestionCountTextBox {
+    width: 50px;
 }

@@ -287,6 +287,24 @@
                                 </div>
                             {% endfor %}
                         </div>
+                        <h2 class="questionnaireSubTitle">{% trans from 'owner' %}Options{% endtrans %}</h2>
+                        <div class="maxQuestionCountContainer">
+                            <input id="maximumQuestionCount" class="checkboxInput" type="checkbox" {% if null != collection.maxQuestionCount %}checked="checked"{% endif %}>
+                            <label class="checkboxInputLabel maximumQuestionCountCheckboxLabel" for="maximumQuestionCount">{% trans from 'owner' %}Maximum question count{% endtrans %}</label>
+                            <span id="maximumQuestionCountDisplay" class="maximumQuestionCountDisplay" {% if null == collection.maxQuestionCount %}style="display: none;"{% endif %}>{{collection.maxQuestionCount}}</span>
+                            <div class="maximumQuestionCountToggleWrapper" style="display: none;">
+                                <div class="input-wrapper maximumQuestionCountTextboxWrapper">
+                                    <input id="maximumQuestionCountTextbox" class="maximumQuestionCountTextBox" disabled="disabled" type="text" />
+                                </div>
+                                <div id="maximumQuestionCountOkButton" class="btnCont yellowDeepQuestion maximumQuestionCountOkButton">
+                                    <div class="btnDeepQuestion">
+                                        <h3>
+                                            <div>{% trans from 'owner' %}Ok{% endtrans %}</div>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <h2 class="questionnaireSubTitle">{% trans from 'owner' %}questions{% endtrans %}</h2>
                         <div class="questionTable">
                             <ul id="sortable">
@@ -366,6 +384,9 @@
                                 </div>                                
                                 <div id="dialog-save-failed" title="" style="display:none;">
                                     <span class="ui-dialog-content-text">{% trans from 'owner' %}Data was incorrectly entered!{% endtrans %}</span>
+                                </div>
+                                <div id="dialog-maximum-question-count-failed" title="" style="display:none;">
+                                    <span class="ui-dialog-content-text">{% trans from 'owner' %}You have to enter positive integer numbers!{% endtrans %}</span>
                                 </div>
                             </ul>
                         </div>
