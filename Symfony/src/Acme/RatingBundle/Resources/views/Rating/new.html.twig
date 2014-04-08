@@ -114,17 +114,27 @@
 				<div class="wrapper bottom-wrapper">
 					<div class="question-box">
                         <div class="question-promo">
-                            <div class="price-img">
-                                <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Bosch konyhai robotgép" />
-                            </div>
-                            <div>
-                                Van még pár másodperce? Ha igen, válaszoljon még egy kérdésre és <strong>Bosch konyhai robotgépet nyerhet!</strong>
-                            </div>
-                            <div>
-                                <a class="promotion-rules" href='http://www.vidanet.hu/segitseg/dokumentumok/akcio-szabalyzatok/aktualis-akciok/a-vidanet-zrt-2014-03-evi-ugyfelvelemeny-gyujtesi-nyeremenyjatekanak-reszletes-szabalyzata.pdf'>
-                                    A nyereményjáték részletes szabályzata
-                                </a>
-                            </div>
+                            {% if 'Vidanet Menedzsment' == rateable.name %}
+                                <div class="price-img">
+                                    <img src="{{ asset('bundles/acmerating/images/rabbit.png') }}" alt="Plüssnyúl" />
+                                </div>
+                                <div>
+                                    Ha van még egy-két perce, kérjük segítse a munkánkat egy rövid kérdőív kitöltésével!
+                                    Válaszoljon az alábbi kérdésekre és egy <strong>gyönyörű plüssnyulat</strong> nyerhet!
+                                </div>
+                            {% else %}
+                                <div class="price-img">
+                                    <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Bosch konyhai robotgép" />
+                                </div>
+                                <div>
+                                    Van még pár másodperce? Ha igen, válaszoljon még egy kérdésre és <strong>Bosch konyhai robotgépet nyerhet!</strong>
+                                </div>
+                                <div>
+                                    <a class="promotion-rules" href='http://www.vidanet.hu/segitseg/dokumentumok/akcio-szabalyzatok/aktualis-akciok/a-vidanet-zrt-2014-03-evi-ugyfelvelemeny-gyujtesi-nyeremenyjatekanak-reszletes-szabalyzata.pdf'>
+                                        A nyereményjáték részletes szabályzata
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                         
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
