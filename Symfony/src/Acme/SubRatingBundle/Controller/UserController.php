@@ -43,13 +43,31 @@ class UserController extends Controller {
         $question              = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating);
         $maximumQuestionCount  = $rating->getRateable()->getCollection()->getMaxQuestionCount();
         $ratedQuestionsCount   = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getRatedQuestionsCountByRating($rating);        
-        $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);                
-        
+        $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);
+
         if(empty($question)) {
+            // TODO: restore old code
+            if ( 'Igazgatósági Ülés' === $rating->getRateable()->getName() ) {
+                return $this->redirect($this->generateUrl('sub_rating_user_thank_you_custom'));
+            }
+            else {
+                return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
+            }
+            /*
             return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
+            */
         }
         if(NULL != $maximumQuestionCount && $maximumQuestionCount == $ratedQuestionsCount) {
+            // TODO: restore old code
+            if ( 'Igazgatósági Ülés' === $rating->getRateable()->getName() ) {
+                return $this->redirect($this->generateUrl('sub_rating_user_thank_you_custom'));
+            }
+            else {
+                return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
+            }
+            /*
             return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
+            */
         }
         if(NULL != $maximumQuestionCount  && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount) {
             $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
@@ -67,6 +85,10 @@ class UserController extends Controller {
 
     public function thankYouAction() {
         return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig');
+    }
+
+    public function thankYouCustomAction() {
+        return $this->render('AcmeSubRatingBundle:User:thankYouCustom.html.twig');
     }
 
 }
