@@ -78,7 +78,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function serialize()
     {
-        return serialize(array(
+        return \json_encode(array(
             $this->id,
             $this->salt,
             $this->password,
@@ -101,7 +101,7 @@ class User implements AdvancedUserInterface, \Serializable
             $this->groups
             //$this->ownedCollections
             //$this->clients
-        ) = unserialize($serialized);
+        ) = \json_decode($serialized);
     }
 
     public function __construct()
