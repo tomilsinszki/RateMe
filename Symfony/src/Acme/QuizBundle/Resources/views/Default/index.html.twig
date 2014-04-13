@@ -15,7 +15,7 @@
 
     <script type="text/javascript">
 
-    var seconds = 180;
+    var seconds = {{ remainingTime > 0 ? remainingTime : 0 }};
     var currentQuestionId, remainedQuestionIds = [];
     var countdown, timer, buttons, question, questionNum, answers;
     var questions = {{ questions|json_encode()|raw }};
@@ -65,6 +65,8 @@
 
     function initTimer() {
         timer = $.timer(timerHandler, 1000, true);
+        seconds += 1;
+        timerHandler();
     }
 
     function timerHandler() {
@@ -179,7 +181,7 @@
     
     <div id="quiz" class="container">
     	<div class="stopper">
-    		<div id="timer-bg">03:00</div>
+    		<div id="timer-bg">{{ remainingTime // 60 }}:{{ remainingTime % 60 }}</div>
     	</div>
     	<div class="wrapper">
     		<h2><span id="questionNum">0</span>.</h2>

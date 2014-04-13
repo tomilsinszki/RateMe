@@ -122,7 +122,6 @@ class DefaultController extends Controller {
 
                     $activeSheet = $excelObj->getSheet();
                     $rowIterator = $activeSheet->getRowIterator(2);
-                    $answers = array();
                     
                     $query = $em->createQuery('SELECT rc FROM AcmeRatingBundle:RateableCollection rc');
                     $rateableCollections = $query->getResult();
@@ -284,7 +283,6 @@ class DefaultController extends Controller {
         }
 
         throw $this->createNotFoundException('RateableCollection could not be found.');
-        return null;
     }
 
     /**
@@ -293,7 +291,6 @@ class DefaultController extends Controller {
     public function saveAction() {
         if ('POST' != $this->getRequest()->getMethod()) {
             throw $this->createNotFoundException('Expected POST method.');
-            return null;
         }
 
         $user = $this->get('security.context')->getToken()->getUser();
@@ -301,7 +298,7 @@ class DefaultController extends Controller {
         $rateableId = $rateable->getId();
         $quizData = json_decode($this->getRequest()->get('quizData'));
 
-        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
+        $connection = $this->getDoctrine()->getManager()->getConnection();
         $now = date("Y-m-d H:i:s");
         $connection->insert('quiz', array(
             'rateable_id' => $rateableId,
@@ -310,13 +307,17 @@ class DefaultController extends Controller {
 
         $lastInsertedQuizId = $connection->lastInsertId();
 
-        foreach ($quizData as $questionId => $wongAnswerId) {
+        foreach ($quizData as $questionId => $wrongAnswerId) {
             $connection->insert('quiz_reply', array(
                 'quiz_id' => $lastInsertedQuizId,
                 'question_id' => $questionId,
-                'wrong_given_answer_id' => $wongAnswerId
+                'wrong_given_answer_id' => $wrongAnswerId
             ));
         }
+
+        $session = $this->get('session');
+        $session->remove('quiz.starttime');
+        $session->remove('quiz.lastquestions');
 
         return new Response('OK');
     }
@@ -341,13 +342,27 @@ class DefaultController extends Controller {
         if ( !$this->isCurrentUserAllowedToDoQuiz() ) {
             return $this->redirect($this->generateUrl('contact_index'));
         }
+
+        $session = $this->get('session');
         
         $user = $this->get('security.context')->getToken()->getUser();
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
-        $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
-        $questionsWithAnswers = $this->createQuestionsWithAnswersArray($questions);
+        if (!$questionsWithAnswers = $session->get('quiz.lastquestions')) {
+            $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
+            $questionsWithAnswers = $this->createQuestionsWithAnswersArray($questions);
+            $session->set('quiz.lastquestions', $questionsWithAnswers);
+        }
 
-        return array('rateableId' => $rateable->getId(), 'questions' => $questionsWithAnswers);
+        if (!$starttime = $session->get('quiz.starttime')) {
+            $starttime = time();
+            $session->set('quiz.starttime', $starttime);
+        }
+
+        return array(
+            'rateableId' => $rateable->getId(),
+            'questions' => $questionsWithAnswers,
+            'remainingTime' => $starttime - time() + 180,
+        );
     }
     
     private function isCurrentUserAllowedToDoQuiz() {

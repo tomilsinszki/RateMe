@@ -38,7 +38,7 @@ class DefaultController extends Controller
         return $imageURL;
     }
 
-    public function profileEditAction(Request $request)
+    public function profileEditAction()
     {
         $user = $this->getUserFromContext();
 
