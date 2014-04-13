@@ -371,31 +371,24 @@ class DefaultController extends Controller {
         $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
         
         if ( 3 <= count($questions) ) {
-            $completedQuizes = $this->getDoctrine()->getRepository('AcmeQuizBundle:Quiz')->createQueryBuilder('q')
+            $completedQuiz = $this->getDoctrine()->getRepository('AcmeQuizBundle:Quiz')->createQueryBuilder('q')
                 ->where('q.rateable = :rateable')
                 ->setParameter('rateable', $rateable)
                 ->orderBy('q.created', 'DESC')
+                ->setMaxResults(1)
                 ->getQuery()
-                ->getResult();
+                ->getOneOrNullResult();
             
-            if ( empty($completedQuizes) ) {
+            if (!$completedQuiz || $this->isDateOlderThanOneDay($completedQuiz->getCreated())) {
                 return true;
-            }
-            
-            $nowDate = new \DateTime();
-            $nowDateString = $nowDate->format('Y-m-d');
-            
-            $lastCompletedQuiz = $completedQuizes[0];
-            $lastCompletedQuizDateString = $lastCompletedQuiz->getCreated()->format('Y-m-d');
-            
-            if ( strlen($lastCompletedQuizDateString) === strlen($nowDateString) ) {
-                if ( $lastCompletedQuiz->getCreated()->format('Y-m-d') != $nowDate->format('Y-m-d') ) {
-                    return true;
-                }
             }
         }
         
         return false;
+    }
+
+    private function isDateOlderThanOneDay(\DateTime $date) {
+        return $date->getTimestamp() + 24*60*60 < time();
     }
     
     private function createQuestionsWithAnswersArray($questions) {
