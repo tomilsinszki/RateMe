@@ -8,4 +8,3 @@
 Symfony/web/uploads/
 /Symfony/app/config/parameters.yml
 *.swp
-/Symfony/.idea
