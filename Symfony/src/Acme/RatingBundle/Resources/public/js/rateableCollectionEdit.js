@@ -4,6 +4,23 @@ $(document).ready(function(){
     var newRateableNameLabel = 'Név';
     var newRateableTypeNameLabel = 'Beosztás';
 
+    $('.rateableIsArchive').on('click', function () {
+        var $this = $(this);
+
+        $this.attr('disabled', 'disabled');
+        $.ajax({
+            url: $this.attr('data-url'),
+            data: 'isActive=' + ($this.is(':checked') ? 0 : 1),
+            success: function (response) {
+                if (response === 'OK') {
+                    $this.removeAttr('disabled');
+                } else {
+                    alert(response);
+                }
+            }
+        });
+    });
+
     setUpInputLabel('rateableCollectionName', rateableCollectionNameLabel);
     setUpInputLabel('rateableCollectionForeignURL', rateableCollectionForeignURLLabel);
     setUpInputLabel('newRateableName', newRateableNameLabel);
