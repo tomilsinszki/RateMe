@@ -16,7 +16,6 @@ use Acme\QuizBundle\Entity\QuestionFile;
 class DefaultController extends Controller {
 
     /**
-     * @Route("/quiz/questionnaire/{rateableCollectionId}")
      * @Template()
      */
     public function questionnaireAction($rateableCollectionId) {
@@ -30,9 +29,6 @@ class DefaultController extends Controller {
         );
     }
 
-    /**
-     * @Route("/quiz/download/{rateableCollectionId}")
-     */
     public function downloadAction($rateableCollectionId) {
         $excelService = $this->get('xls.service_xls2007');
         $excelService->excelObj->getProperties()->setCreator("RateMe")
@@ -87,9 +83,6 @@ class DefaultController extends Controller {
         return $response;
     }
 
-    /**
-     * @Route("/quiz/upload")
-     */
     public function uploadAction() {
         $errors = null;
 
@@ -285,9 +278,6 @@ class DefaultController extends Controller {
         throw $this->createNotFoundException('RateableCollection could not be found.');
     }
 
-    /**
-     * @Route("/quiz/save")
-     */
     public function saveAction() {
         if ('POST' != $this->getRequest()->getMethod()) {
             throw $this->createNotFoundException('Expected POST method.');
@@ -323,7 +313,6 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/quiz/entrance")
      * @Template()
      */
     public function entranceAction() {
@@ -335,7 +324,6 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/quiz")
      * @Template()
      */
     public function indexAction() {

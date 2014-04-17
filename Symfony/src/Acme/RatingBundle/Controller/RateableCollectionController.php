@@ -3,6 +3,7 @@
 namespace Acme\RatingBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Entity\Image;
@@ -207,6 +208,15 @@ class RateableCollectionController extends Controller
             'imageUploadForm' => $imageUploadForm->createView(),
             'collectionImageURL' => $collectionImageURL,
         ));
+    }
+
+    public function archiveAction(Request $request, Rateable $rateable) {
+        $isActive = $request->get('isActive');
+        $rateable->setIsActive($isActive);
+        $rateable->getRateableUser()->setIsActive($isActive);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new Response('OK');
     }
 
     private function getImageURLForCollection($rateableCollection)

@@ -73,6 +73,11 @@
             </div>
 
             <div style="margin-top:5px;">
+                <label for="rateableIsArchive_{{ rateable.id }}">Archív?</label>
+                <input name="rateableIsArchive" id="rateableIsArchive_{{ rateable.id }}" class="rateableIsArchive" type="checkbox" value="Archív?"{{ rateable.rateableUser.isActive ? '' : ' checked="checked"' }} data-url="{{ path('rateable_collection_profile_archive', {rateable: rateable.id}) }}" />
+            </div>
+
+            <div style="margin-top:5px;">
                 <input type="submit" value="mentés" />
             </div>
         </form>
