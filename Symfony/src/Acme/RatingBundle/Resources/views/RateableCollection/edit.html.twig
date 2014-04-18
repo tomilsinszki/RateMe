@@ -60,26 +60,36 @@
     </form>
 
     {% for rateable in rateables %}
-        <form style="border-top:1px solid black; padding-top:10px;" action="{{ path('update_rateable_for_collection', {}) }}" method="post">
-            <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
-            <input name="rateableId" value="{{ rateable.id }}" type="hidden" />
+        <div style="border-top:1px solid black; padding-top:10px;">
+            <form action="{{ path('update_rateable_for_collection', {}) }}" method="post">
+                <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+                <input name="rateableId" value="{{ rateable.id }}" type="hidden" />
+
+                <div style="margin-top:5px;">
+                    <input name="rateableName" type="text" value="{{ rateable.name }}" />
+                </div>
+
+                <div style="margin-top:5px;">
+                    <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" />
+                </div>
+
+                <div style="margin-top:5px;">
+                    <input type="submit" value="mentés" />
+                </div>
+            </form>
 
             <div style="margin-top:5px;">
-                <input name="rateableName" type="text" value="{{ rateable.name }}" />
+                <input 
+                    name="rateableIsArchive" 
+                    id="rateableIsArchive_{{ rateable.id }}" 
+                    class="rateableIsArchive" 
+                    type="checkbox" 
+                    value="Archív"
+                    {{ rateable.rateableUser.isActive ? '' : ' checked="checked"' }} 
+                    data-url="{{ path('rateable_archive', {rateable: rateable.id}) }}" 
+                />
+                <label for="rateableIsArchive_{{ rateable.id }}">Archív</label>
             </div>
-
-            <div style="margin-top:5px;">
-                <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" />
-            </div>
-
-            <div style="margin-top:5px;">
-                <label for="rateableIsArchive_{{ rateable.id }}">Archív?</label>
-                <input name="rateableIsArchive" id="rateableIsArchive_{{ rateable.id }}" class="rateableIsArchive" type="checkbox" value="Archív?"{{ rateable.rateableUser.isActive ? '' : ' checked="checked"' }} data-url="{{ path('rateable_collection_profile_archive', {rateable: rateable.id}) }}" />
-            </div>
-
-            <div style="margin-top:5px;">
-                <input type="submit" value="mentés" />
-            </div>
-        </form>
+        </div>
     {% endfor %}
 {% endblock %}

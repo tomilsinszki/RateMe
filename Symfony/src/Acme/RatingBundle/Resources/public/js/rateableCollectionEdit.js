@@ -10,6 +10,7 @@ $(document).ready(function(){
         $this.attr('disabled', 'disabled');
         $.ajax({
             url: $this.attr('data-url'),
+            type: 'POST',
             data: 'isActive=' + ($this.is(':checked') ? 0 : 1),
             success: function (response) {
                 if (response === 'OK') {
@@ -20,12 +21,7 @@ $(document).ready(function(){
             }
         });
     });
-
-    setUpInputLabel('rateableCollectionName', rateableCollectionNameLabel);
-    setUpInputLabel('rateableCollectionForeignURL', rateableCollectionForeignURLLabel);
-    setUpInputLabel('newRateableName', newRateableNameLabel);
-    setUpInputLabel('newRateableTypeName', newRateableTypeNameLabel);
-
+    
     $('#rateableCollectionEditForm').submit(function() {
         if ( $('#rateableCollectionName').attr('value') == rateableCollectionNameLabel )
             $('#rateableCollectionName').attr('value', '');

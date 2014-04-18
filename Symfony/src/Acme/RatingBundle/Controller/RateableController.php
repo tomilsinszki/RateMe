@@ -4,7 +4,9 @@ namespace Acme\RatingBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Acme\RatingBundle\Entity\Image;
+use Acme\RatingBundle\Entity\Rateable;
 
 class RateableController extends Controller
 {
@@ -119,5 +121,14 @@ class RateableController extends Controller
         }
 
         return $rateable;
+    }
+
+    public function archiveAction(Request $request, Rateable $rateable) {
+        $isActive = $request->get('isActive');
+        $rateable->setIsActive($isActive);
+        $rateable->getRateableUser()->setIsActive($isActive);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new Response('OK');
     }
 }
