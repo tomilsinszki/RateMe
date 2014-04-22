@@ -28,11 +28,11 @@
                     <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
                     
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" />
+                        <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" placeholder="Üzlet neve" />
                     </div>
 
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" />
+                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" placeholder="Honlap URL" />
                     </div>
 
                     <div style="margin-top:5px;">
@@ -43,16 +43,35 @@
         </tr>
     </table>
 
-    <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection', {}) }}" method="post">
+    <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection') }}" method="post">
         <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
 
         <div style="margin-top:5px;">
-            <input id="newRateableName" name="rateableName" type="text" value="" />
+            {{ form_widget(newRateableForm.rateableName, {'attr': {'placeholder': 'Dolgozó neve'} }) }}
         </div>
 
         <div style="margin-top:5px;">
-            <input id="newRateableTypeName" name="rateableTypeName" type="text" value="" />
+            {{ form_widget(newRateableForm.rateableTypeName, {'attr': {'placeholder': 'Beosztás'} }) }}
         </div>
+
+        <div style="margin-top:5px;">
+            {{ form_widget(newRateableForm.username, {'attr': {'placeholder': 'Felhasználónév'} }) }}
+        </div>
+
+        <div style="margin-top:5px;">
+            {{ form_widget(newRateableForm.password, {'attr': {'placeholder': 'Jelszó'} }) }}
+        </div>
+
+        <div style="margin-top:5px;">
+            {{ form_widget(newRateableForm.viaPhone) }}
+            {{ form_label(newRateableForm.viaPhone) }}
+        </div>
+
+        <div style="margin-top:5px;">
+            {{ form_widget(newRateableForm.identifier, {'attr': {'placeholder': 'Azonosító'} }) }}
+        </div>
+
+        {{ form_rest(newRateableForm) }}
 
         <div style="margin-top:5px;">
             <input type="submit" value="létrehozás" />
@@ -61,16 +80,16 @@
 
     {% for rateable in rateables %}
         <div style="border-top:1px solid black; padding-top:10px;">
-            <form action="{{ path('update_rateable_for_collection', {}) }}" method="post">
+            <form action="{{ path('update_rateable_for_collection') }}" method="post">
                 <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
                 <input name="rateableId" value="{{ rateable.id }}" type="hidden" />
 
                 <div style="margin-top:5px;">
-                    <input name="rateableName" type="text" value="{{ rateable.name }}" />
+                    <input name="rateableName" type="text" value="{{ rateable.name }}" placeholder="Dolgozó neve" />
                 </div>
 
                 <div style="margin-top:5px;">
-                    <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" />
+                    <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" placeholder="Beosztás" />
                 </div>
 
                 <div style="margin-top:5px;">

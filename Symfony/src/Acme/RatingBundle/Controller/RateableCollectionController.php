@@ -2,7 +2,11 @@
 
 namespace Acme\RatingBundle\Controller;
 
+use Acme\RatingBundle\Entity\Identifier;
+use Acme\RatingBundle\Form\Type\NewRateableForm;
+use Acme\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Entity\Image;
@@ -197,6 +201,7 @@ class RateableCollectionController extends Controller
         $rateableCollection = $this->getRateableCollectionById($id);
         $rateables = $rateableCollection->getRateables();
         $collectionImageURL = $this->getImageURLForCollection($rateableCollection);
+        $newRateableForm = $this->createForm(new NewRateableForm());
 
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
@@ -206,6 +211,7 @@ class RateableCollectionController extends Controller
             'rateables' => $rateables,
             'imageUploadForm' => $imageUploadForm->createView(),
             'collectionImageURL' => $collectionImageURL,
+            'newRateableForm' => $newRateableForm->createView(),
         ));
     }
 
@@ -289,26 +295,52 @@ class RateableCollectionController extends Controller
         return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
     }
 
-    public function newRateableForCollectionAction()
+    public function newRateableForCollectionAction(Request $request)
     {
-        $collection = $this->getRateableCollectionFromRequest();
-        $rateableName = $this->getRequest()->request->get('rateableName');
-        $rateableTypeName = $this->getRequest()->request->get('rateableTypeName');
+        $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(new NewRateableForm());
 
-        if ( empty($rateableName) and empty($rateableTypeName) ) {
-            return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
+        $collection = $this->getRateableCollectionFromRequest();
+        $form->bind($request);
+        if ($form->isValid()) {
+            $formData = $form->getData();
+
+            $user = $this->createUserFromRateableFormData($formData);
+
+            $rateable = new Rateable();
+            $rateable->setCollection($collection);
+            $rateable->setRateableUser($user);
+            $rateable->setName($formData['rateableName']);
+            $rateable->setTypeName($formData['rateableTypeName']);
+            $rateable->setIsReachableViaTelephone($formData['viaPhone']);
+
+            $identifier = new Identifier();
+            $identifier->setQrCodeURL("http://api.qrserver.com/v1/create-qr-code/?data=http%3A%2F%2Frate.me.uk%2Fazonosito%2F{$formData['identifier']}");
+            $identifier->setAlphanumericValue($formData['identifier']);
+            $rateable->setIdentifier($identifier);
+
+            $em->persist($user);
+            $em->persist($rateable);
+            $em->persist($identifier);
+            $em->flush();
         }
 
-        $rateable = new Rateable();
-        $rateable->setName($rateableName);
-        $rateable->setTypeName($rateableTypeName);
-        $rateable->setCollection($collection);
-        
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($rateable);
-        $entityManager->flush();
-
         return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
+    }
+
+    private function createUserFromRateableFormData($formData) {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = new User();
+        $factory = $this->get('security.encoder_factory');
+        $encoder = $factory->getEncoder($user);
+        $password = $encoder->encodePassword($formData['password'], $user->getSalt());
+        $user->setPassword($password);
+        $user->setUsername($formData['username']);
+
+        $raterGroup = $em->getRepository('AcmeUserBundle:Group')->findOneByRole('ROLE_CUSTOMERSERVICE');
+        $user->addGroup($raterGroup);
+        return $user;
     }
 
     private function getRateableCollectionFromRequest()
@@ -374,7 +406,7 @@ class RateableCollectionController extends Controller
     public function reportAction()
     {
         if ( !$this->getRequest()->isMethod('POST') ) {
-            return;
+            return new Response();
         }
 
         $this->reportCollection = $this->getRateableCollectionById($this->getRequest()->request->get('rateableCollectionId'));
