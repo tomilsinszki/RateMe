@@ -1,13 +1,44 @@
 {% extends '::base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link href="{{ asset('css/select.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
 
     <script src="{{ asset('bundles/acmerating/js/rateableCollectionEdit.js') }}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#collectionSelectOpener").click(function() {
+                if ( $("#collectionOptionsContainer").css('display') == 'block' ) {
+                    $("#collectionOptionsContainer").css('display', 'none');
+                }
+                else {
+                    $("#collectionOptionsContainer").css('display', 'block');
+                }
+            });
+
+            $(".option-widget-chooser-row").click(function() {
+                var rateableCollectionName = $(this).text();
+                var rateableCollectionId = $(this).attr('collection_id');
+
+                $("#collectionSelectName").text(rateableCollectionName);
+                $("#collectionOptionsContainer").css('display', 'none');
+                $("#rateableCollectionSelect").val(rateableCollectionId).change();
+                window.location = '{{ path('rateable_collection_profile_edit_by_id', {'id': 0}) }}'.replace('0', rateableCollectionId);
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block body %}
     {{ parent() }}
+
+    {% include "AcmeSubRatingBundle:Partials:ownedCollectionsSelect.html.twig" with {'collection': rateableCollection} %}
 
     <table border="0">
         <tr>
@@ -43,8 +74,14 @@
         </tr>
     </table>
 
-    <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection') }}" method="post">
+    <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" method="post">
         <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+
+        {% if not newRateableForm.vars.valid %}
+        <div style="margin-top:5px;">
+            {{ form_errors(newRateableForm) }}
+        </div>
+        {% endif %}
 
         <div style="margin-top:5px;">
             {{ form_widget(newRateableForm.rateableName, {'attr': {'placeholder': 'Dolgozó neve'} }) }}
@@ -59,7 +96,11 @@
         </div>
 
         <div style="margin-top:5px;">
-            {{ form_widget(newRateableForm.password, {'attr': {'placeholder': 'Jelszó'} }) }}
+            {{ form_widget(newRateableForm.password.first, {'attr': {'placeholder': 'Jelszó'} }) }}
+        </div>
+
+        <div style="margin-top:5px;">
+            {{ form_widget(newRateableForm.password.second, {'attr': {'placeholder': 'Jelszó megint'} }) }}
         </div>
 
         <div style="margin-top:5px;">
