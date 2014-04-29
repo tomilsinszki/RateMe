@@ -116,7 +116,7 @@ class RateableController extends Controller
             'isActive' => true,
         ));
 
-        if ( empty($rateable) ) {
+        if ( empty($rateable) || !$rateable->getCollection()->getOwners()->contains($this->getUser()) ) {
             throw $this->createNotFoundException('Rateable could not be found or inactive.');
         }
 

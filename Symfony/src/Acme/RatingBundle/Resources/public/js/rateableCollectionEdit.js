@@ -5,7 +5,8 @@ $(document).ready(function(){
     var newRateableTypeNameLabel = 'Beosztás';
 
     $('.rateableIsArchive').on('click', function () {
-        var $this = $(this);
+        var $this = $(this),
+            $profileLink = $this.parent().parent().find('.profile-link');
 
         $this.attr('disabled', 'disabled');
         $.ajax({
@@ -15,6 +16,13 @@ $(document).ready(function(){
             success: function (response) {
                 if (response === 'OK') {
                     $this.removeAttr('disabled');
+
+                    $profileLink.toggleClass('gray');
+                    if ($profileLink.attr('href') === '#') {
+                        $profileLink.attr('href', $profileLink.data('href'));
+                    } else {
+                        $profileLink.attr('href', '#');
+                    }
                 } else {
                     alert(response);
                 }
@@ -30,11 +38,21 @@ $(document).ready(function(){
             $('#rateableCollectionForeignURL').attr('value', '');
     });
 
-    $('#newRateableForm').submit(function(event) {
+    $('#newRateableForm').submit(function() {
         if ( $('#newRateableName').attr('value') == newRateableNameLabel )
             $('#newRateableName').attr('value', '');
 
         if ( $('#newRateableTypeName').attr('value') == newRateableTypeNameLabel )
             $('#newRateableTypeName').attr('value', '');
     });
+
+    (function () {
+        var $inactiveContainer = $('#inactive-rateables');
+
+        $('#active-rateables').children().each(function () {
+            if ($(this).find('.profile-link').hasClass('gray')) {
+                $inactiveContainer.append($(this).detach());
+            }
+        });
+    }());
 });

@@ -3,7 +3,12 @@
 {% block stylesheets %}
     {{ parent() }}
 
-    <link href="{{ asset('css/select.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('css/select.css') }}" type="text/css" rel="stylesheet"/>
+    <style type="text/css">
+        .content .gray {
+            color: gray;
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
@@ -12,9 +17,9 @@
     <script src="{{ asset('bundles/acmerating/js/rateableCollectionEdit.js') }}" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $(function(){
-            $("#collectionSelectOpener").click(function() {
-                if ( $("#collectionOptionsContainer").css('display') == 'block' ) {
+        $(function () {
+            $("#collectionSelectOpener").click(function () {
+                if ($("#collectionOptionsContainer").css('display') == 'block') {
                     $("#collectionOptionsContainer").css('display', 'none');
                 }
                 else {
@@ -22,7 +27,7 @@
                 }
             });
 
-            $(".option-widget-chooser-row").click(function() {
+            $(".option-widget-chooser-row").click(function () {
                 var rateableCollectionName = $(this).text();
                 var rateableCollectionId = $(this).attr('collection_id');
 
@@ -44,30 +49,33 @@
         <tr>
             <td style="padding-right:30px;">
                 {% if collectionImageURL %}
-                    <img src="{{ asset(collectionImageURL) }}" />
+                    <img src="{{ asset(collectionImageURL) }}"/>
                 {% endif %}
 
-                <form action="{{ path('rateable_collection_upload_image', {'id': rateableCollection.id}) }}" method="post" {{ form_enctype(imageUploadForm) }}>
+                <form action="{{ path('rateable_collection_upload_image', {'id': rateableCollection.id}) }}"
+                      method="post" {{ form_enctype(imageUploadForm) }}>
                     {{ form_widget(imageUploadForm) }}
 
-                    <input type="submit" value="Kép beállítása" />
+                    <input type="submit" value="Kép beállítása"/>
                 </form>
             </td>
-            
+
             <td style="vertical-align: top;">
                 <form id="rateableCollectionEditForm" action="{{ path('update_collection', {}) }}" method="post">
-                    <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
-                    
+                    <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden"/>
+
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" placeholder="Üzlet neve" />
+                        <input id="rateableCollectionName" name="collectionName" type="text"
+                               value="{{ rateableCollection.name }}" placeholder="Üzlet neve"/>
                     </div>
 
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" placeholder="Honlap URL" />
+                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text"
+                               value="{{ rateableCollection.foreignURL }}" placeholder="Honlap URL"/>
                     </div>
 
                     <div style="margin-top:5px;">
-                        <input type="submit" value="mentés" />
+                        <input type="submit" value="mentés"/>
                     </div>
                 </form>
             </td>
@@ -75,12 +83,12 @@
     </table>
 
     <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" method="post">
-        <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+        <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden"/>
 
         {% if not newRateableForm.vars.valid %}
-        <div style="margin-top:5px;">
-            {{ form_errors(newRateableForm) }}
-        </div>
+            <div style="margin-top:5px;">
+                {{ form_errors(newRateableForm) }}
+            </div>
         {% endif %}
 
         <div style="margin-top:5px;">
@@ -115,41 +123,43 @@
         {{ form_rest(newRateableForm) }}
 
         <div style="margin-top:5px;">
-            <input type="submit" value="létrehozás" />
+            <input type="submit" value="létrehozás"/>
         </div>
     </form>
 
-    {% for rateable in rateables %}
-        <div style="border-top:1px solid black; padding-top:10px;">
-            <form action="{{ path('update_rateable_for_collection') }}" method="post">
-                <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
-                <input name="rateableId" value="{{ rateable.id }}" type="hidden" />
-
+    <h1>Aktív dolgozók</h1>
+    <div id="active-rateables">
+        {% for rateable in rateables %}
+            <div style="border-top:1px solid black; padding-top:10px;">
                 <div style="margin-top:5px;">
-                    <input name="rateableName" type="text" value="{{ rateable.name }}" placeholder="Dolgozó neve" />
+                    {{ rateable.name }}
                 </div>
 
                 <div style="margin-top:5px;">
-                    <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" placeholder="Beosztás" />
+                    {{ rateable.typeName }}
                 </div>
 
                 <div style="margin-top:5px;">
-                    <input type="submit" value="mentés" />
+                    <a style="display: inline;" class="profile-link{{ rateable.rateableUser.isActive ? '' : ' gray' }}"
+                       href="{{ rateable.rateableUser.isActive ? path('rateable_profile_by_id', {'id': rateable.id}) : '#' }}"
+                       data-href="{{ path('rateable_profile_by_id', {'id': rateable.id}) }}">Profil</a>
                 </div>
-            </form>
 
-            <div style="margin-top:5px;">
-                <input 
-                    name="rateableIsArchive" 
-                    id="rateableIsArchive_{{ rateable.id }}" 
-                    class="rateableIsArchive" 
-                    type="checkbox" 
-                    value="Archív"
-                    {{ rateable.rateableUser.isActive ? '' : ' checked="checked"' }} 
-                    data-url="{{ path('rateable_archive', {rateable: rateable.id}) }}" 
-                />
-                <label for="rateableIsArchive_{{ rateable.id }}">Archív</label>
+                <div style="margin-top:5px;">
+                    <input
+                            name="rateableIsArchive"
+                            id="rateableIsArchive_{{ rateable.id }}"
+                            class="rateableIsArchive"
+                            type="checkbox"
+                            value="Archív"
+                            {{ rateable.rateableUser.isActive ? '' : ' checked="checked"' }}
+                            data-url="{{ path('rateable_archive', {rateable: rateable.id}) }}"
+                            />
+                    <label for="rateableIsArchive_{{ rateable.id }}">Archív</label>
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
+    <h1 class="gray">Inaktív dolgozók</h1>
+    <div id="inactive-rateables"></div>
 {% endblock %}

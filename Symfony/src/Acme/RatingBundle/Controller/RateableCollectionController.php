@@ -363,21 +363,6 @@ class RateableCollectionController extends Controller
         return $rateableCollection;
     }
 
-    public function updateRateableForCollectionAction()
-    {
-        $rateable = $this->getRateableFromRequest();
-
-        $rateable->setName($this->getRequest()->request->get('rateableName'));
-        $rateable->setTypeName($this->getRequest()->request->get('rateableTypeName'));
-        $rateable->logUpdated();
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($rateable);
-        $entityManager->flush();
-
-        return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $this->getRequest()->request->get('rateableCollectionId'))));
-    }
-
     private function getRateableFromRequest()
     {
         $rateableId = $this->getRequest()->request->get('rateableId');
