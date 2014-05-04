@@ -223,6 +223,11 @@
                     $("#collectionOptionsContainer").css('display', 'none');
                     $("#rateableCollectionSelect").val(rateableCollectionId).change();
                 });
+
+                $('#rateableCollectionSelect').chosen({
+                    disable_search: true,
+                    width: "300px"
+                });
             });
         </script>
     </head>
