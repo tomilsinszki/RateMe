@@ -4,15 +4,22 @@ namespace Acme\RatingBundle\Controller;
 
 use Acme\RatingBundle\Entity\Identifier;
 use Acme\RatingBundle\Entity\RateableCollection;
+use Acme\RatingBundle\Event\ModifyIdentifierEvent;
+use Acme\RatingBundle\Event\ModifyRateableCollectionIdentifierEvent;
+use Acme\RatingBundle\Event\ModifyRateableIdentifierEvent;
+use Acme\RatingBundle\Form\Type\EditRateableCollectionForm;
 use Acme\RatingBundle\Form\Type\NewRateableForm;
 use Acme\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Entity\Image;
 use Acme\RatingBundle\Utility\Validator;
 use Acme\UserBundle\Utility\CurrentUser;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 class RateableCollectionController extends Controller
 {
@@ -197,12 +204,28 @@ class RateableCollectionController extends Controller
         return number_format($average, 2, ',', ' ');
     }
 
-    public function editAction($id)
+    public function editAction(Request $request, $id)
     {
         $rateableCollection = $this->getRateableCollectionById($id);
         $ownedCollections = $this->getUser()->getOwnedCollections();
         if (!$ownedCollections->contains($rateableCollection)) {
             throw $this->createNotFoundException('Rateable collection is not found!');
+        }
+
+        $form = $this->createForm(new EditRateableCollectionForm(), $rateableCollection);
+        if ($identifier = $rateableCollection->getIdentifier()) {
+            $form->get('identifier')->setData($identifier->getAlphanumericValue());
+        }
+
+        if ($request->isMethod('POST') && $request->request->has('edit_rateable_collection_form')) {
+            $form->bind($request);
+            try {
+                $event = new ModifyRateableCollectionIdentifierEvent($rateableCollection, $form->get('identifier')->getData());
+                $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
+                $this->getDoctrine()->getManager()->flush();
+            } catch (ValidatorException $ex) {
+                $form->get('identifier')->addError(new FormError($ex->getMessage()));
+            }
         }
 
         $rateables = $rateableCollection->getRateables();
@@ -219,6 +242,7 @@ class RateableCollectionController extends Controller
             'imageUploadForm' => $imageUploadForm->createView(),
             'collectionImageURL' => $collectionImageURL,
             'newRateableForm' => $newRateableForm->createView(),
+            'editForm' => $form->createView(),
         ));
     }
 
@@ -287,33 +311,19 @@ class RateableCollectionController extends Controller
         return $rateableCollection;
     }
 
-    public function updateAction()
-    {
-        $collection = $this->getRateableCollectionFromRequest();
-
-        $collection->setName($this->getRequest()->request->get('collectionName'));
-        $collection->setForeignURL($this->getRequest()->request->get('collectionForeignURL'));
-        $collection->logUpdated();
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($collection);
-        $entityManager->flush();
-
-        return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $collection->getId())));
-    }
-
     public function createAndHandleNewRateableForCollectionForm(RateableCollection $collection)
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $form = $this->createForm(new NewRateableForm());
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST') && $request->request->has('new_rateable_form')) {
             $form->bind($request);
             if ($form->isValid()) {
                 $formData = $form->getData();
 
                 $user = $this->createUserFromRateableFormData($formData);
+                $em->persist($user);
 
                 $rateable = new Rateable();
                 $rateable->setCollection($collection);
@@ -321,15 +331,17 @@ class RateableCollectionController extends Controller
                 $rateable->setName($formData['rateableName']);
                 $rateable->setTypeName($formData['rateableTypeName']);
                 $rateable->setIsReachableViaTelephone($formData['viaPhone']);
-
-                $identifier = new Identifier();
-                $identifier->setQrCodeURL("http://api.qrserver.com/v1/create-qr-code/?data=http%3A%2F%2Frate.me.uk%2Fazonosito%2F{$formData['identifier']}");
-                $identifier->setAlphanumericValue($formData['identifier']);
-                $rateable->setIdentifier($identifier);
-
-                $em->persist($user);
                 $em->persist($rateable);
-                $em->persist($identifier);
+
+                try {
+                    $event = new ModifyRateableIdentifierEvent($rateable, $formData['identifier']);
+                    $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
+                    $this->getDoctrine()->getManager()->flush();
+                } catch (ValidatorException $ex) {
+                    $form->get('identifier')->addError(new FormError($ex->getMessage()));
+                    return $form;
+                }
+
                 $em->flush();
             }
         }

@@ -61,19 +61,26 @@
             </td>
 
             <td style="vertical-align: top;">
-                <form id="rateableCollectionEditForm" action="{{ path('update_collection', {}) }}" method="post">
-                    <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden"/>
+                <form id="rateableCollectionEditForm" method="post">
+                    {% if not newRateableForm.vars.valid %}
+                        <div style="margin-top:5px;">
+                            {{ form_errors(editForm) }}
+                        </div>
+                    {% endif %}
 
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionName" name="collectionName" type="text"
-                               value="{{ rateableCollection.name }}" placeholder="Üzlet neve"/>
+                        {{ form_widget(editForm.name, {'attr': {'placeholder': 'Üzlet neve'} }) }}
                     </div>
 
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text"
-                               value="{{ rateableCollection.foreignURL }}" placeholder="Honlap URL"/>
+                        {{ form_widget(editForm.foreignUrl, {'attr': {'placeholder': 'Honlap URL'} }) }}
                     </div>
 
+                    <div style="margin-top:5px;">
+                        {{ form_widget(editForm.identifier, {'attr': {'placeholder': 'Azonosító'} }) }}
+                    </div>
+
+                    {{ form_rest(editForm) }}
                     <div style="margin-top:5px;">
                         <input type="submit" value="mentés"/>
                     </div>

@@ -2,7 +2,11 @@
 
 namespace Acme\RatingBundle\Controller;
 
+use Acme\RatingBundle\Entity\Identifier;
+use Acme\RatingBundle\Event\ModifyIdentifierEvent;
+use Acme\RatingBundle\Form\Type\EditRateableForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Acme\RatingBundle\Entity\Image;
@@ -22,10 +26,29 @@ class RateableController extends Controller
         return new Response($this->renderView('AcmeRatingBundle:Rateable:mismatch.html.twig', array()));
     }
 
-    public function profileAction($id)
+    public function profileAction(Request $request, $id)
     {
         $rateable = $this->getActiveRateableById($id);
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('rateable' => $rateable), array('created' => 'DESC'));
+
+        $form = $this->createForm(new EditRateableForm(), $rateable);
+        if ($identifier = $rateable->getIdentifier()) {
+            $form->get('identifier')->setData($identifier->getAlphanumericValue());
+        }
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            if ($form->isValid()) {
+                try {
+                    $event = new ModifyRateableIdentifierEvent($rateable, $form->get('identifier')->getData());
+                    $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
+                    $this->getDoctrine()->getManager()->flush();
+                } catch (ValidatorException $ex) {
+                    $form->get('identifier')->addError(new FormError($ex->getMessage()));
+                }
+                $this->getDoctrine()->getManager()->flush();
+            }
+        }
 
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
@@ -34,9 +57,9 @@ class RateableController extends Controller
             'rateable' => $rateable,
             'ratingCount' => count($ratings),
             'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
-            'ratings' => $ratings,
             'imageURL' => $this->getImageURL($rateable),
             'imageUploadForm' => $imageUploadForm->createView(),
+            'editForm' => $form->createView(),
         ));
     }
 

@@ -9,28 +9,44 @@
     {{ parent() }}
 
     {% if imageURL %}
-        <img src="{{ asset(imageURL) }}" />
+        <img src="{{ asset(imageURL) }}"/>
     {% endif %}
 
-    <form action="{{ path('rateable_upload_image', {'id': rateable.id}) }}" method="post" {{ form_enctype(imageUploadForm) }}>
+    <form action="{{ path('rateable_upload_image', {'id': rateable.id}) }}"
+          method="post" {{ form_enctype(imageUploadForm) }}>
         {{ form_widget(imageUploadForm) }}
 
-        <input type="submit" value="Kép beállítása" />
+        <input type="submit" value="Kép beállítása"/>
     </form>
-    
-    <div>
-        <span style="font-weight:bold;">név:</span> {{ rateable.name }}
-    </div>
 
-    <div>
-        <span style="font-weight:bold;">beosztása:</span> {{ rateable.typeName }}
-    </div>
+    <form method="post">
+        {% if not editForm.vars.valid %}
+            <div style="margin-top:5px;">
+                {{ form_errors(editForm) }}
+            </div>
+        {% endif %}
 
-    <div>
-        <span style="font-weight:bold;">értékelések száma:</span> {{ ratingCount }}
-    </div>
+        <div>
+            <span style="font-weight:bold;">név:</span> {{ form_widget(editForm.name, {'attr': {'placeholder': 'Dolgozó neve'} }) }}
+        </div>
 
-    <div>
-        <span style="font-weight:bold;">átlag:</span> {{ ratingAverage }}
-    </div>
+        <div>
+            <span style="font-weight:bold;">beosztása:</span> {{ form_widget(editForm.typeName, {'attr': {'placeholder': 'Beosztás'} }) }}
+        </div>
+
+        <div>
+            <span style="font-weight:bold;">azonosítója:</span> {{ form_widget(editForm.identifier, {'attr': {'placeholder': 'Azonosító'} }) }}
+        </div>
+
+        <div>
+            <span style="font-weight:bold;">értékelések száma:</span> {{ ratingCount }}
+        </div>
+
+        <div>
+            <span style="font-weight:bold;">átlag:</span> {{ ratingAverage }}
+        </div>
+
+        {{ form_rest(editForm) }}
+        <input type="submit" value="Módosítás"/>
+    </form>
 {% endblock %}

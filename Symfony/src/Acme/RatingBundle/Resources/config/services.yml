@@ -2,6 +2,9 @@ parameters:
 #    acme_rating.example.class: Acme\RatingBundle\Example
 
 services:
-#    acme_rating.example:
-#        class: %acme_rating.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    acme.rating.identifier.modifier.listener:
+        class: Acme\RatingBundle\EventListener\IdentifierModifier
+        tags:
+            - { name: kernel.event_listener, event: rating.modify.identifier, method: modifyIdentifierForEntity }
+        arguments:
+            - @doctrine.orm.entity_manager
