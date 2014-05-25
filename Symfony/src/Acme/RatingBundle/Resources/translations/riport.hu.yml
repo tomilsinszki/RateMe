@@ -4,13 +4,13 @@ excelTitle: RateMe Heti Jelentés
 Riport: Jelentés
 WeeklyRiport: HETI RIPORT
 QuestionsNotFound: Nem találhatóak kérdések a megadott intervallumban!
-ClientQuestionnaire: Ügyfél kérdőív
-WorkerQuiz: Dolgozói kvíz
+SubRatingsHeader: Ügyfél kérdőív
+QuizHeader: Dolgozói kvíz
 CorrectAnswers: Helyes válaszok
 WrongAnswers: Helytelen válaszok
 CorrectAnswerRatio: Helyes válasz arány
 Sum: Összesen
-ClientRatings: Ügyfél értékelések
+Ratings: Ügyfél értékelések
 ContactCount: Rögzített kontaktusok
 ReceivedRatings: Beérkezett értékelések
 AverageRatings: Átlagos értékelés
