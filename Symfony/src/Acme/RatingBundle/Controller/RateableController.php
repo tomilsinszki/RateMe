@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Acme\RatingBundle\Entity\Image;
 use Acme\RatingBundle\Entity\Rateable;
+use Acme\RatingBundle\Event\ModifyRateableIdentifierEvent;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 class RateableController extends Controller
 {
@@ -40,7 +42,7 @@ class RateableController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 try {
-                    $event = new ModifyRateableIdentifierEvent($rateable, $form->get('identifier')->getData());
+                    $event = new ModifyRateableIdentifierEvent($rateable, mb_strtoupper($form->get('identifier')->getData()));
                     $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
                     $this->getDoctrine()->getManager()->flush();
                 } catch (ValidatorException $ex) {
@@ -55,8 +57,6 @@ class RateableController extends Controller
         
         return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
             'rateable' => $rateable,
-            'ratingCount' => count($ratings),
-            'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
             'imageURL' => $this->getImageURL($rateable),
             'imageUploadForm' => $imageUploadForm->createView(),
             'editForm' => $form->createView(),
@@ -94,6 +94,18 @@ class RateableController extends Controller
                 return $this->redirect($this->generateUrl('rateable_profile_by_id', array('id' => $id)));
             }
         }
+        
+        $form = $this->createForm(new EditRateableForm(), $rateable);
+        if ($identifier = $rateable->getIdentifier()) {
+            $form->get('identifier')->setData($identifier->getAlphanumericValue());
+        }
+        
+        return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
+            'rateable' => $rateable,
+            'imageURL' => $this->getImageURL($rateable),
+            'imageUploadForm' => $imageUploadForm->createView(),
+            'editForm' => $form->createView(),
+        ));
     }
     
     private function getRatingsAverageWithTwoDecimals($ratings)
@@ -151,7 +163,11 @@ class RateableController extends Controller
         $rateable->setIsActive($isActive);
         $rateable->getRateableUser()->setIsActive($isActive);
         $this->getDoctrine()->getManager()->flush();
-
-        return new Response('OK');
+        
+        $content = $this->renderView('AcmeRatingBundle:RateableCollection:editRateables.html.twig', array(
+            'collection' => $rateable->getCollection()
+        ));
+        
+        return new Response($content);
     }
 }

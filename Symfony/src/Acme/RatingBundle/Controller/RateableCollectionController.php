@@ -220,7 +220,7 @@ class RateableCollectionController extends Controller
         if ($request->isMethod('POST') && $request->request->has('edit_rateable_collection_form')) {
             $form->bind($request);
             try {
-                $event = new ModifyRateableCollectionIdentifierEvent($rateableCollection, $form->get('identifier')->getData());
+                $event = new ModifyRateableCollectionIdentifierEvent($rateableCollection, mb_strtoupper($form->get('identifier')->getData()));
                 $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
                 $this->getDoctrine()->getManager()->flush();
             } catch (ValidatorException $ex) {
@@ -299,6 +299,30 @@ class RateableCollectionController extends Controller
                 return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array('id' => $id)));
             }
         }
+
+        $ownedCollections = $this->getUser()->getOwnedCollections();
+        if (!$ownedCollections->contains($rateableCollection)) {
+            throw $this->createNotFoundException('Rateable collection is not found!');
+        }
+
+        $form = $this->createForm(new EditRateableCollectionForm(), $rateableCollection);
+        if ($identifier = $rateableCollection->getIdentifier()) {
+            $form->get('identifier')->setData($identifier->getAlphanumericValue());
+        }
+
+        $rateables = $rateableCollection->getRateables();
+        $collectionImageURL = $this->getImageURLForCollection($rateableCollection);
+        $newRateableForm = $this->createAndHandleNewRateableForCollectionForm($rateableCollection);
+
+        return $this->render('AcmeRatingBundle:RateableCollection:edit.html.twig', array(
+            'ownedCollections' => $ownedCollections,
+            'rateableCollection' => $rateableCollection,
+            'rateables' => $rateables,
+            'imageUploadForm' => $imageUploadForm->createView(),
+            'collectionImageURL' => $collectionImageURL,
+            'newRateableForm' => $newRateableForm->createView(),
+            'editForm' => $form->createView(),
+        ));
     }
 
     private function getRateableCollectionById($id)
@@ -322,6 +346,12 @@ class RateableCollectionController extends Controller
             if ($form->isValid()) {
                 $formData = $form->getData();
 
+                $existingUser = $this->getDoctrine()->getRepository('AcmeUserBundle:User')->findOneByUsername($formData['username']);
+                if (!empty($existingUser)) {
+                    $form->addError(new FormError("Már létezik felhasználó {$formData['username']} névvel!"));
+                    return $form;
+                }
+                
                 $user = $this->createUserFromRateableFormData($formData);
                 $em->persist($user);
 
@@ -334,7 +364,7 @@ class RateableCollectionController extends Controller
                 $em->persist($rateable);
 
                 try {
-                    $event = new ModifyRateableIdentifierEvent($rateable, $formData['identifier']);
+                    $event = new ModifyRateableIdentifierEvent($rateable, mb_strtoupper($formData['identifier']));
                     $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
                     $this->getDoctrine()->getManager()->flush();
                 } catch (ValidatorException $ex) {
@@ -343,6 +373,7 @@ class RateableCollectionController extends Controller
                 }
 
                 $em->flush();
+                $form = $this->createForm(new NewRateableForm());
             }
         }
 

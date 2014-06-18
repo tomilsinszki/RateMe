@@ -5,6 +5,7 @@ namespace Acme\RatingBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Acme\RatingBundle\Validator as SizeAssert;
 
 /**
  * Acme\RatingBundle\Entity\Image
@@ -32,6 +33,7 @@ class Image
     private $path;
 
     /**
+     * @SizeAssert\ImageDimension(width=350, height=350)
      * @Assert\File(maxSize="6000000")
      */
     private $file;

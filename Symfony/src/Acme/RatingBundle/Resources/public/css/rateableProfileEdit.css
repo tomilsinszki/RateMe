@@ -1,0 +1,336 @@
+@charset "utf-8";
+
+@font-face {
+	font-family: 'DINProH';
+	src: url('/fonts/dinprohmedium.eot');
+	src: url('/fonts/dinprohmedium.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/dinprohmedium.woff') format('woff'),
+		 url('/fonts/dinprohmedium.ttf') format('truetype'),
+		 url('/fonts/dinprohmedium.svg#dinprohmedium') format('svg');
+	font-weight: 500;
+	font-style: normal;
+}
+
+.btn_cont.yellow {
+	background-color: #a2ca00;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a2ca00', endColorstr='#9bc100');
+	background: -webkit-gradient(linear, left top, left bottom, from(#a2ca00), to(#9bc100)); 
+	background: -moz-linear-gradient(top,  #a2ca00,  #9bc100);	
+	background: -o-linear-gradient(top,  #a2ca00,  #9bc100);
+	border-radius: 4px;
+	cursor: pointer;
+	margin: 0 auto 30px;
+	height: 71px;
+	padding-bottom: 10px;
+	display: table;	
+}
+.btn_cont.yellow .btn {
+	background-color: #aad300;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aad300', endColorstr='#c2dc00');
+	background: -webkit-gradient(linear, left top, left bottom, from(#aad300), to(#c2dc00)); 
+	background: -moz-linear-gradient(top,  #aad300,  #c2dc00);	
+	background: -o-linear-gradient(top,  #aad300,  #c2dc00);
+	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.62);
+	border: none;
+	border-radius: 4px;
+	color: #5c5c5c;
+	cursor: pointer;
+	display: table;
+	font-family: 'DINProH';
+	font-size: 36px;
+	font-weight: 500;
+	line-height: 71px;
+	height: 71px;
+	padding: 0 50px;
+	position: relative;
+	text-align: center;
+	text-shadow: 0px -1px rgba(255, 255, 255, 0.75);	
+}
+
+.clear {
+	clear: both;
+}
+
+* {	
+	font-family: 'DINProH';
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	background: transparent url('/bundles/acmeuser/images/repeater_bg.png') top left repeat;
+	min-height: 100%;
+	position: relative;
+}
+
+body {
+	height: 100%;
+	min-height: 100%;
+	
+}
+
+.wrapper {
+	background: -webkit-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+	background: -moz-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+	background: -o-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+	background: -ms-linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+	background: linear-gradient(top, rgba(47, 47, 47, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+    border-radius: 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	box-shadow: inset 0px -2px 8px rgba(0, 0, 0, 0.65), 0px -1px 1px rgba(255, 255, 255, 0.28);
+    margin: 24px auto 100px;
+	max-width: 1000px;
+	min-width: 260px;
+    overflow: hidden;
+    padding: 80px 20px 20px;
+	position: relative;
+}
+
+.gray-btn-cont {
+	background: -webkit-linear-gradient(top, #707070 22%, #373737 100%);
+	background: -moz-linear-gradient(top, #707070 22%, #373737 100%);
+	background: -o-linear-gradient(top, #707070 22%, #373737 100%);
+	background: -ms-linear-gradient(top, #707070 22%, #373737 100%);
+	background: linear-gradient(top, #707070 22%, #373737 100%);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.09);
+	cursor: pointer;
+	float: left;
+	height: 210px;
+	margin: 0 30px 30px;
+	overflow: hidden;
+	width: 200px;
+}
+
+.gray-btn {
+	background: -webkit-linear-gradient(top, #686868 0%, #424242 100%);
+	background: -moz-linear-gradient(top, #686868 0%, #424242 100%);
+	background: -o-linear-gradient(top, #686868 0%, #424242 100%);
+	background: -ms-linear-gradient(top, #686868 0%, #424242 100%);
+	background: linear-gradient(top, #686868 0%, #424242 100%);
+	border-radius: 10px;
+	box-shadow: inset 0px -2px 2px rgba(255, 255, 255, 0.14);
+	height: 200px;
+}
+
+.img-container {
+	border-bottom: 1px solid #414040;
+	height: 110px;
+	padding-top: 30px;
+}
+
+.img {
+	margin: 0 auto;
+}
+
+.report .img {
+	background: transparent url('/bundles/acmeuser/images/report.png') center center no-repeat;
+	height: 84px;
+	width: 88px;
+}
+
+.report:hover .img {
+	background-image: url('/bundles/acmeuser/images/report_hover.png');
+}
+
+.examination .img {
+	background: transparent url('/bundles/acmeuser/images/examination.png') center center no-repeat;
+	height: 92px;
+	width: 85px;
+}
+
+.examination:hover .img {
+	background-image: url('/bundles/acmeuser/images/examination_hover.png');
+}
+
+.questionnaire .img {
+	background: transparent url('/bundles/acmeuser/images/questionnaire.png') center center no-repeat;
+	height: 87px;
+	width: 79px;
+}
+
+.questionnaire:hover .img {
+	background-image: url('/bundles/acmeuser/images/questionnaire_hover.png');
+}
+
+.rateableCollection .img {
+	background: transparent url('/bundles/acmeuser/images/rateableCollection.png') center center no-repeat;
+	height: 87px;
+	width: 86px;
+}
+
+.rateableCollection:hover .img {
+	background-image: url('/bundles/acmeuser/images/rateableCollection_hover.png');
+}
+
+h3 {
+    color: #A8D200;
+    font-family: 'DINProH-Bold';
+	font-size: 24px;
+    font-weight: normal;
+    margin-top: 26px;
+}
+
+h4 {
+    color: #A8D200;
+    font-family: 'DINProH-Bold';
+	font-size: 18px;
+    font-weight: normal;
+    margin-top: 26px;
+}
+
+.profileLink {
+	font-family: 'DINProH-Light';
+    color: #fff;
+    margin-right: 20px;
+}
+
+.archiveLabel {
+    color: #A8D200;
+}
+
+.editForm label {
+	font-family: 'DINProH-Light';
+    color: #A8D200;
+}
+
+.editForm input[type='text'], .editForm input[type='password'] {
+	background-color: #e5e5e5;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e5e5e5', endColorstr='#ffffff');
+	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#ffffff)); 
+	background: -moz-linear-gradient(top,  #e5e5e5,  #ffffff);	
+	background: -o-linear-gradient(top,  #e5e5e5,  #ffffff);	
+	border: none;
+	border-radius: 4px;
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.76), 0px 1px 1px #dfff58;
+	color: #323232;
+	font-family: 'DINProH-Light';
+	font-size: 20px;
+	height: 40px;
+	line-height: 45px;
+	margin-bottom: 10px;
+	text-align: center;
+	width: 100%;
+}
+
+.editForm .btn_cont.yellow {
+	height: 40px !important;
+    margin-top: 5px !important;
+    padding-bottom: 4px !important;
+}
+
+.editForm .btn {
+	font-size: 30px !important;
+	line-height: 40px !important;
+	height: 40px !important;
+}
+
+.checkboxInput {
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+}
+
+.checkboxInputLabel {
+    background: transparent url('/images/custom_radio_off.png') left center no-repeat;
+    color: #A8D200;
+    cursor: pointer;
+    display: block;
+	font-family: 'DINProH-Light';
+    font-size: 14px;
+    height: 19px;
+    line-height: 22px;
+    padding-left: 22px;
+    float: left;
+}
+
+.checkboxInput:checked + label {
+    background-image: url('/images/custom_radio_on.png');
+}
+
+.formErrorContainer {
+    color: red;
+}
+
+.formErrorContainer li {
+    list-style-type: none;
+}
+
+.fileUploadContainer {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    margin-top: 20px;
+}
+
+.fileUploadContainer .button {
+    background: #aad300;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 11px;
+    padding: 4px 18px;
+    line-height: 17px;
+}
+
+.fileUploadContainer input {
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    filter: alpha(opacity=1);
+    -moz-opacity: 0.01;
+    opacity: 0.01;
+}
+
+.fileUploadContainer label {
+    display: none;
+}
+
+.imageUploadForm {
+    text-align: center;
+}
+
+.fileUploadSubmit {
+    background: #aad300;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    width: 12%;
+    border: 0;
+    height: 25px;
+    cursor: pointer;
+}
+
+.rateableImageContainer {
+    background: transparent url('../images/head_bg.png') center center no-repeat;
+    background-size: 100% 100%;
+    box-sizing: content-box;
+    margin: 0 auto;
+    text-align: center;
+    min-width: 120px;
+    max-width: 500px;
+    width: 35%;
+    padding: 6px;
+ }
+
+ .rateableImageContainer img {
+    border-radius: 100%;
+    display: block;
+    width: 100%;
+ }
+
+ span.changeArchiveStatus {
+    background-color: #A8D200;
+    padding: 3px;
+    border-radius: 4px;
+    font-family: 'DINProH-Light';
+    color: #323232;
+    cursor: pointer;
+ }
+

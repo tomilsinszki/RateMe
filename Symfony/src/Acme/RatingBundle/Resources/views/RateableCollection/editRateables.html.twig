@@ -1,0 +1,28 @@
+<h3>Dolgozók</h3>
+<div>
+    {% for rateable in collection.rateables %}
+        {% if rateable.rateableUser.isActive == true %}
+            <div class="rateableContainer">
+                <a class="profileLink" href="{{ path('rateable_profile_by_id', {'id': rateable.id}) }}">{{ rateable.name }}</a>
+
+                <span href='' data-url="{{ path('rateable_archive', {'rateable': rateable.id}) }}" data-id="{{ rateable.id }}" data-isactive="1" class='changeArchiveStatus'>
+                    archíválás
+                </span>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+<h4>Inaktív dolgozók</h4>
+<div>
+    {% for rateable in collection.rateables %}
+        {% if rateable.rateableUser.isActive == false %}
+            <div class="rateableContainer">
+                <span class="profileLink">{{ rateable.name }}</span>
+
+                <span data-url="{{ path('rateable_archive', {'rateable': rateable.id}) }}"  data-id="{{ rateable.id }}" data-isactive="0" class='changeArchiveStatus'>
+                    aktíválás
+                </span>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

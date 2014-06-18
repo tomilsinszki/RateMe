@@ -21,7 +21,7 @@ class IdentifierModifier {
         $entity = $event->getEntity();
 
         $this->validateIdentifier($identifier);
-        if (!$identifier) {
+        if (empty($identifier)) {
             $this->removeIdentifier($entity);
             return;
         }
@@ -33,7 +33,7 @@ class IdentifierModifier {
     }
 
     private function validateIdentifier($identifier) {
-        if (strlen($identifier) !== 4) {
+        if (strlen($identifier)!==4 and strlen($identifier)!==0) {
             throw new ValidatorException('Az azonosító 4 karakter hosszú lehet csak!');
         }
     }
@@ -41,7 +41,7 @@ class IdentifierModifier {
     private function removeIdentifier($entity) {
         if ($entity->getIdentifier()) {
             $this->em->remove($entity->getIdentifier());
-            $rateableCollection->setIdentifier(null);
+            $entity->setIdentifier(null);
         }
     }
 

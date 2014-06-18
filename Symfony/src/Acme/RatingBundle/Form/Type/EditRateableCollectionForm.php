@@ -12,11 +12,13 @@ class EditRateableCollectionForm extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('foreignUrl')
+            ->add('foreignUrl', 'text', array(
+                'required' => false
+            ))
             ->add('identifier', 'text', array(
                 'mapped' => false,
                 'required' => false,
-                'error_bubbling' => true,
+                'error_bubbling' => true
             ))
         ;
     }
