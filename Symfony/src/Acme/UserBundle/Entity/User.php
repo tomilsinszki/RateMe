@@ -51,6 +51,11 @@ class User implements AdvancedUserInterface, \Serializable
     protected $lastName;
 
     /**
+     * @ORM\Column(name="email_address", type="string", length=255, unique=true, nullable=true)
+     */
+    protected $email;
+
+    /**
      * @ORM\OneToOne(targetEntity="Acme\RatingBundle\Entity\Image")
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
@@ -194,4 +199,13 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->isActive;
     }
+
+    public function setEmail($email) {
+        $this->email = $email;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
 }
