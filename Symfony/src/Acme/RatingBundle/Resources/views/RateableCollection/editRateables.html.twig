@@ -5,7 +5,7 @@
             <div class="rateableContainer">
                 <a class="profileLink" href="{{ path('rateable_profile_by_id', {'id': rateable.id}) }}">{{ rateable.name }}</a>
 
-                <span href='' data-url="{{ path('rateable_archive', {'rateable': rateable.id}) }}" data-id="{{ rateable.id }}" data-isactive="1" class='changeArchiveStatus'>
+                <span data-url="{{ path('rateable_archive', {'rateable': rateable.id}) }}" data-id="{{ rateable.id }}" data-isactive="1" class='changeArchiveStatus'>
                     archíválás
                 </span>
             </div>
