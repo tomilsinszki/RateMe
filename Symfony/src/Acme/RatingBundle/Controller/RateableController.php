@@ -135,14 +135,16 @@ class RateableController extends Controller
         if ( empty($rateable) ) {
             throw $this->createNotFoundException('The rateable does not exists.');
         }
-        
-        $content = $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
+
+        if (!$rateable->getIsActive()) {
+            return $this->renderView('AcmeRatingBundle:Rateable:archiveRateable.html.twig');
+        }
+
+        return $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
             'rateable' => $rateable,
             'collection' => $rateable->getCollection(),
             'imageURL' => $this->getImageURL($rateable),
         ));
-
-        return $content;
     }
 
     private function getActiveRateableById($id) {
