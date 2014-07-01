@@ -23,13 +23,10 @@
                         <a href="{{ path('acme_manager_welcome') }}" class="upper-home-btn"></a>
                         <div class="upper-logout-btn">
                             <a href="{{ path('logout') }}"></a>
-                            {{ user.username }}
+                            {{ app.user.username }}
                         </div>
                     </div>
                 </div>      
-				<div class="btn_cont yellow save-button">
-					<div class="btn">{{ user.username }}</div>
-				</div>
 
                 <a href='{{ path('report_selector') }}'>
                     <div class="gray-btn-cont report">
@@ -64,16 +61,18 @@
                     </div>
                 </a>
 				
-                <!--
-				<div class="gray-btn-cont rateableCollection">
-					<div class="gray-btn">
-						<div class="img-container">
-							<div class="img"></div>
-						</div>
-						<h3>Üzletek</h3>
-					</div>
-				</div>
-                -->
+                {% if ownedCollections is not empty %}
+                <a href='{{ path('rateable_collection_profile_edit_by_id', {'id': ownedCollections|first.id}) }}'>
+                    <div class="gray-btn-cont rateableCollection">
+                        <div class="gray-btn">
+                            <div class="img-container">
+                                <div class="img"></div>
+                            </div>
+                            <h3>Üzletek</h3>
+                        </div>
+                    </div>
+                </a>
+                {% endif %}
 				
 				<div class="clear"></div>
 			</div>

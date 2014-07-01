@@ -13,12 +13,19 @@ class NewRateableForm extends AbstractType {
             ->add('rateableName')
             ->add('rateableTypeName')
             ->add('username')
-            ->add('password', 'password')
+            ->add('password', 'repeated', array(
+                'type' => 'password',
+                'invalid_message' => 'A két jelszó nem egyezik!',
+                'error_bubbling' => true
+            ))
             ->add('viaPhone', 'checkbox', array(
                 'label' => 'Telefonos ügyfélszolgálatos',
-                'required' => false,
+                'required' => false
             ))
-            ->add('identifier')
+            ->add('identifier', 'text', array(
+                'required' => false,
+                'error_bubbling' => true
+            ))
         ;
     }
 

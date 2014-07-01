@@ -72,6 +72,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\ManyToMany(targetEntity="Acme\RatingBundle\Entity\RateableCollection", mappedBy="owners")
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     protected $ownedCollections;
 

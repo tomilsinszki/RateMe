@@ -31,7 +31,7 @@ class OwnerController extends Controller
         return $this->render(
             'AcmeSubRatingBundle:Owner:owner.html.twig',
             array(
-                'ownedCollections' => $this->get('security.context')->getToken()->getUser()->getOwnedCollections(),
+                'ownedCollections' => $this->getUser()->getOwnedCollections(),
                 'collection' => $rateableCollection,
                 'questions' => $questions,
                 'doSubRatingsExistForQuestionById' => $doSubRatingsExistForQuestionById,
@@ -299,7 +299,7 @@ class OwnerController extends Controller
     }
     
     private function getOwnedRateableCollectionById($rateableCollectionId) {
-        $ownedCollections = $this->get('security.context')->getToken()->getUser()->getOwnedCollections();
+        $ownedCollections = $this->getUser()->getOwnedCollections();
         if ( empty($rateableCollectionId) ) {
             return $ownedCollections->first();
         }
@@ -310,7 +310,6 @@ class OwnerController extends Controller
         }
 
         throw $this->createNotFoundException('RateableCollection could not be found.');
-        return null;
     }
 
     private function resequenceQuestionsForRateableCollection($rateableCollection) {

@@ -2,11 +2,17 @@
 
 namespace Acme\RatingBundle\Controller;
 
+use Acme\RatingBundle\Entity\Identifier;
+use Acme\RatingBundle\Event\ModifyIdentifierEvent;
+use Acme\RatingBundle\Form\Type\EditRateableForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Acme\RatingBundle\Entity\Image;
 use Acme\RatingBundle\Entity\Rateable;
+use Acme\RatingBundle\Event\ModifyRateableIdentifierEvent;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 class RateableController extends Controller
 {
@@ -22,21 +28,38 @@ class RateableController extends Controller
         return new Response($this->renderView('AcmeRatingBundle:Rateable:mismatch.html.twig', array()));
     }
 
-    public function profileAction($id)
+    public function profileAction(Request $request, $id)
     {
         $rateable = $this->getActiveRateableById($id);
         $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('rateable' => $rateable), array('created' => 'DESC'));
+
+        $form = $this->createForm(new EditRateableForm(), $rateable);
+        if ($identifier = $rateable->getIdentifier()) {
+            $form->get('identifier')->setData($identifier->getAlphanumericValue());
+        }
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            if ($form->isValid()) {
+                try {
+                    $event = new ModifyRateableIdentifierEvent($rateable, mb_strtoupper($form->get('identifier')->getData()));
+                    $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
+                    $this->getDoctrine()->getManager()->flush();
+                } catch (ValidatorException $ex) {
+                    $form->get('identifier')->addError(new FormError($ex->getMessage()));
+                }
+                $this->getDoctrine()->getManager()->flush();
+            }
+        }
 
         $image = new Image();
         $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
         return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
             'rateable' => $rateable,
-            'ratingCount' => count($ratings),
-            'ratingAverage' => $this->getRatingsAverageWithTwoDecimals($ratings),
-            'ratings' => $ratings,
             'imageURL' => $this->getImageURL($rateable),
             'imageUploadForm' => $imageUploadForm->createView(),
+            'editForm' => $form->createView(),
         ));
     }
 
@@ -71,6 +94,18 @@ class RateableController extends Controller
                 return $this->redirect($this->generateUrl('rateable_profile_by_id', array('id' => $id)));
             }
         }
+        
+        $form = $this->createForm(new EditRateableForm(), $rateable);
+        if ($identifier = $rateable->getIdentifier()) {
+            $form->get('identifier')->setData($identifier->getAlphanumericValue());
+        }
+        
+        return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
+            'rateable' => $rateable,
+            'imageURL' => $this->getImageURL($rateable),
+            'imageUploadForm' => $imageUploadForm->createView(),
+            'editForm' => $form->createView(),
+        ));
     }
     
     private function getRatingsAverageWithTwoDecimals($ratings)
@@ -100,14 +135,16 @@ class RateableController extends Controller
         if ( empty($rateable) ) {
             throw $this->createNotFoundException('The rateable does not exists.');
         }
-        
-        $content = $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
+
+        if (!$rateable->getIsActive()) {
+            return $this->renderView('AcmeRatingBundle:Rateable:archiveRateable.html.twig');
+        }
+
+        return $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
             'rateable' => $rateable,
             'collection' => $rateable->getCollection(),
             'imageURL' => $this->getImageURL($rateable),
         ));
-
-        return $content;
     }
 
     private function getActiveRateableById($id) {
@@ -116,7 +153,7 @@ class RateableController extends Controller
             'isActive' => true,
         ));
 
-        if ( empty($rateable) ) {
+        if (empty($rateable)) {
             throw $this->createNotFoundException('Rateable could not be found or inactive.');
         }
 
@@ -128,7 +165,11 @@ class RateableController extends Controller
         $rateable->setIsActive($isActive);
         $rateable->getRateableUser()->setIsActive($isActive);
         $this->getDoctrine()->getManager()->flush();
-
-        return new Response('OK');
+        
+        $content = $this->renderView('AcmeRatingBundle:RateableCollection:editRateables.html.twig', array(
+            'collection' => $rateable->getCollection()
+        ));
+        
+        return new Response($content);
     }
 }
