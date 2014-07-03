@@ -18,19 +18,16 @@ class UserController extends Controller {
     public function saveSubRatingAndShowNextQuestionAction(Request $request) {
         if ('POST' != $request->getMethod()) {
             throw $this->createNotFoundException('Expected POST method.');
-            return null;
         }
         
         $rating = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:Rating')->find($request->request->get('ratingId'));
         if ( empty($rating) ) {
             throw $this->createNotFoundException('Rating not found by id.');
-            return null;
         }
         
         $answer = $this->getDoctrine()->getManager()->getRepository('AcmeSubRatingBundle:Answer')->find($request->request->get('answerId'));
         if ( empty($answer) ) {
             throw $this->createNotFoundException('Answer not found by id.');
-            return null;
         }
         
         $subRating = new SubRating();

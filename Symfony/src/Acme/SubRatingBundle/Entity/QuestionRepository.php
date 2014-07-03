@@ -11,7 +11,7 @@ class QuestionRepository extends EntityRepository {
         if ( empty($questions) ) {
             return;
         }
-        
+
         $questionOrderTypeName = $rating->getRateable()->getCollection()->getQuestionOrder()->getName();
         $nextQuestion = $this->getNextQuestionByOrderType($questions, $questionOrderTypeName);
         
@@ -96,14 +96,13 @@ class QuestionRepository extends EntityRepository {
         $rateableCollection = $rating->getRateable()->getCollection();
         if ( empty($rateableCollection) ) {
             throw $this->createNotFoundException('Collection not found for rating.');
-            return null;
         }
-        
+
         $allQuestions = $this->createQueryBuilder('q')
             ->where('q.rateableCollection = :collection')
             ->setParameter('collection', $rateableCollection)
             ->andWhere('q.deleted IS NULL')
-            ->orderBy('q.sequence', 'ASC')
+            ->orderBy('q.sequence')
             ->getQuery()
             ->getResult();
 
@@ -143,7 +142,6 @@ class QuestionRepository extends EntityRepository {
         $rateableCollection = $rating->getRateable()->getCollection();
         if(empty($rateableCollection)) {
             throw $this->createNotFoundException('Collection not found for rating.');
-            return null;
         }
         
         $allQuestions = $this->createQueryBuilder('q')
