@@ -117,3 +117,5 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $this->contactsDataToSendEmailsTo = $this->contactStatement->fetchAll();
     }
 }
+
+?>

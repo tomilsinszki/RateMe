@@ -123,6 +123,10 @@
                     </div>
 
                     <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.email, {'attr': {'placeholder': 'E-mail', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    <div style="margin-top:5px;">
                         {{ form_widget(newRateableForm.password.first, {'attr': {'placeholder': 'Jelszó', 'autocomplete': 'off'} }) }}
                     </div>
 

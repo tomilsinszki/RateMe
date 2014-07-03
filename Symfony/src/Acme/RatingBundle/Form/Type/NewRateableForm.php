@@ -13,6 +13,9 @@ class NewRateableForm extends AbstractType {
             ->add('rateableName')
             ->add('rateableTypeName')
             ->add('username')
+            ->add('email', 'text', array(
+                'required' => false
+            ))
             ->add('password', 'repeated', array(
                 'type' => 'password',
                 'invalid_message' => 'A két jelszó nem egyezik!',

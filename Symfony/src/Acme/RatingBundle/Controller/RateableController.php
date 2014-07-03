@@ -13,6 +13,7 @@ use Acme\RatingBundle\Entity\Image;
 use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Event\ModifyRateableIdentifierEvent;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Acme\RatingBundle\Utility\Validator;
 
 class RateableController extends Controller
 {
@@ -31,9 +32,17 @@ class RateableController extends Controller
     public function profileAction(Request $request, $id)
     {
         $rateable = $this->getActiveRateableById($id);
-        $ratings = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->findBy(array('rateable' => $rateable), array('created' => 'DESC'));
+        
+        $ownedCollections = $this->getUser()->getOwnedCollections();
+        if (!$ownedCollections->contains($rateable->getCollection())) {
+            throw $this->createNotFoundException('Rateable collection is not an owned collection for this user!');
+        }
+
+        $image = new Image();
+        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
 
         $form = $this->createForm(new EditRateableForm(), $rateable);
+        $form->get('email')->setData($rateable->getRateableUser()->getEmail());
         if ($identifier = $rateable->getIdentifier()) {
             $form->get('identifier')->setData($identifier->getAlphanumericValue());
         }
@@ -41,19 +50,30 @@ class RateableController extends Controller
         if ($request->isMethod('POST')) {
             $form->bind($request);
             if ($form->isValid()) {
-                try {
-                    $event = new ModifyRateableIdentifierEvent($rateable, mb_strtoupper($form->get('identifier')->getData()));
-                    $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
-                    $this->getDoctrine()->getManager()->flush();
-                } catch (ValidatorException $ex) {
-                    $form->get('identifier')->addError(new FormError($ex->getMessage()));
+                $email = $form->get('email')->getData();
+
+                if ( !empty($email) and !Validator::isEmailAddressValid($email) ) {
+                    $form->addError(new FormError("A megadott e-mail cím formátuma nem megfelelő!"));
                 }
-                $this->getDoctrine()->getManager()->flush();
+                else if ( $this->doesUserWithEmailAlreadyExist($email, $rateable) ) {
+                    $form->addError(new FormError("A megadott e-mail cím már használatban van!"));
+                }
+                else {
+                    $rateable->getRateableUser()->setEmail($email);
+                    $this->getDoctrine()->getManager()->persist($rateable->getRateableUser());
+
+                    try {
+                        $event = new ModifyRateableIdentifierEvent($rateable, mb_strtoupper($form->get('identifier')->getData()));
+                        $this->get('event_dispatcher')->dispatch('rating.modify.identifier', $event);
+                        $this->getDoctrine()->getManager()->flush();
+                    } catch (ValidatorException $ex) {
+                        $form->get('identifier')->addError(new FormError($ex->getMessage()));
+                    }
+                    
+                    $this->getDoctrine()->getManager()->flush();
+                }
             }
         }
-
-        $image = new Image();
-        $imageUploadForm = $this->createFormBuilder($image)->add('file')->getForm();
         
         return $this->render('AcmeRatingBundle:Rateable:profile.html.twig', array(
             'rateable' => $rateable,
@@ -61,6 +81,23 @@ class RateableController extends Controller
             'imageUploadForm' => $imageUploadForm->createView(),
             'editForm' => $form->createView(),
         ));
+    }
+
+    private function doesUserWithEmailAlreadyExist($email, $rateable) {
+        $doesUserExist = false;
+
+        if ( empty($email) ) {
+            return false;
+        }
+        
+        $user = $this->getDoctrine()->getRepository('AcmeUserBundle:User')->findOneBy(array('email' => $email));
+        if ( !empty($user) ) {
+            if ( $user !== $rateable->getRateableUser() ) {
+                $doesUserExist = true;
+            }
+        }
+
+        return $doesUserExist;
     }
 
     private function getImageURL($rateable)
@@ -108,22 +145,6 @@ class RateableController extends Controller
         ));
     }
     
-    private function getRatingsAverageWithTwoDecimals($ratings)
-    {
-        $ratingSum = 0.0;
-
-        foreach($ratings AS $rating) 
-            $ratingSum += $rating->getStars();
-        
-        if ( count($ratings) == 0 )
-            return 0.0;
-
-        $average = (float)$ratingSum / (float)count($ratings);
-        $average = round($average, 2);
-        
-        return number_format($average, 2, ',', ' ');
-    }
-
     public function indexByIdAction($id)
     {
         $rateable = $this->getActiveRateableById($id);

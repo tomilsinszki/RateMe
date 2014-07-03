@@ -10,14 +10,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class EmailReportToRateablesCommand extends ContainerAwareCommand
 {
 
-    private $contactsQueryText =<<<EOD
+    private $rateablesDataQueryText =<<<EOD
 SELECT
     username,
     email,
     name,
     SUM(ratings) AS ratings,
     SUM(ratings_average) AS ratings_average,
-    SUM(quizes) AS quizes,
+    3 * SUM(quizes) AS quizes,
     SUM(wrong_asnwers) AS wrong_asnwers
 FROM
     (
@@ -103,7 +103,7 @@ EOD;
 
     private function loadData($from, $to) {
         $connection = $this->getContainer()->get('database_connection');
-        $query = $this->contactsQueryText;
+        $query = $this->rateablesDataQueryText;
         $query = str_replace(
             array('{{ from }}', '{{ to }}'),
             array($from, $to),
@@ -119,14 +119,18 @@ EOD;
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
         $message->setSubject('Dolgozó heti értékelés');
-        $message->setFrom(array('vidanet@rate.me.uk' => 'Vidanet'));
+        $message->setFrom(array('dontreply@rate.me.uk' => 'RateMe'));
         $message->setTo($rateableData['email']);
         $message->addBcc('rateme.archive@gmail.com');
         $embeddedImages = $this->embedImagesIntoMessage($message);
         $message->setBody($this->getContainer()->get('templating')->render(
-            'AcmeRatingBundle:Contact:weeklyRatingEmail.html.twig',
+            'AcmeRatingBundle:Rateable:weeklyRatingEmail.text.twig',
+            $rateableData
+        ), 'text/plain');
+        $message->addPart($this->getContainer()->get('templating')->render(
+            'AcmeRatingBundle:Rateable:weeklyRatingEmail.html.twig',
             $rateableData + array('images' => $embeddedImages)
-        ));
+        ), 'text/html');
         $this->getContainer()->get('mailer')->send($message);
     }
 

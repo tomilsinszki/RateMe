@@ -12,6 +12,10 @@ class EditRateableForm extends AbstractType {
         $builder
             ->add('name')
             ->add('typeName')
+            ->add('email', 'text', array(
+                'mapped' => false,
+                'required' => false
+            ))
             ->add('identifier', 'text', array(
                 'mapped' => false,
                 'required' => false,

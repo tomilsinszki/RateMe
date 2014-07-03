@@ -119,6 +119,7 @@ class User implements AdvancedUserInterface, \Serializable
         $this->clients = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function getId() { return $this->id; }
     public function getUsername() { return $this->username; }
     public function getSalt() { return $this->salt; }
     public function getPassword() { return $this->password; }

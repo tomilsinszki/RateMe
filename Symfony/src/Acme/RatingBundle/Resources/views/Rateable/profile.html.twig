@@ -65,6 +65,10 @@
                         {{ form_widget(editForm.typeName, {'attr': {'placeholder': 'Beosztás', 'autocomplete': 'off'} }) }}
                     </div>
 
+                    <div>
+                        {{ form_widget(editForm.email, {'attr': {'placeholder': 'E-mail', 'autocomplete': 'off'} }) }}
+                    </div>
+
                     {% if rateable.identifier %}
                     <div style='text-align: center;'>
                         <a style='color: white;' href='{{ rateable.identifier.qrCodeUrl }}' target='_blank'>QR-kód megtekintése</a>

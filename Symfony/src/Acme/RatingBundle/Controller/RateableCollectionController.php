@@ -351,6 +351,19 @@ class RateableCollectionController extends Controller
                     $form->addError(new FormError("Már létezik felhasználó {$formData['username']} névvel!"));
                     return $form;
                 }
+
+                if ( !empty($formData['email']) ) {
+                    if ( !Validator::isEmailAddressValid($formData['email']) ) {
+                        $form->addError(new FormError("A megadott e-mail cím formátuma nem megfelelő!"));
+                        return $form;
+                    }
+                    
+                    $user = $this->getDoctrine()->getRepository('AcmeUserBundle:User')->findOneBy(array('email' => $formData['email']));
+                    if ( !empty($user) ) {
+                        $form->addError(new FormError("A megadott e-mail cím már használatban van!"));
+                        return $form;
+                    }
+                }
                 
                 $user = $this->createUserFromRateableFormData($formData);
                 $em->persist($user);
@@ -389,6 +402,7 @@ class RateableCollectionController extends Controller
         $password = $encoder->encodePassword($formData['password'], $user->getSalt());
         $user->setPassword($password);
         $user->setUsername($formData['username']);
+        $user->setEmail($formData['email']);
 
         $raterGroup = $em->getRepository('AcmeUserBundle:Group')->findOneByRole('ROLE_CUSTOMERSERVICE');
         $user->addGroup($raterGroup);
