@@ -124,10 +124,6 @@ EOD;
         $message->addBcc('rateme.archive@gmail.com');
         $embeddedImages = $this->embedImagesIntoMessage($message);
         $message->setBody($this->getContainer()->get('templating')->render(
-            'AcmeRatingBundle:Rateable:weeklyRatingEmail.text.twig',
-            $rateableData
-        ), 'text/plain');
-        $message->addPart($this->getContainer()->get('templating')->render(
             'AcmeRatingBundle:Rateable:weeklyRatingEmail.html.twig',
             $rateableData + array('images' => $embeddedImages)
         ), 'text/html');
