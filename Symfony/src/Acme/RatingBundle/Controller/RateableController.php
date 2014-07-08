@@ -71,11 +71,11 @@ class RateableController extends Controller
                     }
                     
                     $this->getDoctrine()->getManager()->flush();
+                    
+                    return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array(
+                        'id' => $rateable->getCollection()->getId(),
+                    )));
                 }
-
-                return $this->redirect($this->generateUrl('rateable_collection_profile_edit_by_id', array(
-                    'id' => $rateable->getCollection()->getId(),
-                )));
             }
         }
         
