@@ -102,7 +102,7 @@ class QuestionRepository extends EntityRepository {
             ->where('q.rateableCollection = :collection')
             ->setParameter('collection', $rateableCollection)
             ->andWhere('q.deleted IS NULL')
-            ->orderBy('q.sequence')
+            ->orderBy('q.sequence', 'ASC')
             ->getQuery()
             ->getResult();
 
