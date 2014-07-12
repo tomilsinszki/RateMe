@@ -67,7 +67,6 @@ security:
         - { path: ^/quiz/save, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/quiz, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/melysegi/kerdoiv/kovetkezo/kerdes, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
-        - { path: ^/melysegi/kerdoiv/koszonjuk/igazgatosag, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/melysegi/kerdoiv/koszonjuk, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/melysegi/kerdoiv/uj/kerdes/urlap, roles: 'ROLE_MANAGER' }
         - { path: ^/melysegi/kerdoiv/uj/kerdes/alurlap/igennem, roles: 'ROLE_MANAGER' }

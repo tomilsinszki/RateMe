@@ -124,6 +124,7 @@ class RatingController extends Controller
             'questionsCount'  => $unratedQuestionsCount - 1,
             'contact'         => $contact,
             'profileImageURL' => $this->getImageURL($rateable),
+            'company'         => $rateable->getCollection()->getCompany(),
         ));
 
         $response = new Response($html);

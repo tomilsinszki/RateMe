@@ -492,6 +492,7 @@ class ContactController extends Controller
             'question' => $question,
             'questionsCount' => $unratedQuestionsCount - 1,
             'profileImageURL' => $this->getImageURL($contact->getRateable()),
+            'company' => $contact->getRateable()->getCollection()->getCompany(),
         ));
     }
     
