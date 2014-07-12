@@ -115,9 +115,9 @@
 				</div>
 
                 {% if question is not null %}
-                {% if company.ratingPromotionPrizeName is not null %}
 				<div class="wrapper bottom-wrapper">
 					<div class="question-box">
+                        {% if company.ratingPromotionPrizeName is not null %}
                         <div class="question-promo" {% if company.name == 'Lipóti Pékség' %}style='margin-bottom:120px;'{% endif %}>
                                 <div class="price-img">
                                     {% if company.name == 'Vidanet' %}
@@ -137,12 +137,14 @@
                                 </div>
                                 {% endif %}
                         </div>
+                        {% endif %}
                         
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
 					</div>
 				</div>
                 
                 {% if contact is null %}
+                {% if company.ratingPromotionPrizeName is not null %}
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
