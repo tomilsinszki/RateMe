@@ -62,6 +62,7 @@
 
                 {% if contact is null %}
                 {% if question is not null %}
+                {% if company.ratingPromotionPrizeName is not null %}
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
@@ -76,6 +77,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
                 {% endif %}
                 {% endif %}
                 {% endif %}
