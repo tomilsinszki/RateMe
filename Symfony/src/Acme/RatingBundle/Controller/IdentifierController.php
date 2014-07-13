@@ -5,6 +5,7 @@ namespace Acme\RatingBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Acme\RatingBundle\Utility\Validator;
 
 class IdentifierController extends Controller
 {
@@ -12,11 +13,20 @@ class IdentifierController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => 'Add meg a 4 jegyű kódot', 'autocomplete' => 'off')))
+            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => $this->get('translator')->trans('Enter Code Here', array(), 'identifier'), 'autocomplete' => 'off')))
+            ->getForm();
+        
+        $signUpForm = $this->createFormBuilder($defaultData)
+            ->add('lastName', 'text')
+            ->add('firstName', 'text')
+            ->add('email', 'text')
+            ->add('company', 'text')
+            ->add('message', 'textarea')
             ->getForm();
 
         return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
-            'form' => $form->createView(),
+            'form'       => $form->createView(),
+            'signUpForm' => $signUpForm->createView(),
         ));
     }
 
@@ -56,7 +66,43 @@ class IdentifierController extends Controller
             }
         }
     }
-
+    
+    public function signUpAction(Request $request) {
+        $defaultData = array();
+        $signUpForm = $this->createFormBuilder($defaultData)
+            ->add('lastName', 'text')
+            ->add('firstName', 'text')
+            ->add('email', 'text')
+            ->add('company', 'text')
+            ->add('message', 'textarea')
+            ->getForm();
+        if ( $request->isMethod('POST') ) {
+            $signUpForm->bind($request);
+            $email = $signUpForm->get('email')->getData();
+            if(FALSE === Validator::isEmailAddressValid($email)) {
+                $this->get('session')->setFlash('notice', 'A megadott email cím nem megfelelő!');
+                return $this->redirect($this->generateUrl('_welcome'));
+            }
+            $this->sendSignUpEmail($signUpForm);
+            return $this->redirect($this->generateUrl('_welcome'));
+        }
+    }
+    
+    private function sendSignUpEmail($signUpForm) {
+        $signUpFormData = $signUpForm->getData();
+        $message = \Swift_Message::newInstance()
+            ->setSubject('[RateMe] SignUp')
+            ->setFrom($signUpFormData['email'])
+            ->setTo('info@rateme.hu')
+            ->setBody(
+                $this->renderView(
+                    'AcmeRatingBundle:Identifier:signUpEmail.html.twig',
+                    array('signUpFormData' => $signUpFormData)
+                )
+            );
+        $this->get('mailer')->send($message);
+    }
+    
     public function notExistsAction()
     {
         return new Response('<html><body>Nincs ilyen kód.</body></html>');

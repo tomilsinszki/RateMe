@@ -5,6 +5,10 @@ identifier_main:
 identifier_search:
     pattern:   /azonosito/kereses
     defaults: { _controller: AcmeRatingBundle:Identifier:search }
+    
+identifier_signup:
+    pattern:   /regisztracio/rogzites
+    defaults: { _controller: AcmeRatingBundle:Identifier:signUp }
 
 identifier_not_found:
     pattern:   /azonosito/nincs

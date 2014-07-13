@@ -1,50 +1,138 @@
-{% extends '::base.html.twig' %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-{% endblock %}
-
-{% block body %}
-    {{ parent() }}
-    
-    <div class="wrap">
-        <div class="logo"></div>
-        {% if app.session.hasFlash('notice') %}
-            <h2 class="red">{{ app.session.flash('notice') }}</h2>
-        {% else %}
-            <h2>Értékelj, nálunk számít...</h2>
-        {% endif %}
-        <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }} class="form">
-            <div class="big">
-                {{ form_errors(form.alphanumericValue) }}
-                {{ form_widget(form.alphanumericValue) }}
-            </div>
-
-            {{ form_rest(form) }}
-
-            <div class="btn_cont yellow ok big_after">
-                <input type="submit" value="OK" class="btn" />
-            </div>
-        </form>
-        <!--
-        <div class="buttons">
-            <div class="btn_cont gray left">
-                <a href="{{ path('login') }}">
-                    <div class="button_bg">
-                        <div class="btn"><h3><div>Belépés</div></h3></div>
-                    </div>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>RateMe</title>
+        {% stylesheets 'bundles/acmerating/css/identifier/*' filter='cssrewrite' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
+        {% javascripts '@AcmeRatingBundle/Resources/public/js/identifier/*' %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+    </head>
+    <body>
+        <header>
+            <div class="wrap">
+                <a href="index.html">
+                    {% image '@AcmeRatingBundle/Resources/public/images/logo@2x.png' %}
+                        <img src="{{ asset_url }}" alt="RateMe" />
+                    {% endimage %}                    
                 </a>
+                <nav>
+                    <a href="#rate"><span>{% trans from 'identifier' %}Rate{% endtrans %}</span></a>
+                    <a href="#signup">{% trans from 'identifier' %}Sign Up{% endtrans %}</a>
+                    <a href="#about">{% trans from 'identifier' %}About{% endtrans %}</a>
+                    <a href="#contact">{% trans from 'identifier' %}Contact Us{% endtrans %}</a>
+                    <a href="{{ path('login') }}">{% trans from 'identifier' %}Login{% endtrans %}</a>
+                </nav>
+                <nav class="nav-button">
+                    <a href="#">{% trans from 'identifier' %}Menu{% endtrans %}</a>
+                </nav>
+                <div class="floated-nav">
+                    <a href="#rate">{% trans from 'identifier' %}Rate{% endtrans %}</a>
+                    <a href="#signup">{% trans from 'identifier' %}Sign Up{% endtrans %}</a>
+                    <a href="#about">{% trans from 'identifier' %}About{% endtrans %}</a>
+                    <a href="#contact">{% trans from 'identifier' %}Contact Us{% endtrans %}</a>
+                    <a href="{{ path('login') }}">{% trans from 'identifier' %}Login{% endtrans %}</a>
+                </div>
             </div>
-            <div class="btn_cont gray right">
-                <a href="{{ path('acme_user_registration') }}">
-                    <div class="button_bg">
-                        <div class="btn"><h3><div>Regisztrálok</div></h3></div>
-                    </div>
-                </a>
+        </header>
+        <section class="simple stripe" id="rate">            
+            <div class="wrap">
+                {% if app.session.hasFlash('notice') %}                
+                    <h2 class="error">{{ app.session.flash('notice') }}</h2>                
+                {% endif %}
+                <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>                    
+                    {{ form_errors(form.alphanumericValue) }}
+                    {{ form_widget(form.alphanumericValue) }}                    
+                    {{ form_rest(form) }}                    
+                    <input type="submit" value="OK" />                   
+                </form>
             </div>
-            <div class="clearfix"></div>
-        </div>
-        -->
-    </div>
-{% endblock %}
+        </section>
+        <section>
+            <div class="wrap">
+                <aside>
+                    {% trans from 'identifier' %}In every customer interaction there is an opportunity to grow – {% endtrans %}
+                    <span>{% trans from 'identifier' %}we help you seize it!{% endtrans %}</span>
+                </aside>
+                <article>
+                    {% image '@AcmeRatingBundle/Resources/public/images/rateme.jpg' %}
+                        <img src="{{ asset_url }}" alt="RateMe" />
+                    {% endimage %}                       
+                </article>
+            </div>
+        </section>
+        <section id="about" class="stripe">
+            <div class="wrap">
+                <aside>
+                    <h2>{% trans from 'identifier' %}What is RateMe?{% endtrans %}</h2>
+                    <p>{% trans from 'identifier' %}RateMe helps you understand, quantify and improve the human factor impacting the quality of your customer service.{% endtrans %}</p>
+                </aside>
+                <article>
+                    <p>{% trans from 'identifier' %}A unique customer experience management platform that offers an integrated solution for{% endtrans %}</p>
+                    <ul>
+                        <li><span>{% trans from 'identifier' %}real-time evaluation of customer satisfaction{% endtrans %}</span></li>
+                        <li><span>{% trans from 'identifier' %}employee performance enhancement{% endtrans %}</span></li>
+                        <li><span>{% trans from 'identifier' %}tailor-made motivation and training mechanism{% endtrans %}</span></li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+        <section>
+            <div class="wrap">
+                <aside>
+                    <h2>{% trans from 'identifier' %}Why is it good for me?{% endtrans %}</h2>
+                    <p>{% trans from 'identifier' %}Improved Customer Experience{% endtrans %} <span>=</span><br />
+                       {% trans from 'identifier' %}Revenue, Loyalty, Brand Equity, Cost Reduction{% endtrans %}</p>
+                </aside>
+                <article>
+                    <p>{% trans from 'identifier' %}We have entered the age where your Customers have more choices, higher expectations, and more influence – make sure you capture, understand and answer them, Because a loyal customer is your most important asset.{% endtrans %}</p>
+                </article>
+            </div>
+        </section>
+        <section class="stripe">
+            <div class="wrap">
+                <aside id="signup">
+                    <h2>{% trans from 'identifier' %}Sign up!{% endtrans %}</h2>
+                    <p>{% trans from 'identifier' %}RateMe is the ideal choice for businesses who starve to excel their front-office capabilities{% endtrans %}</p>
+                    <h4>{% trans from 'identifier' %}Or contact us at{% endtrans %} <a href="mailto:info@rateme.hu">info@rateme.hu</a></h4>
+                </aside>
+                <article id="contact">
+                    <form action="{{ path('identifier_signup') }}" method="post" {{ form_enctype(form) }}>                    
+                        {{ form_errors(signUpForm.lastName) }}
+                        <label>{% trans from 'identifier' %}Last name{% endtrans %}</label>
+                        {{ form_widget(signUpForm.lastName) }}
+                        
+                        {{ form_errors(signUpForm.firstName) }}
+                        <label>{% trans from 'identifier' %}First name{% endtrans %}</label>
+                        {{ form_widget(signUpForm.firstName) }}
+                        
+                        {{ form_errors(signUpForm.email) }}
+                        <label>{% trans from 'identifier' %}Email{% endtrans %}</label>
+                        {{ form_widget(signUpForm.email) }}
+                        
+                        {{ form_errors(signUpForm.company) }}
+                        <label>{% trans from 'identifier' %}Company{% endtrans %}</label>
+                        {{ form_widget(signUpForm.company) }}
+                        
+                        {{ form_errors(signUpForm.message) }}
+                        <label>{% trans from 'identifier' %}Message{% endtrans %}</label>
+                        {{ form_widget(signUpForm.message) }}
+                        
+                        {{ form_rest(form) }}                    
+                        <input type="submit" value="{% trans from 'identifier' %}Send{% endtrans %}" />               
+                    </form>
+                </article>
+            </div>
+        </section>
+        <footer>
+            {% image '@AcmeRatingBundle/Resources/public/images/logo@2x.png' %}
+                <img src="{{ asset_url }}" alt="RateMe" />
+            {% endimage %}
+        </footer>
+    </body>
+</html>
