@@ -58,14 +58,6 @@ rating_new:
     pattern:   /ertekeles/uj
     defaults: { _controller: AcmeRatingBundle:Rating:new }
 
-add_suggestion_for_new_company:
-    pattern:   /ajanlas/ceg/uj
-    defaults: { _controller: AcmeRatingBundle:Rating:addSuggestionForCompany }
-
-add_email_for_suggestion:
-    pattern:   /ajanlas/email/uj
-    defaults: { _controller: AcmeRatingBundle:Rating:addEmailForSuggestion }
-
 rating_set_email:
     pattern:   /ertekeles/email/beallitas
     defaults: { _controller: AcmeRatingBundle:Rating:setEmail }
