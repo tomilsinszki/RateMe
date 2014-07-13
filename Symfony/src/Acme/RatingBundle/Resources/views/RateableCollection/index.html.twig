@@ -7,13 +7,14 @@
 
 {% block body %}
     {{ parent() }}
-    
+
     <div class="prof_bg">
         <div class="wrap">
             {% if collection %}
                 <h1>{{ collection.name }}</h1>
             {% endif %}
             <h3>Kit értékelsz?</h3>
+
             <div class="slider_bg">
                 <div class="slider">
                     {% for rateable in rateables %}
@@ -21,11 +22,13 @@
                             <a href="{{ path('rateable_by_id_main', {'id': rateable.id}) }}">
                                 <div class="head">
                                     {% if rateableImageURLs[rateable.id] %}
-                                        <img src="{{ asset(rateableImageURLs[rateable.id]) }}" alt="head" />
+                                        <img src="{{ asset(rateableImageURLs[rateable.id]) }}" alt="head"/>
                                     {% endif %}
                                 </div>
-                                <h1>{{ rateable.name }}</h1>
-                                <h2>{{ rateable.typeName }}</h2>
+                                <div class="tail">
+                                    <h1>{{ rateable.name }}</h1>
+                                    <h2>{{ rateable.typeName }}</h2>
+                                </div>
                             </a>
                         </div>
                     {% endfor %}
