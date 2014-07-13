@@ -10,13 +10,25 @@
     </p>
 
     <div style="background-color: white; border: 2px solid #EAEAEA; color: #535353; text-align: center;">
-        <p style="margin: 0; padding: 10px 0 20px;">
+        <p style="margin: 0; padding: 10px 0 15px;">
             Az elmúlt héten összesen
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings }}</span>
             <strong>értékelést</strong> kaptál,<br/>melyek <strong>átlaga</strong>
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings_average|number_format(1) }}</span>
             volt.
         </p>
+        <div style="padding: 0 0 20px;">
+            {% set stars = (ratings_average * 10)|round(0, 'floor') %}
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            {% set stars = stars > 9 ? stars - 10 : 0 %}
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            {% set stars = stars > 9 ? stars - 10 : 0 %}
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            {% set stars = stars > 9 ? stars - 10 : 0 %}
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            {% set stars = stars > 9 ? stars - 10 : 0 %}
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+        </div>
     </div>
     <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align:
     center;">
