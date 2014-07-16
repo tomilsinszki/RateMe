@@ -92,8 +92,9 @@ class IdentifierController extends Controller
         $signUpFormData = $signUpForm->getData();
         $message = \Swift_Message::newInstance()
             ->setSubject('[RateMe] SignUp')
-            ->setFrom($signUpFormData['email'])
+            ->setFrom(array('dontreply@rate.me.uk' => 'RateMe'))
             ->setTo('info@rate.me.uk')
+            ->addBcc('rateme.archive@gmail.com')
             ->setBody(
                 $this->renderView(
                     'AcmeRatingBundle:Identifier:signUpEmail.html.twig',
