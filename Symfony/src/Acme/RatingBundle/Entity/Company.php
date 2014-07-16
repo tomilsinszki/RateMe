@@ -36,6 +36,48 @@ class Company
     private $emailBodySchema;
 
     /**
+     * @var string $ratingPageBackgroundColor
+     *
+     * @ORM\Column(name="ratingPageBackgroundColor", type="text", nullable=false)
+     */
+    private $ratingPageBackgroundColor;
+
+    /**
+     * @var string $ratingPageFontColor
+     *
+     * @ORM\Column(name="ratingPageFontColor", type="text", nullable=false)
+     */
+    private $ratingPageFontColor;
+
+    /**
+     * @var string $ratingPageStarsSubtitleFontColor
+     *
+     * @ORM\Column(name="ratingPageStarsSubtitleFontColor", type="text", nullable=false)
+     */
+    private $ratingPageStarsSubtitleFontColor;
+
+    /**
+     * @var string $ratingPageCancelSubratingFontColor
+     *
+     * @ORM\Column(name="ratingPageCancelSubratingFontColor", type="text", nullable=false)
+     */
+    private $ratingPageCancelSubratingFontColor;
+
+    /**
+     * @var string $ratingPromotionPrizeName
+     *
+     * @ORM\Column(name="ratingPromotionPrizeName", type="text", nullable=true)
+     */
+    private $ratingPromotionPrizeName;
+
+    /**
+     * @var string $ratingPromotionRulesURL
+     *
+     * @ORM\Column(name="ratingPromotionRulesURL", type="text", nullable=true)
+     */
+    private $ratingPromotionRulesURL;
+
+    /**
      * @ORM\OneToMany(targetEntity="RateableCollection", mappedBy="company")
      */
     private $rateableCollections;
@@ -106,6 +148,72 @@ class Company
     public function getEmailBodySchema()
     {
         return $this->emailBodySchema;
+    }
+
+    public function getRatingPageBackgroundColor()
+    {
+        return $this->ratingPageBackgroundColor;
+    }
+
+    public function setRatingPageBackgroundColor($ratingPageBackgroundColor)
+    {
+        $this->ratingPageBackgroundColor = $ratingPageBackgroundColor;
+        return $this;
+    }
+
+    public function getRatingPageFontColor()
+    {
+        return $this->ratingPageFontColor;
+    }
+
+    public function setRatingPageFontColor($ratingPageFontColor)
+    {
+        $this->ratingPageFontColor = $ratingPageFontColor;
+        return $this;
+    }
+
+    public function getRatingPageStarsSubtitleFontColor()
+    {
+        return $this->ratingPageStarsSubtitleFontColor;
+    }
+
+    public function setRatingPageStarsSubtitleFontColor($ratingPageStarsSubtitleFontColor)
+    {
+        $this->ratingPageStarsSubtitleFontColor = $ratingPageStarsSubtitleFontColor;
+        return $this;
+    }
+
+    public function getRatingPageCancelSubratingFontColor()
+    {
+        return $this->ratingPageCancelSubratingFontColor;
+    }
+
+    public function setRatingPageCancelSubratingFontColor($ratingPageCancelSubratingFontColor)
+    {
+        $this->ratingPageCancelSubratingFontColor = $ratingPageCancelSubratingFontColor;
+        return $this;
+    }
+
+    public function getRatingPromotionPrizeName()
+    {
+        return $this->ratingPromotionPrizeName;
+    }
+
+    public function setRatingPromotionPrizeName($ratingPromotionPrizeName)
+    {
+        $this->ratingPromotionPrizeName = $ratingPromotionPrizeName;
+        return $this;
+    }
+
+    public function getRatingPromotionRulesURL()
+    {
+        return $this->ratingPromotionRulesURL;
+    }
+
+    public function setRatingPromotionRulesURL($ratingPromotionRulesURL) 
+    {
+        $this->ratingPromotionRulesURL = $ratingPromotionRulesURL;
+        return $this;
     }
 
     public function getRateableCollections()

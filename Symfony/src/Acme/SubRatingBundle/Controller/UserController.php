@@ -29,6 +29,8 @@ class UserController extends Controller {
         if ( empty($answer) ) {
             throw $this->createNotFoundException('Answer not found by id.');
         }
+
+        $company = $rating->getRateable()->getCollection()->getCompany();
         
         $subRating = new SubRating();
         $subRating->setRating($rating);
@@ -43,28 +45,10 @@ class UserController extends Controller {
         $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);
 
         if(empty($question)) {
-            // TODO: restore old code
-            if ( 'Igazgatósági Ülés' === $rating->getRateable()->getName() ) {
-                return $this->redirect($this->generateUrl('sub_rating_user_thank_you_custom'));
-            }
-            else {
-                return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
-            }
-            /*
-            return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
-            */
+            return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array('companyId' => $company->getId())));
         }
         if(NULL != $maximumQuestionCount && $maximumQuestionCount == $ratedQuestionsCount) {
-            // TODO: restore old code
-            if ( 'Igazgatósági Ülés' === $rating->getRateable()->getName() ) {
-                return $this->redirect($this->generateUrl('sub_rating_user_thank_you_custom'));
-            }
-            else {
-                return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
-            }
-            /*
-            return $this->redirect($this->generateUrl('sub_rating_user_thank_you'));
-            */
+            return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array('companyId' => $company->getId())));
         }
         if(NULL != $maximumQuestionCount  && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount) {
             $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
@@ -74,18 +58,20 @@ class UserController extends Controller {
             array(
                 'rating'         => $rating,
                 'question'       => $question,
-                'questionsCount' => $unratedQuestionsCount - 1,                
+                'questionsCount' => $unratedQuestionsCount - 1,
                 'contact'        => $contact,
+                'company'        => $company,
             )
         );
     }
 
-    public function thankYouAction() {
-        return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig');
-    }
+    public function thankYouAction(Request $request, $companyId) {
+        $company = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:Company')->find($companyId);
+        if ( empty($company) ) {
+            throw $this->createNotFoundException('Company not found by id.');
+        }
 
-    public function thankYouCustomAction() {
-        return $this->render('AcmeSubRatingBundle:User:thankYouCustom.html.twig');
+        return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig', array('company' => $company));
     }
 
 }

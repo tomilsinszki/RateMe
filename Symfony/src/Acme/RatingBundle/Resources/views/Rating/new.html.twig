@@ -81,6 +81,10 @@
                 $('#suggestionForCompanyText').focus();
             });
         </script>
+
+        <style media="screen" type="text/css">
+            {{ include('AcmeRatingBundle:Rating:customCompanyDesign.css.twig') }}
+        </style>
 	</head>
 	<body>
         <!-- Preloaded images -->
@@ -113,35 +117,34 @@
                 {% if question is not null %}
 				<div class="wrapper bottom-wrapper">
 					<div class="question-box">
-                        <div class="question-promo">
-                            {% if 'Igazgatósági Ülés' == rateable.name %}
+                        {% if company.ratingPromotionPrizeName is not null %}
+                        <div class="question-promo" {% if company.name == 'Lipóti Pékség' %}style='margin-bottom:120px;'{% endif %}>
                                 <div class="price-img">
-                                    <img src="{{ asset('bundles/acmerating/images/rabbit.png') }}" alt="Plüssnyúl" />
+                                    {% if company.name == 'Vidanet' %}
+                                    <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Nyereményjáték képe" />
+                                    {% elseif company.name == 'Lipóti Pékség' %}
+                                    <img src="{{ asset('bundles/acmerating/images/orchideaHotel.png') }}" alt="Nyereményjáték képe" />
+                                    {% endif %}
                                 </div>
                                 <div>
-                                    Ha van még egy-két perce, kérjük segítse a munkánkat egy rövid kérdőív kitöltésével!
-                                    Válaszoljon az alábbi kérdésekre és egy <strong>gyönyörű plüssnyulat</strong> nyerhet!
+                                    Van még pár másodperce? Ha igen, válaszoljon még egy kérdésre és nyerjen <strong>{{ company.ratingPromotionPrizeName }}!</strong>
                                 </div>
-                            {% else %}
-                                <div class="price-img">
-                                    <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Bosch konyhai robotgép" />
-                                </div>
+                                {% if company.ratingPromotionRulesURL is not null %}
                                 <div>
-                                    Van még pár másodperce? Ha igen, válaszoljon még egy kérdésre és <strong>Bosch konyhai robotgépet nyerhet!</strong>
-                                </div>
-                                <div>
-                                    <a class="promotion-rules" href='http://www.vidanet.hu/segitseg/dokumentumok/akcio-szabalyzatok/aktualis-akciok/a-vidanet-zrt-2014-03-evi-ugyfelvelemeny-gyujtesi-nyeremenyjatekanak-reszletes-szabalyzata.pdf'>
+                                    <a class="promotion-rules" href='{{ company.ratingPromotionRulesURL }}'>
                                         A nyereményjáték részletes szabályzata
                                     </a>
                                 </div>
-                            {% endif %}
+                                {% endif %}
                         </div>
+                        {% endif %}
                         
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
 					</div>
 				</div>
                 
                 {% if contact is null %}
+                {% if company.ratingPromotionPrizeName is not null %}
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
@@ -156,6 +159,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
                 {% endif %}
                 {% endif %}
 
