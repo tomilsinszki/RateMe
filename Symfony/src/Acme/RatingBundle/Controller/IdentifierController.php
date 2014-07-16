@@ -93,7 +93,7 @@ class IdentifierController extends Controller
         $message = \Swift_Message::newInstance()
             ->setSubject('[RateMe] SignUp')
             ->setFrom(array('dontreply@rate.me.uk' => 'RateMe'))
-            ->setTo('info@rate.me.uk')
+            ->setTo(array('cshorv@gmail.com', 'tamas.t.marton@gmail.com', 'ilsinszkitamas@gmail.com'))
             ->addBcc('rateme.archive@gmail.com')
             ->setBody(
                 $this->renderView(
