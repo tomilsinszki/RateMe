@@ -17,11 +17,11 @@ class IdentifierController extends Controller
             ->getForm();
         
         $signUpForm = $this->createFormBuilder($defaultData)
-            ->add('lastName', 'text')
-            ->add('firstName', 'text')
-            ->add('email', 'text')
-            ->add('company', 'text')
-            ->add('message', 'textarea')
+            ->add('lastName', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('firstName', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('email', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('company', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('message', 'textarea', array('attr' => array('autocomplete' => 'off')))
             ->getForm();
 
         return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
@@ -70,11 +70,11 @@ class IdentifierController extends Controller
     public function signUpAction(Request $request) {
         $defaultData = array();
         $signUpForm = $this->createFormBuilder($defaultData)
-            ->add('lastName', 'text')
-            ->add('firstName', 'text')
-            ->add('email', 'text')
-            ->add('company', 'text')
-            ->add('message', 'textarea')
+            ->add('lastName', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('firstName', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('email', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('company', 'text', array('attr' => array('autocomplete' => 'off')))
+            ->add('message', 'textarea', array('attr' => array('autocomplete' => 'off')))
             ->getForm();
         if ( $request->isMethod('POST') ) {
             $signUpForm->bind($request);
@@ -93,7 +93,7 @@ class IdentifierController extends Controller
         $message = \Swift_Message::newInstance()
             ->setSubject('[RateMe] SignUp')
             ->setFrom($signUpFormData['email'])
-            ->setTo('info@rateme.hu')
+            ->setTo('info@rate.me.uk')
             ->setBody(
                 $this->renderView(
                     'AcmeRatingBundle:Identifier:signUpEmail.html.twig',
@@ -101,10 +101,5 @@ class IdentifierController extends Controller
                 )
             );
         $this->get('mailer')->send($message);
-    }
-    
-    public function notExistsAction()
-    {
-        return new Response('<html><body>Nincs ilyen kód.</body></html>');
     }
 }

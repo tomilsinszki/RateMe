@@ -3,23 +3,17 @@
     <head>
         <meta charset="utf-8" />
         <title>RateMe</title>
-        {% stylesheets 'bundles/acmerating/css/identifier/*' filter='cssrewrite' %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
+        <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/identifier.css') }}" />
         <script src="{{ asset('js/jquery.min.js') }}"></script>
-        {% javascripts '@AcmeRatingBundle/Resources/public/js/identifier/*' %}
-            <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
+        <script src="{{ asset('bundles/acmerating/js/identifier.js') }}" type="text/javascript"></script>
         <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
         <meta name="viewport" content="width=device-width, user-scalable=no">
     </head>
     <body>
         <header>
             <div class="wrap">
-                <a href="index.html">
-                    {% image '@AcmeRatingBundle/Resources/public/images/logo@2x.png' %}
-                        <img src="{{ asset_url }}" alt="RateMe" />
-                    {% endimage %}                    
+                <a href="{{ path('identifier_main') }}">
+                    <img src="{{ asset('bundles/acmerating/images/logo@2x.png') }}" alt="RateMe" />
                 </a>
                 <nav>
                     <a href="#rate"><span>{% trans from 'identifier' %}Rate{% endtrans %}</span></a>
@@ -47,7 +41,7 @@
                 {% endif %}
                 <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>                    
                     {{ form_errors(form.alphanumericValue) }}
-                    {{ form_widget(form.alphanumericValue) }}                    
+                    {{ form_widget(form.alphanumericValue, {'attr': {'class': 'alphanumericCodeInput'}}) }}                    
                     {{ form_rest(form) }}                    
                     <input type="submit" value="OK" />                   
                 </form>
@@ -60,9 +54,7 @@
                     <span>{% trans from 'identifier' %}we help you seize it!{% endtrans %}</span>
                 </aside>
                 <article>
-                    {% image '@AcmeRatingBundle/Resources/public/images/rateme.jpg' %}
-                        <img src="{{ asset_url }}" alt="RateMe" />
-                    {% endimage %}                       
+                    <img src="{{ asset('bundles/acmerating/images/rateme.jpg') }}" alt="RateMe" />
                 </article>
             </div>
         </section>
@@ -99,7 +91,7 @@
                 <aside id="signup">
                     <h2>{% trans from 'identifier' %}Sign up!{% endtrans %}</h2>
                     <p>{% trans from 'identifier' %}RateMe is the ideal choice for businesses who starve to excel their front-office capabilities{% endtrans %}</p>
-                    <h4>{% trans from 'identifier' %}Or contact us at{% endtrans %} <a href="mailto:info@rateme.hu">info@rateme.hu</a></h4>
+                    <h4>{% trans from 'identifier' %}Or contact us at{% endtrans %} <a href="mailto:info@rate.me.uk">info@rate.me.uk</a></h4>
                 </aside>
                 <article id="contact">
                     <form action="{{ path('identifier_signup') }}" method="post" {{ form_enctype(form) }}>                    
@@ -130,9 +122,7 @@
             </div>
         </section>
         <footer>
-            {% image '@AcmeRatingBundle/Resources/public/images/logo@2x.png' %}
-                <img src="{{ asset_url }}" alt="RateMe" />
-            {% endimage %}
+            <img src="{{ asset('bundles/acmerating/images/logo@2x.png') }}" alt="RateMe Logo" />
         </footer>
     </body>
 </html>

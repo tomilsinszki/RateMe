@@ -10,10 +10,6 @@ identifier_signup:
     pattern:   /regisztracio/rogzites
     defaults: { _controller: AcmeRatingBundle:Identifier:signUp }
 
-identifier_not_found:
-    pattern:   /azonosito/nincs
-    defaults: { _controller: AcmeRatingBundle:Identifier:notExists }
-
 rateable_main:
     pattern:   /azonosito/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:Rateable:index }

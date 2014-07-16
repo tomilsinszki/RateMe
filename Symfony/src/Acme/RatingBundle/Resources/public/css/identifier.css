@@ -108,6 +108,10 @@ form {
 	margin-bottom: 20px;
 }
 
+.alphanumericCodeInput {
+	text-transform: uppercase;
+}
+
 input[type="text"],
 textarea {
 	background-clip: padding-box;
@@ -124,7 +128,6 @@ textarea {
 	margin: 0 auto 10px;
 	max-width: 300px;
 	padding: 0 10px;
-	text-transform: uppercase;
 	width: 100%;
 }
 
