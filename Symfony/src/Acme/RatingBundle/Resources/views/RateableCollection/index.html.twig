@@ -14,6 +14,7 @@
                 <h1>{{ collection.name }}</h1>
             {% endif %}
             <h3>Kit értékelsz?</h3>
+
             <div class="slider_bg">
                 <div class="slider">
                     {% for rateable in rateables %}
@@ -24,8 +25,10 @@
                                         <img src="{{ asset(rateableImageURLs[rateable.id]) }}" alt="head" />
                                     {% endif %}
                                 </div>
-                                <h1>{{ rateable.name }}</h1>
-                                <h2>{{ rateable.typeName }}</h2>
+                                <div class="tail">
+                                    <h1>{{ rateable.name }}</h1>
+                                    <h2>{{ rateable.typeName }}</h2>
+                                </div>
                             </a>
                         </div>
                     {% endfor %}

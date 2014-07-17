@@ -41,6 +41,7 @@ security:
         - { path: ^/felhasznalo/letezike, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/felhasznalo/jelszo, roles: 'ROLE_RATER' }
         - { path: ^/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/regisztracio/rogzites, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/id, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/profil/kepfeltoltes/id, roles: 'ROLE_MANAGER' }
         - { path: ^/dolgozo/archivalas, roles: 'ROLE_MANAGER' }
