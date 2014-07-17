@@ -766,12 +766,12 @@ p {
 	margin-left: 12px;
 	position: relative;
 	top: 2px;
-	text-shadow: 0 1px rgba(51, 51, 51, 0.75);
+	text-shadow: 0px 1px rgba(51, 51, 51, 0.75);
 }
 
 .slider_bg .slider .slide_elem {
 	border-top: 1px solid #797979;
-	box-shadow: 0 -1px 0 0 #4f4f4f;
+	box-shadow: 0px -1px 0px 0px #4f4f4f;
     min-height: 89px;
 	float: left;
     width: 100%;
@@ -826,7 +826,7 @@ p {
 	line-height: 26px;
 	padding-top: 20px;
 	text-align: left;
-	text-shadow: 0 1px rgba(1, 1, 0, 0.75);
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
 }
 .lister .slider_bg .slider .slide_elem h1 {
 	font-size: 13px;
@@ -840,7 +840,7 @@ p {
 	font-size: 18px;
 	line-height: 24px;
 	text-align: left;
-	text-shadow: 0 1px rgba(1, 1, 0, 0.75);
+	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
     padding-bottom: 6px;
 }
 .lister .slider_bg .slider .slide_elem h2 {

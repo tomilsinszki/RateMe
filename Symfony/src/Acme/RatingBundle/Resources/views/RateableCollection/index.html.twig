@@ -7,7 +7,7 @@
 
 {% block body %}
     {{ parent() }}
-
+    
     <div class="prof_bg">
         <div class="wrap">
             {% if collection %}
@@ -22,7 +22,7 @@
                             <a href="{{ path('rateable_by_id_main', {'id': rateable.id}) }}">
                                 <div class="head">
                                     {% if rateableImageURLs[rateable.id] %}
-                                        <img src="{{ asset(rateableImageURLs[rateable.id]) }}" alt="head"/>
+                                        <img src="{{ asset(rateableImageURLs[rateable.id]) }}" alt="head" />
                                     {% endif %}
                                 </div>
                                 <div class="tail">
