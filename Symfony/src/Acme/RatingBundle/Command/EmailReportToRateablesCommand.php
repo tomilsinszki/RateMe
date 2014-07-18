@@ -83,6 +83,7 @@ class EmailReportToRateablesCommand extends ContainerAwareCommand
             ->from('AcmeRatingBundle:Rateable', 'r', 'r.id')
             ->join('r.rateableUser', 'u')
             ->where('u.isActive = 1')
+            ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
         ;
         return $query->getQuery()->getResult();
@@ -115,6 +116,7 @@ class EmailReportToRateablesCommand extends ContainerAwareCommand
             ->join('r.rateableUser', 'u')
             ->leftJoin('r.contacts', 'c', Join::WITH, 'c.contactHappenedAt >= :from AND c.contactHappenedAt <= :to')
             ->where('u.isActive = 1')
+            ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
             ->groupBy('r.id')
             ->setParameters(array(
@@ -132,6 +134,7 @@ class EmailReportToRateablesCommand extends ContainerAwareCommand
             ->join('r.rateableUser', 'u')
             ->leftJoin('r.ratings', 'rat', Join::WITH, 'rat.created >= :from AND rat.created <= :to')
             ->where('u.isActive = 1')
+            ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
             ->groupBy('r.id')
             ->setParameters(array(
@@ -149,6 +152,7 @@ class EmailReportToRateablesCommand extends ContainerAwareCommand
             ->join('r.rateableUser', 'u')
             ->leftJoin('r.quizzes', 'q', Join::WITH, 'q.created >= :from AND q.created <= :to')
             ->where('u.isActive = 1')
+            ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
             ->groupBy('r.id')
             ->setParameters(array(
@@ -167,6 +171,7 @@ class EmailReportToRateablesCommand extends ContainerAwareCommand
             ->leftJoin('r.quizzes', 'q', Join::WITH, 'q.created >= :from AND q.created <= :to')
             ->leftJoin('q.quizReplies', 'qr')
             ->where('u.isActive = 1')
+            ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
             ->groupBy('r.id')
             ->setParameters(array(
@@ -188,6 +193,7 @@ class EmailReportToRateablesCommand extends ContainerAwareCommand
             ->leftJoin('a.answerType', 't')
             ->leftJoin('a.question', 'q')
             ->where('u.isActive = 1')
+            ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
             ->andWhere('q.text IS NOT NULL')
             ->andWhere('t.name IS NOT NULL')
