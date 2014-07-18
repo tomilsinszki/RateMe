@@ -5,10 +5,10 @@ identifier_main:
 identifier_search:
     pattern:   /azonosito/kereses
     defaults: { _controller: AcmeRatingBundle:Identifier:search }
-
-identifier_not_found:
-    pattern:   /azonosito/nincs
-    defaults: { _controller: AcmeRatingBundle:Identifier:notExists }
+    
+identifier_signup:
+    pattern:   /regisztracio/rogzites
+    defaults: { _controller: AcmeRatingBundle:Identifier:signUp }
 
 rateable_main:
     pattern:   /azonosito/{alphanumericValue}
@@ -57,14 +57,6 @@ rateable_collection_upload_image:
 rating_new:
     pattern:   /ertekeles/uj
     defaults: { _controller: AcmeRatingBundle:Rating:new }
-
-add_suggestion_for_new_company:
-    pattern:   /ajanlas/ceg/uj
-    defaults: { _controller: AcmeRatingBundle:Rating:addSuggestionForCompany }
-
-add_email_for_suggestion:
-    pattern:   /ajanlas/email/uj
-    defaults: { _controller: AcmeRatingBundle:Rating:addEmailForSuggestion }
 
 rating_set_email:
     pattern:   /ertekeles/email/beallitas

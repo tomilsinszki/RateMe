@@ -41,6 +41,7 @@ security:
         - { path: ^/felhasznalo/letezike, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/felhasznalo/jelszo, roles: 'ROLE_RATER' }
         - { path: ^/azonosito, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
+        - { path: ^/regisztracio/rogzites, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/id, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/profil/kepfeltoltes/id, roles: 'ROLE_MANAGER' }
         - { path: ^/dolgozo/archivalas, roles: 'ROLE_MANAGER' }
@@ -49,8 +50,6 @@ security:
         - { path: ^/hely/profil/publikus/id, roles: '' }
         - { path: ^/hely/profil, roles: 'ROLE_MANAGER' }
         - { path: ^/ertekeles/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
-        - { path: ^/ajanlas/ceg/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
-        - { path: ^/ajanlas/email/uj, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/ertekeles/email/beallitas, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/ugyfel/kontakt/ertekeles, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
         - { path: ^/ugyfel/kontakt/hibajelzes, roles: 'IS_AUTHENTICATED_ANONYMOUSLY,ROLE_RATER' }
