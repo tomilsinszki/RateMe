@@ -125,6 +125,28 @@ class RateableCollectionController extends Controller
 
         return new Response($content);
     }
+    
+    public function companyAction($id) {
+        $company                      = $this->getDoctrine()->getRepository('AcmeRatingBundle:Company')->find($id);        
+        $ratableCollectionsForCompany = $company->getRateableCollections();
+        
+        $content = $this->renderView('AcmeRatingBundle:RateableCollection:company.html.twig', array(
+            'company'                       => $company,     
+            'rateableCollectionsForCompany' => $ratableCollectionsForCompany,
+            'rateableCollectionImageURLs'   => $this->getImageURLsForRateableCollections($ratableCollectionsForCompany),
+        ));
+        return new Response($content);
+    }
+    
+    private function getImageURLsForRateableCollections($ratableCollectionsForCompany) {
+        $imageURLs = array();
+
+        foreach($ratableCollectionsForCompany AS $rateableCollection) {
+            $imageURLs[$rateableCollection->getId()] = $this->getImageURL($rateableCollection);
+        }
+
+        return $imageURLs;
+    }
 
     public function publicProfileAction($id)
     {

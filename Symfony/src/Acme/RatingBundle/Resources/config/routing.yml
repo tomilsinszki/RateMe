@@ -29,6 +29,10 @@ rateable_archive:
 rateable_collection_main:
     pattern:   /hely/azonosito/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:index }
+    
+company_main:
+    pattern:   /uzletvalaszto/ceg/id/{id}
+    defaults: { _controller: AcmeRatingBundle:RateableCollection:company }
 
 rateable_profile_by_id:
     pattern:   /profil/id/{id}

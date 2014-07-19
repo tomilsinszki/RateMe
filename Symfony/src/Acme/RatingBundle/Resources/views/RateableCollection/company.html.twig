@@ -1,0 +1,38 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    
+    <div class="prof_bg">
+        <div class="wrap">
+            {% if company %}
+                <h1>{{ company.name }} {% trans from 'company' %}Shops{% endtrans %}</h1>
+            {% endif %}
+            <h3>{% trans from 'company' %}Choose shop{% endtrans %}</h3>
+
+            <div class="slider_bg">
+                <div class="slider">
+                    {% for rateableCollection in rateableCollectionsForCompany %}
+                        <div class="slide_elem">
+                            <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">
+                                <div class="head">
+                                    {% if rateableCollectionImageURLs[rateableCollection.id] %}
+                                        <img src="{{ asset(rateableCollectionImageURLs[rateableCollection.id]) }}" alt="head" />
+                                    {% endif %}
+                                </div>
+                                <div class="tail">
+                                    <h1>{{ rateableCollection.name }}</h1>                                    
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
