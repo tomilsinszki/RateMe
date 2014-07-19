@@ -24,11 +24,6 @@ class RateableController extends Controller
         return new Response($this->getRateablePageContents($rateable));
     }
 
-    public function mismatchAction($rateableId)
-    {
-        return new Response($this->renderView('AcmeRatingBundle:Rateable:mismatch.html.twig', array()));
-    }
-
     public function profileAction(Request $request, $id)
     {
         $rateable = $this->getActiveRateableById($id);

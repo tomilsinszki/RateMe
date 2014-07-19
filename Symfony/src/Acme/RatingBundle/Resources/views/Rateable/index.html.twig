@@ -32,13 +32,17 @@
                     <input type="submit" id="submitRating" disabled="true" value="OK" class="btn" style="font-size: 30px;" />
                 </div>
             </form>
+            {% if collection is not null %}
+            {% if collection.identifier is not null %}
             <div class="btn_cont gray">
-                <a href="{{ path('rateable_mismatch', {'rateableId': rateable.id}) }}">
+                <a href="{{ path('rateable_collection_main', {'alphanumericValue': collection.identifier.alphanumericValue}) }}">
                     <div class="button_bg">
                         <div class="btn"><h3><div>Mást értékelek</div></h3></div>
                     </div>
                 </a>
             </div>
+            {% endif %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
