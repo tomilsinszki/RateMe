@@ -93,14 +93,10 @@ class Rateable
     private $rateableUser;
 
     /**
-     * @ORM\OneToMany(targetEntity="Contact", mappedBy="rateable")
+     * @ORM\OneToMany(targetEntity="Contact", mappedBy="client")
      */
     private $contacts;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Acme\QuizBundle\Entity\Quiz", mappedBy="rateable")
-     */
-    private $quizzes;
 
     public function __construct() 
     {
@@ -110,7 +106,6 @@ class Rateable
         $this->isReachableViaTelephone = FALSE;
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
         $this->contacts = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->quizzes = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -352,20 +347,4 @@ class Rateable
         if ( $this->contacts->contains($contact) === TRUE )
             $this->contacts->removeElement($contact);
     }
-
-    public function getQuizzes() {
-        return $this->quizzes;
-    }
-
-    public function addQuiz($quiz) {
-        if ( $this->quizzes->contains($quiz) === FALSE ) {
-            $this->quizzes[] = $quiz;
-        }
-    }
-
-    public function removeQuiz($quiz) {
-        if ( $this->quizzes->contains($quiz) === TRUE )
-            $this->quizzes->contains($quiz);
-    }
-
 }
