@@ -283,6 +283,23 @@ footer img {
     text-align: center;
 }
 
+.formSuccessContainer {
+    margin-bottom: 10px;
+    color: #a9c811;
+}
+
+.formErrorContainer {
+    margin-bottom: 10px;    
+}
+
+.formErrorContainer ul {
+    text-align: center;
+}
+
+.formErrorContainer li {
+    color: red;
+}
+
 @media all and (max-width: 1020px) {
 	article label {
 		display: block;
