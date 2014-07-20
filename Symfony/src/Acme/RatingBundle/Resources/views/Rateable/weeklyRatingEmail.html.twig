@@ -9,7 +9,17 @@
         Kedves <span style="color: #A8D300;">{{ name }}!</span>
     </p>
 
-    <div style="background-color: white; border: 2px solid #EAEAEA; color: #535353; text-align: center;">
+    {% if contacts != 0 %}
+    <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align: center;">
+        <p style="margin: 0; padding: 10px 0 20px;">
+            Az elmúlt héten összesen
+            <span style="font-size: 2.5em; margin: 0 5px;"> {{ contacts }}</span>
+            <strong>kontaktust</strong> rögzítettél.
+        </p>
+    </div>
+    {% endif %}
+    {% if ratings != 0 %}
+    <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align: center;">
         <p style="margin: 0; padding: 10px 0 15px;">
             Az elmúlt héten összesen
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings }}</span>
@@ -17,29 +27,64 @@
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings_average|number_format(1) }}</span>
             volt.
         </p>
+
         <div style="padding: 0 0 20px;">
             {% set stars = (ratings_average * 10)|round(0, 'floor') %}
-            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
             {% set stars = stars > 9 ? stars - 10 : 0 %}
-            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
             {% set stars = stars > 9 ? stars - 10 : 0 %}
-            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
             {% set stars = stars > 9 ? stars - 10 : 0 %}
-            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
             {% set stars = stars > 9 ? stars - 10 : 0 %}
-            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*" />
+            <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
         </div>
     </div>
-    <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align:
-    center;">
+    {% endif %}
+    {% if quizzes != 0 %}
+    <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align: center;">
         <p style="margin: 0; padding: 10px 0 20px;">
             A <strong>napi kvízben</strong> összesen
-            <span style="font-size: 2.5em; color: #A8D300; margin: 0 5px;"> {{ quizes }}</span>
+            <span style="font-size: 2.5em; color: #A8D300; margin: 0 5px;"> {{ quizzes }}</span>
             darab kérdést válaszoltál meg,<br/>ezek közül
-            <span style="font-size: 2.5em; color: #A8D300; margin: 0 5px;"> {{ quizes - wrong_asnwers }}</span>
+            <span style="font-size: 2.5em; color: #A8D300; margin: 0 5px;"> {{ quizzes - wrong_answers }}</span>
             darabot <strong>helyesen</strong>.
         </p>
     </div>
+    {% endif %}
+    {% if subratings is not empty %}
+    <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align: center;">
+        <p style="margin: 0; padding: 10px 0 0;">
+            A <strong>kérdőív</strong> kérdéseire az alábbi <strong>válaszokat</strong> kaptad:
+        </p>
+
+        <ul style="margin: 0; padding: 10px 40px 20px; text-align: left;">
+            <li>
+                {{ subratings.0.question }}
+                <ul>
+                    {% set lastQuestion = subratings.0.question %}
+                    {% for question in subratings %}
+                        {% if question.question != lastQuestion %}
+                            {% set lastQuestion = question.question %}
+                        </ul>
+                    </li>
+                    <li>
+                        {{ question.question }}
+                        <ul>
+                        {% endif %}
+                        <li>
+                            Válasz {{ question.answer }}:
+                            {{ question.answers }} db,
+                            {{ (question.answers * 100 /
+                            attribute(subratingSums, question.question_id))|number_format(0) }}%
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    {% endif %}
     <p style="color: #A8D300; padding: 20px 0 10px 20px; margin: 0; font-weight: bold;">
         Üdvözlettel:
     </p>
