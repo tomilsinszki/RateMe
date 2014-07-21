@@ -135,9 +135,10 @@ EOD;
 
     private function filterRateableSubratings($rateable, $subratings) {
         $rateableId = $rateable['rateable_id'];
-        return array_filter($subratings, function ($item) use ($rateableId) {
+        $filteredSubratings = array_filter($subratings, function ($item) use ($rateableId) {
             return $item['id'] == $rateableId;
         });
+        return array_values($filteredSubratings);
     }
 
     private function processRateable($rateable, $subratings) {
