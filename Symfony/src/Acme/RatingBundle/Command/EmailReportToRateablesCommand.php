@@ -20,7 +20,7 @@ SELECT
     SUM(contacts) AS contacts,
     SUM(ratings) AS ratings,
     SUM(ratings_average) AS ratings_average,
-    3 * SUM(quizzes) AS quizzes,
+    SUM(quizzes) AS quizzes,
     SUM(wrong_answers) AS wrong_answers
 FROM
     (
@@ -71,13 +71,15 @@ FROM
             NULL AS contacts,
             NULL AS ratings,
             NULL AS ratings_average,
-            COUNT(quiz.id) AS quizzes,
+            COUNT(quiz_reply.id) AS quizzes,
             NULL AS wrong_answers
         FROM rateable
         JOIN `user`
             ON `user`.id = rateable.rateable_user_id
         LEFT JOIN quiz
             ON quiz.rateable_id = rateable.id AND quiz.created >= '{{ from }}' AND quiz.created <= '{{ to }}'
+        LEFT JOIN quiz_reply
+            ON quiz_reply.quiz_id = quiz.id
         WHERE
             `user`.is_active = 1 AND `user`.email_address IS NOT NULL AND rateable.is_active = 1
         GROUP BY rateable.id
@@ -100,7 +102,7 @@ FROM
         LEFT JOIN quiz_reply
             ON quiz_reply.quiz_id = quiz.id
         WHERE
-            `user`.is_active = 1 AND `user`.email_address IS NOT NULL AND rateable.is_active = 1
+            `user`.is_active = 1 AND `user`.email_address IS NOT NULL AND rateable.is_active = 1 AND quiz_reply.wrong_given_answer_id IS NOT NULL
         GROUP BY rateable.id
     ) AS tbl
 GROUP BY id
@@ -184,6 +186,7 @@ EOD;
             ->where('u.isActive = 1')
             ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
+            ->andWhere('q.target = 1')
             ->andWhere('q.text IS NOT NULL')
             ->andWhere('t.name IS NOT NULL')
             ->groupBy('r, q, t')
@@ -230,7 +233,7 @@ EOD;
             $images['star_0'] = $message->embed(\Swift_Image::fromPath("$webRootPath/images/half_stars/star_0.png"));
         }
 
-        $part = floor(($rating * 10) % 10);
+        $part = (round($rating, 1) * 10) % 10;
         if ($part !== 0) {
             $images["star_$part"]
                 = $message->embed(\Swift_Image::fromPath("$webRootPath/images/half_stars/star_$part.png"));

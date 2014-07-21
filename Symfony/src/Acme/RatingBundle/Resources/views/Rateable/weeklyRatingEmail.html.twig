@@ -24,12 +24,12 @@
             Az elmúlt héten összesen
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings }}</span>
             <strong>értékelést</strong> kaptál,<br/>melyek <strong>átlaga</strong>
-            <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings_average|number_format(1) }}</span>
+            <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings_average|round(1, 'common') }}</span>
             volt.
         </p>
 
         <div style="padding: 0 0 20px;">
-            {% set stars = (ratings_average * 10)|round(0, 'floor') %}
+            {% set stars = (ratings_average * 10)|round(0, 'common') %}
             <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
             {% set stars = stars > 9 ? stars - 10 : 0 %}
             <img src="{{ stars > 9 ? images.star_10 : attribute(images, 'star_' ~ stars) }}" alt="*"/>
