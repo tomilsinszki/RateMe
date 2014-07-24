@@ -35,7 +35,7 @@ class IdentifierController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => 'Add meg a 4 jegyű kódot', 'autocomplete' => 'off')))
+            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => 'Értékelő kód', 'autocomplete' => 'off')))
             ->getForm();
         
         $signUpForm = $this->createFormBuilder($defaultData, array('csrf_protection' => false))

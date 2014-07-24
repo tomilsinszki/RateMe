@@ -294,6 +294,7 @@ footer img {
 
 .formErrorContainer ul {
     text-align: center;
+    list-style-type: none;
 }
 
 .formErrorContainer li {
