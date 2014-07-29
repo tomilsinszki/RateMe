@@ -241,7 +241,7 @@ body {
 	font-size: 14px;
 	font-weight: normal;
 	line-height: 16px;
-	margin: 35px 0;
+	margin: 35px 0 200px;
 }
 
 .price-img {
@@ -265,51 +265,6 @@ body {
 
 a.promotion-rules {
     color: #791f7e !important;
-}
-
-div.suggestion-for-new-companies-container {
-    margin-top: 10px;
-}
-
-div.suggestion-for-new-companies-textarea-container {
-    margin-top: 35px;
-}
-
-div#suggestion-for-new-companies-title {
-    margin-top: 28px;
-    text-align: center;
-    font-size: 18px;
-}
-
-div#suggestion-for-new-companies-textarea-container textarea {
-	border: 2px solid #e4d2e5;
-	border-radius: 1px;
-	display: block;
-    width: 100%;
-	margin: 20px auto 20px;
-	height: 50px;
-    font-size: 16px;
-    padding: 4px 4px 4px 4px;
-}
-div#suggestion-for-new-companies-textarea-container textarea::-webkit-input-placeholder {
-    color: #791f7e;
-    text-align: center;
-}
-div#suggestion-for-new-companies-textarea-container textarea:-moz-placeholder {
-    color: #791f7e;
-    text-align: center;
-}
-div#suggestion-for-new-companies-textarea-container textarea::-moz-placeholder {
-    color: #791f7e;
-    text-align: center;
-}
-div#suggestion-for-new-companies-textarea-container textarea:-ms-input-placeholder {
-    color: #791f7e;
-    text-align: center;
-}
-
-div#suggestion-for-new-companies-email-container {
-    display: none;
 }
 
 .answer-wrapper {
@@ -510,4 +465,9 @@ div#suggestion-for-new-companies-email-container {
 	position: relative;
 	top: 7px;
 	width: 30px;
+}
+
+.remainingQuestions {
+    color: #791f7e;
+    margin-top: 10px;
 }

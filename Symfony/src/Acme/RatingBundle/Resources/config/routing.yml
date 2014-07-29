@@ -5,18 +5,14 @@ identifier_main:
 identifier_search:
     pattern:   /azonosito/kereses
     defaults: { _controller: AcmeRatingBundle:Identifier:search }
-
-identifier_not_found:
-    pattern:   /azonosito/nincs
-    defaults: { _controller: AcmeRatingBundle:Identifier:notExists }
+    
+identifier_signup:
+    pattern:   /regisztracio/rogzites
+    defaults: { _controller: AcmeRatingBundle:Identifier:signUp }
 
 rateable_main:
     pattern:   /azonosito/{alphanumericValue}
     defaults: { _controller: AcmeRatingBundle:Rateable:index }
-
-rateable_mismatch:
-    pattern:   /azonosito/hibajelentes/{rateableId}
-    defaults: { _controller: AcmeRatingBundle:Rateable:mismatch }
 
 rateable_by_id_main:
     pattern:   /id/{id}
@@ -25,6 +21,10 @@ rateable_by_id_main:
 rateable_upload_image:
     pattern:  /profil/kepfeltoltes/id/{id}
     defaults: { _controller: AcmeRatingBundle:Rateable:uploadImage }
+
+rateable_archive:
+    pattern:   /dolgozo/archivalas/{rateable}
+    defaults: { _controller: AcmeRatingBundle:Rateable:archive }
 
 rateable_collection_main:
     pattern:   /hely/azonosito/{alphanumericValue}
@@ -50,29 +50,9 @@ rateable_collection_upload_image:
     pattern:   /hely/profil/kepfeltoltes/id/{id}
     defaults: { _controller: AcmeRatingBundle:RateableCollection:uploadImage }
 
-update_collection:
-    pattern:   /hely/profil/szerkesztes/mentes
-    defaults: { _controller: AcmeRatingBundle:RateableCollection:update }
-
-new_rateable_for_collection:
-    pattern:   /hely/profil/szerkesztes/uj/elem
-    defaults: { _controller: AcmeRatingBundle:RateableCollection:newRateableForCollection }
-
-update_rateable_for_collection:
-    pattern:   /hely/profil/szerkesztes/uj/mentes
-    defaults: { _controller: AcmeRatingBundle:RateableCollection:updateRateableForCollection }
-
 rating_new:
     pattern:   /ertekeles/uj
     defaults: { _controller: AcmeRatingBundle:Rating:new }
-
-add_suggestion_for_new_company:
-    pattern:   /ajanlas/ceg/uj
-    defaults: { _controller: AcmeRatingBundle:Rating:addSuggestionForCompany }
-
-add_email_for_suggestion:
-    pattern:   /ajanlas/email/uj
-    defaults: { _controller: AcmeRatingBundle:Rating:addEmailForSuggestion }
 
 rating_set_email:
     pattern:   /ertekeles/email/beallitas

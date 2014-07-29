@@ -17,4 +17,26 @@
     <div class="btn_wrapper" style="text-align: center;">
         <input class="btn_cont yellow send-button" type="submit" value="Elküld" />
     </div>
+    
+    <div class="remainingQuestions">
+        Hátralevő kérdések száma: {{ questionsCount }}
+    </div>
+
+    <script type="text/javascript">
+        $('.answer-wrapper').parent().on('submit', function () {
+            var $wrapper = $('.answer-wrapper');
+
+            $(this).find('.error').remove();
+            if ($wrapper.find('input[name=answerId]:checked').length) {
+                return true;
+            }
+
+            $wrapper.before(
+                $('<p />').addClass('error').css('color', 'red').css('font-weight', 'bold')
+                        .css('text-align', 'center').text('Nem választott ki egyetlen választ sem.')
+            );
+
+            return false;
+        });
+    </script>
 </form>

@@ -2,6 +2,8 @@ $('document').ready(function() {
     var ajaxBaseUrl = $('.questionnaireForm').attr('data-ajax-route');
     var isQuestionBeingEdited = false;
     
+    addMaximumQuestionCountListener();
+    
     $('#sortable').sortable({
         items: 'li:not(.ui-state-disabled)',      
         update: function(event, ui) {
@@ -608,6 +610,73 @@ $('document').ready(function() {
         $('#createQuestionContainer').removeClass('ui-state-disabled');
         $('#sortable').sortable('enable');
         isQuestionBeingEdited = false;
+    }
+    
+    function addMaximumQuestionCountListener() {
+        $('#maximumQuestionCount').on('change', function(event) {           
+            if($(this).is(':checked')) {
+                showMaximumQuestionCountToggleWrapper();
+            } else {                
+                hideMaximumQuestionCountToggleWrapper();
+                updateMaximumQuestionCount();
+            }
+        });
+        $('#maximumQuestionCountOkButton').on('click', function(event) {           
+            updateMaximumQuestionCount();
+        });
+        $('#maximumQuestionCountDisplay').on('click', function(event) {           
+            showMaximumQuestionCountToggleWrapper();
+        });
+    }
+    
+    function showMaximumQuestionCountToggleWrapper() {
+        $('#maximumQuestionCountDisplay').hide();
+        $('#maximumQuestionCountTextbox').removeAttr('disabled');
+        $('.maximumQuestionCountToggleWrapper').show();
+    }
+    
+    function hideMaximumQuestionCountToggleWrapper() {
+        $('#maximumQuestionCountTextbox').attr('disabled', 'disabled');
+        $('.maximumQuestionCountToggleWrapper').hide();
+        $('#maximumQuestionCountDisplay').hide();
+    }
+    
+    function updateMaximumQuestionCount() {
+        var maximumQuestionCount               = $('#maximumQuestionCountTextbox').val();
+        var maximumQuestionCountLimitIsChecked = $('#maximumQuestionCount').is(':checked');
+        
+        $.ajax({
+            url: ajaxBaseUrl + "melysegi/kerdoiv/maximum/kerdesszam/valtozas",
+            type: 'POST',
+            data: {
+                maximumQuestionCount: maximumQuestionCount,
+                maximumQuestionCountLimitIsChecked: maximumQuestionCountLimitIsChecked,
+                rateableCollectionId: $('#rateableCollectionSelect').val()
+            },
+            async: false
+        }).done(function(result) {
+            if(false === result) {
+                showMaximumQuestionCountChangeErrorDialog();
+            } else {
+                if(true === maximumQuestionCountLimitIsChecked) {
+                    $('#maximumQuestionCountTextbox').attr('placeholder', maximumQuestionCount);
+                    $('#maximumQuestionCountDisplay').text(maximumQuestionCount).show();
+                    $('.maximumQuestionCountToggleWrapper').hide();
+                }
+            }
+        });
+    }
+    
+    function showMaximumQuestionCountChangeErrorDialog() {
+        $("#dialog-maximum-question-count-failed").dialog({
+            resizable: false,
+            modal: true ,
+            buttons: {
+                "Ok": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
     }
 });
 

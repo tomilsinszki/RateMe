@@ -92,6 +92,12 @@ class RateableCollection
      */
     private $questions;
     
+    /**
+     * @var integer $maxQuestionCount
+     *
+     * @ORM\Column(name="max_question_count", type="integer", nullable=true)
+     */
+    private $maxQuestionCount;
 
     public function __construct() 
     {
@@ -333,5 +339,38 @@ class RateableCollection
     public function getQuestions()
     {
         return $this->questions;
+    }
+
+    /**
+     * Set maxQuestionCount
+     *
+     * @param integer $maxQuestionCount
+     * @return RateableCollection
+     */
+    public function setMaxQuestionCount($maxQuestionCount)
+    {
+        $this->maxQuestionCount = $maxQuestionCount;
+    
+        return $this;
+    }
+
+    /**
+     * Get maxQuestionCount
+     *
+     * @return integer 
+     */
+    public function getMaxQuestionCount()
+    {
+        return $this->maxQuestionCount;
+    }
+
+    /**
+     * Get owners
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOwners()
+    {
+        return $this->owners;
     }
 }

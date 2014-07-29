@@ -3,7 +3,7 @@ sub_rating_user_next_question:
     defaults: { _controller: AcmeSubRatingBundle:User:saveSubRatingAndShowNextQuestion }
 
 sub_rating_user_thank_you:
-    pattern:   /melysegi/kerdoiv/koszonjuk
+    pattern:   /melysegi/kerdoiv/koszonjuk/{companyId}
     defaults: { _controller: AcmeSubRatingBundle:User:thankYou }
 
 sub_rating_owner_question_form:
@@ -45,4 +45,8 @@ sub_rating_owner_sequence_change:
 sub_rating_owner_main:
     pattern:   /melysegi/kerdoiv/{rateableCollectionId}
     defaults: { _controller: AcmeSubRatingBundle:Owner:owner, rateableCollectionId: null }
+
+sub_rating_owner_maximum_question_count_change:
+    pattern:   /melysegi/kerdoiv/maximum/kerdesszam/valtozas
+    defaults: { _controller: AcmeSubRatingBundle:Owner:maximumQuestionCountChange } 
 

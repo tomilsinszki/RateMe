@@ -1,0 +1,12 @@
+<div style="text-align: center;">
+    <select id="rateableCollectionSelect" style="width: 300px;">
+        {% for ownedCollection in ownedCollections %}
+            <option 
+                {% if collection is defined %}{% if ownedCollection.id == collection.id %}selected="selected"{% endif %}{% endif %}
+                value="{{ ownedCollection.id }}">
+
+                {{ ownedCollection.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>

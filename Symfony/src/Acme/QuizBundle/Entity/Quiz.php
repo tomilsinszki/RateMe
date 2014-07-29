@@ -46,7 +46,7 @@ class Quiz {
      * @ORM\OneToMany(targetEntity="QuizReply", mappedBy="quiz")
      */
     private $quizReplies;
-    
+
     /**
      * @var integer
      *
@@ -168,28 +168,5 @@ class Quiz {
     public function getElapsedSeconds()
     {
         return $this->elapsedSeconds;
-    }
-
-    /**
-     * Add quizReplies
-     *
-     * @param \Acme\QuizBundle\Entity\QuizReply $quizReplies
-     * @return Quiz
-     */
-    public function addQuizReplie(\Acme\QuizBundle\Entity\QuizReply $quizReplies)
-    {
-        $this->quizReplies[] = $quizReplies;
-    
-        return $this;
-    }
-
-    /**
-     * Remove quizReplies
-     *
-     * @param \Acme\QuizBundle\Entity\QuizReply $quizReplies
-     */
-    public function removeQuizReplie(\Acme\QuizBundle\Entity\QuizReply $quizReplies)
-    {
-        $this->quizReplies->removeElement($quizReplies);
     }
 }

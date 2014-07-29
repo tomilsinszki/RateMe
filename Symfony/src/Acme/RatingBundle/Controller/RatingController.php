@@ -11,57 +11,6 @@ use Acme\RatingBundle\Utility\Validator;
 
 class RatingController extends Controller
 {
-    public function indexAction()
-    {
-    }
-
-    public function addSuggestionForCompanyAction(Request $request)
-    {
-        if ('POST' != $request->getMethod()) {
-            throw $this->createNotFoundException('Expected POST method.');
-            return null;
-        }
-        
-        $response = false;
-        
-        $suggestionForCompany = $request->request->get('suggestionForCompany');
-        $suggestionForCompany = substr($suggestionForCompany, 0, 500);
-
-        if ( !empty($suggestionForCompany) ) {
-            $directoryPath = realpath($this->get('kernel')->getRootDir()."/logs");
-            $filePath = "$directoryPath/suggestionForCompany.csv";
-            
-            $bytesWrittenToFile = file_put_contents($filePath, "$suggestionForCompany\n-----\n", FILE_APPEND);
-            if ( !empty($bytesWrittenToFile) ) {
-                $response = true;
-            }
-        }
-        
-        return new Response(json_encode($response));
-    }
-
-    public function addEmailForSuggestionAction(Request $request)
-    {
-        if ('POST' != $request->getMethod()) {
-            throw $this->createNotFoundException('Expected POST method.');
-            return null;
-        }
-        
-        $response = false;
-        
-        $email = $request->request->get('email');
-        if ( Validator::isEmailAddressValid($email) ) {
-            $directoryPath = realpath($this->get('kernel')->getRootDir()."/logs");
-            $filePath = "$directoryPath/emailForSuggestion.csv";
-            
-            $bytesWrittenToFile = file_put_contents($filePath, "$email\n-----\n", FILE_APPEND);
-            if ( !empty($bytesWrittenToFile) ) {
-                $response = true;
-            }
-        }
-        
-        return new Response(json_encode($response));
-    }
 
     public function setEmailAction(Request $request)
     {
@@ -109,24 +58,36 @@ class RatingController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($rating);
         $entityManager->flush();
-        
+
+        $contact               = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating);
+        $question              = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating);
+        $maximumQuestionCount  = $rating->getRateable()->getCollection()->getMaxQuestionCount();
+        $ratedQuestionsCount   = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getRatedQuestionsCountByRating($rating);
+        $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);
+
+        if ( NULL != $maximumQuestionCount && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount ) {
+            $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
+        }
+
         $html = $this->renderView('AcmeRatingBundle:Rating:new.html.twig', array(
-            'rating' => $rating,
-            'rateable' => $rateable,
-            'question' => $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($rating),
-            'contact' => $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->findOneByRating($rating),
+            'rating'          => $rating,
+            'rateable'        => $rateable,
+            'question'        => $question,
+            'questionsCount'  => $unratedQuestionsCount - 1,
+            'contact'         => $contact,
             'profileImageURL' => $this->getImageURL($rateable),
+            'company'         => $rateable->getCollection()->getCompany(),
         ));
-        
+
         $response = new Response($html);
-        
+
         $response->headers->setCookie(new Cookie(
-            'noncontact_ratings', 
+            'noncontact_ratings',
             $this->getValueOfNonContactRatingsCookie($rateable),
             time() + (365 * 24 * 60 * 60)
         ));
 
-        return $response; 
+        return $response;
     }
 
     private function wasLastNonContactRatingWithinAWeekForRateable($rateable)
@@ -169,7 +130,7 @@ class RatingController extends Controller
             $nonContactRatingsByRateableId = json_decode($cookies->get('noncontact_ratings'), true);
         }
         
-        if(!is_array($nonContactRatingsByRateableId) ) {
+        if ( !isset($nonContactRatingsByRateableId) || !is_array($nonContactRatingsByRateableId) ) {
             $nonContactRatingsByRateableId = array();
         }
         
@@ -195,7 +156,7 @@ class RatingController extends Controller
     {
         $rateableId = $this->getRequest()->request->get('rateableId');
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->find($rateableId);
-        if ( empty($rateable) === TRUE )
+        if ( empty($rateable) )
             throw $this->createNotFoundException('The rateable does not exists.');
 
         return $rateable;
@@ -204,7 +165,7 @@ class RatingController extends Controller
     private function getUserFromContext()
     {
         $user = $this->get('security.context')->getToken()->getUser();
-        if ( empty($user) === TRUE )
+        if ( empty($user) )
             throw $this->createNotFoundException('Current user could not be found.');
 
         return $user;
@@ -212,18 +173,14 @@ class RatingController extends Controller
 
     private function isUserRater()
     {
-        if ( $this->container->get('security.context')->isGranted('ROLE_RATER') === TRUE ) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return $this->container->get('security.context')->isGranted('ROLE_RATER');
     }
 
     private function getImageURL($rateable)
     {
         $imageURL = null;
         $image = $rateable->getImage();
-        if ( empty($image) === FALSE )
+        if ( !empty($image) )
             $imageURL = $image->getWebPath();
         
         return $imageURL;

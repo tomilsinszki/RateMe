@@ -1,80 +1,161 @@
-{% extends '::base.html.twig' %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>RateMe</title>
+        <link href="{{ asset('css/global.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/chosen.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('css/upper-menu.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('bundles/acmerating/css/rateableCollectionProfileEdit.css') }}" rel="stylesheet" type="text/css" />
 
-{% block javascripts %}
-    {{ parent() }}
+        <script src="{{ asset('js/jquery.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/chosen.jquery.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('bundles/acmerating/js/rateableCollectionEdit.js') }}" type="text/javascript"></script>
 
-    <script src="{{ asset('bundles/acmerating/js/rateableCollectionEdit.js') }}" type="text/javascript"></script>
-{% endblock %}
+        <script type="text/javascript">
+            $(function () {
+                $('#rateableCollectionSelect').on('change', function () {
+                    window.location = '{{ path('rateable_collection_profile_edit_by_id', {'id': 0}) }}'.replace('0', $(this).val());
+                }).chosen({
+                    disable_search: true,
+                    width: "300px"
+                });
+            });
+        </script>
+	</head>
+	<body>
+        <!-- Preloaded images -->
+        <img src="/images/upper_home_hover.png" style="display: none;" />
+        <img src="/images/upper_power_hover.png" style="display: none;" />
 
-{% block body %}
-    {{ parent() }}
 
-    <table border="0">
-        <tr>
-            <td style="padding-right:30px;">
-                {% if collectionImageURL %}
-                    <img src="{{ asset(collectionImageURL) }}" />
-                {% endif %}
+		<div class="bg-grad">
+            <div class="wrapper">
+                <div class="upper-menu">
+                    <div class="upper-menu-inner">
+                        <a href="{{ path('acme_manager_welcome') }}" class="upper-home-btn"></a>
+                        <div class="upper-logout-btn">
+                            <a href="{{ path('logout') }}"></a>
+                            {{ app.user.username }}
+                        </div>
+                    </div>
+                </div>      
 
-                <form action="{{ path('rateable_collection_upload_image', {'id': rateableCollection.id}) }}" method="post" {{ form_enctype(imageUploadForm) }}>
-                    {{ form_widget(imageUploadForm) }}
+                {% include "AcmeSubRatingBundle:Partials:ownedCollectionsSelect.html.twig" with {'collection': rateableCollection} %}
 
-                    <input type="submit" value="Kép beállítása" />
-                </form>
-            </td>
-            
-            <td style="vertical-align: top;">
-                <form id="rateableCollectionEditForm" action="{{ path('update_collection', {}) }}" method="post">
-                    <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+                <div style="margin-top: 30px;">
+                    {% if collectionImageURL %}
+                    <div class="collectionImageContainer">
+                        <img src="{{ asset(collectionImageURL) }}"/>
+                    </div>
+                    {% endif %}
+
+                    <form action="{{ path('rateable_collection_upload_image', {'id': rateableCollection.id}) }}"
+                          method="post" {{ form_enctype(imageUploadForm) }} class="imageUploadForm">
+
+                        <div>
+                            <span class="fileUploadContainer">
+                                <div style="margin-top:5px;" class="formErrorContainer">
+                                    {{ form_widget(imageUploadForm) }}
+                                </div>
+                                <span class="button">kép kiválasztása</span>
+                            </span>
+                        </div>
+
+                        <div>
+                            <input type="submit" value="mentés" class="fileUploadSubmit" />
+                        </div>
+                    </form>
+                </div>
+                
+                <h3>Üzlet adatok</h3>
+                <form class="editForm" id="rateableCollectionEditForm" method="post">
+                    {% if not editForm.vars.valid %}
+                        <div style="margin-top:5px;" class="formErrorContainer">
+                            {{ form_errors(editForm) }}
+                        </div>
+                    {% endif %}
+
+                    <div style="margin-top:5px;">
+                        {{ form_widget(editForm.name, {'attr': {'placeholder': 'Üzlet neve', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        {{ form_widget(editForm.foreignUrl, {'attr': {'placeholder': 'Honlap URL', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    {% if rateableCollection.identifier %}
+                    <div style='text-align: center;'>
+                        <a style='color: white;' href='{{ rateableCollection.identifier.qrCodeUrl }}' target='_blank'>QR-kód megtekintése</a>
+                    </div>
+                    {% endif %}
                     
                     <div style="margin-top:5px;">
-                        <input id="rateableCollectionName" name="collectionName" type="text" value="{{ rateableCollection.name }}" />
+                        {{ form_widget(editForm.identifier, {'attr': {'placeholder': 'Azonosító', 'autocomplete': 'off'} }) }}
                     </div>
 
-                    <div style="margin-top:5px;">
-                        <input id="rateableCollectionForeignURL" name="collectionForeignURL" type="text" value="{{ rateableCollection.foreignURL }}" />
-                    </div>
-
-                    <div style="margin-top:5px;">
-                        <input type="submit" value="mentés" />
+                    {{ form_rest(editForm) }}
+                    <div class="btn_cont yellow">
+                        <input class="btn" type="submit" value="módosítás"/>
                     </div>
                 </form>
-            </td>
-        </tr>
-    </table>
 
-    <form id="newRateableForm" style="border-top:1px solid black; padding-top:10px;" action="{{ path('new_rateable_for_collection', {}) }}" method="post">
-        <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
+                <h3>Új dolgozó létrehozása</h3>
+                <form class="editForm" id="newRateableForm" method="post">
+                    <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden"/>
 
-        <div style="margin-top:5px;">
-            <input id="newRateableName" name="rateableName" type="text" value="" />
-        </div>
+                    {% if not newRateableForm.vars.valid %}
+                        <div style="margin-top:5px;" class="formErrorContainer">
+                            {{ form_errors(newRateableForm) }}
+                        </div>
+                    {% endif %}
 
-        <div style="margin-top:5px;">
-            <input id="newRateableTypeName" name="rateableTypeName" type="text" value="" />
-        </div>
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.rateableName, {'attr': {'placeholder': 'Dolgozó neve', 'autocomplete': 'off'} }) }}
+                    </div>
 
-        <div style="margin-top:5px;">
-            <input type="submit" value="létrehozás" />
-        </div>
-    </form>
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.rateableTypeName, {'attr': {'placeholder': 'Beosztás', 'autocomplete': 'off'} }) }}
+                    </div>
 
-    {% for rateable in rateables %}
-        <form style="border-top:1px solid black; padding-top:10px;" action="{{ path('update_rateable_for_collection', {}) }}" method="post">
-            <input name="rateableCollectionId" value="{{ rateableCollection.id }}" type="hidden" />
-            <input name="rateableId" value="{{ rateable.id }}" type="hidden" />
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.username, {'attr': {'placeholder': 'Felhasználónév', 'autocomplete': 'off'} }) }}
+                    </div>
 
-            <div style="margin-top:5px;">
-                <input name="rateableName" type="text" value="{{ rateable.name }}" />
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.email, {'attr': {'placeholder': 'E-mail', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.password.first, {'attr': {'placeholder': 'Jelszó', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.password.second, {'attr': {'placeholder': 'Jelszó megint', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.viaPhone, {'attr': {'class': 'checkboxInput'}}) }}
+                        {{ form_label(newRateableForm.viaPhone, label|default(null), {'label_attr': {'class': 'checkboxInputLabel'}}) }}
+                    </div>
+
+                    <div style="margin-top:5px;">
+                        {{ form_widget(newRateableForm.identifier, {'attr': {'placeholder': 'Azonosító', 'autocomplete': 'off'} }) }}
+                    </div>
+
+                    {{ form_rest(newRateableForm) }}
+
+                    <div class="btn_cont yellow">
+                        <input class="btn" type="submit" value="létrehozás"/>
+                    </div>
+                </form>
+
+                <div id="rateablesContainer">
+                    {% include "AcmeRatingBundle:RateableCollection:editRateables.html.twig" with {'collection': rateableCollection} %}
+                </div>
             </div>
+        </div>
+	</body>
+</html>
 
-            <div style="margin-top:5px;">
-                <input name="rateableTypeName" type="text" value="{{ rateable.typeName }}" />
-            </div>
 
-            <div style="margin-top:5px;">
-                <input type="submit" value="mentés" />
-            </div>
-        </form>
-    {% endfor %}
-{% endblock %}

@@ -476,14 +476,23 @@ class ContactController extends Controller
             throw $this->createNotFoundException('Email has expired, no rating was given!');
         }
 
-        $question = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($contact->getRating());
+        $question              = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getNextQuestionForRating($contact->getRating());
+        $maximumQuestionCount  = $contact->getRating()->getRateable()->getCollection()->getMaxQuestionCount();
+        $ratedQuestionsCount   = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getRatedQuestionsCountByRating($contact->getRating());        
+        $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($contact->getRating());                
+        
+        if(NULL != $maximumQuestionCount && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount) {            
+            $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
+        }        
         
         return $this->render('AcmeRatingBundle:Rating:new.html.twig', array(
             'rating' => $contact->getRating(),
             'contact' => $contact,
             'rateable' => $contact->getRateable(),
             'question' => $question,
+            'questionsCount' => $unratedQuestionsCount - 1,
             'profileImageURL' => $this->getImageURL($contact->getRateable()),
+            'company' => $contact->getRateable()->getCollection()->getCompany(),
         ));
     }
     

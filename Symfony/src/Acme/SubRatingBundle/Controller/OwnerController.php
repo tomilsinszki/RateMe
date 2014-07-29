@@ -31,7 +31,7 @@ class OwnerController extends Controller
         return $this->render(
             'AcmeSubRatingBundle:Owner:owner.html.twig',
             array(
-                'ownedCollections' => $this->get('security.context')->getToken()->getUser()->getOwnedCollections(),
+                'ownedCollections' => $this->getUser()->getOwnedCollections(),
                 'collection' => $rateableCollection,
                 'questions' => $questions,
                 'doSubRatingsExistForQuestionById' => $doSubRatingsExistForQuestionById,
@@ -299,7 +299,7 @@ class OwnerController extends Controller
     }
     
     private function getOwnedRateableCollectionById($rateableCollectionId) {
-        $ownedCollections = $this->get('security.context')->getToken()->getUser()->getOwnedCollections();
+        $ownedCollections = $this->getUser()->getOwnedCollections();
         if ( empty($rateableCollectionId) ) {
             return $ownedCollections->first();
         }
@@ -310,7 +310,6 @@ class OwnerController extends Controller
         }
 
         throw $this->createNotFoundException('RateableCollection could not be found.');
-        return null;
     }
 
     private function resequenceQuestionsForRateableCollection($rateableCollection) {
@@ -537,4 +536,44 @@ class OwnerController extends Controller
         $subRatings = $query->getResult();
         return !empty($subRatings);
     }
+    
+    public function maximumQuestionCountChangeAction(Request $request) {
+        if ( 'POST' != $request->getMethod() ) {
+            $response = FALSE;
+            return new Response(json_encode($response), 200, array('Content-Type' => 'application/json'));
+        }
+        
+        if ( !is_numeric($request->request->get('rateableCollectionId')) ) {
+            $response = FALSE;
+            return new Response(json_encode($response), 200, array('Content-Type' => 'application/json'));
+        }
+        
+        $maximumQuestionCountLimitIsChecked = $request->request->get('maximumQuestionCountLimitIsChecked') == 'true' ? TRUE : FALSE;
+        $maximumQuestionCount = intval($request->request->get('maximumQuestionCount'));
+        $rateableCollection = $this->getOwnedRateableCollectionById($request->request->get('rateableCollectionId'));
+        
+        if ( $maximumQuestionCountLimitIsChecked ) {
+            if ( !is_numeric($request->request->get('maximumQuestionCount')) ) {
+                $response = FALSE;
+                return new Response(json_encode($response), 200, array('Content-Type' => 'application/json'));
+            }
+
+            if ( $maximumQuestionCount <= 0 ) {
+                $response = FALSE;
+                return new Response(json_encode($response), 200, array('Content-Type' => 'application/json'));
+            }
+            
+            $rateableCollection->setMaxQuestionCount($maximumQuestionCount);
+        } else {
+            $rateableCollection->setMaxQuestionCount(NULL);
+        }
+        
+        $rateableCollection->logUpdated();
+        $this->getDoctrine()->getManager()->persist($rateableCollection);
+        $this->getDoctrine()->getManager()->flush();
+        
+        $response = TRUE;
+        return new Response(json_encode($response), 200, array('Content-Type' => 'application/json'));
+    }
 }
+

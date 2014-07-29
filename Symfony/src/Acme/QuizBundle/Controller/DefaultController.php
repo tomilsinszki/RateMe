@@ -14,10 +14,9 @@ use Acme\QuizBundle\Entity\QuizReply;
 use Acme\QuizBundle\Entity\QuestionFile;
 
 class DefaultController extends Controller {
-    
+
     const FILLING_TIME_SECONDS = 180;
     /**
-     * @Route("/quiz/questionnaire/{rateableCollectionId}")
      * @Template()
      */
     public function questionnaireAction($rateableCollectionId) {
@@ -31,9 +30,6 @@ class DefaultController extends Controller {
         );
     }
 
-    /**
-     * @Route("/quiz/download/{rateableCollectionId}")
-     */
     public function downloadAction($rateableCollectionId) {
         $excelService = $this->get('xls.service_xls2007');
         $excelService->excelObj->getProperties()->setCreator("RateMe")
@@ -88,9 +84,6 @@ class DefaultController extends Controller {
         return $response;
     }
 
-    /**
-     * @Route("/quiz/upload")
-     */
     public function uploadAction() {
         $errors = null;
 
@@ -123,7 +116,6 @@ class DefaultController extends Controller {
 
                     $activeSheet = $excelObj->getSheet();
                     $rowIterator = $activeSheet->getRowIterator(2);
-                    $answers = array();
                     
                     $query = $em->createQuery('SELECT rc FROM AcmeRatingBundle:RateableCollection rc');
                     $rateableCollections = $query->getResult();
@@ -285,16 +277,11 @@ class DefaultController extends Controller {
         }
 
         throw $this->createNotFoundException('RateableCollection could not be found.');
-        return null;
     }
 
-    /**
-     * @Route("/quiz/save")
-     */
     public function saveAction() {
         if ('POST' != $this->getRequest()->getMethod()) {
             throw $this->createNotFoundException('Expected POST method.');
-            return null;
         }
         $quizRemainingSeconds = $this->getRequest()->get('quizRemainingTime');
         $quizElpasedSeconds   = DefaultController::FILLING_TIME_SECONDS - $quizRemainingSeconds;
@@ -303,8 +290,8 @@ class DefaultController extends Controller {
         $rateableId           = $rateable->getId();
         $quizData             = json_decode($this->getRequest()->get('quizData'));
 
-        $connection = $this->getDoctrine()->getEntityManager()->getConnection();
-        $now        = date("Y-m-d H:i:s");
+        $connection = $this->getDoctrine()->getManager()->getConnection();
+        $now = date("Y-m-d H:i:s");
         $connection->insert('quiz', array(
             'rateable_id'     => $rateableId,
             'created'         => $now,
@@ -313,19 +300,22 @@ class DefaultController extends Controller {
 
         $lastInsertedQuizId = $connection->lastInsertId();
 
-        foreach ($quizData as $questionId => $wongAnswerId) {
+        foreach ($quizData as $questionId => $wrongAnswerId) {
             $connection->insert('quiz_reply', array(
-                'quiz_id'               => $lastInsertedQuizId,
-                'question_id'           => $questionId,
-                'wrong_given_answer_id' => $wongAnswerId,                
+                'quiz_id' => $lastInsertedQuizId,
+                'question_id' => $questionId,
+                'wrong_given_answer_id' => $wrongAnswerId
             ));
         }
+
+        $session = $this->get('session');
+        $session->remove('quiz.starttime');
+        $session->remove('quiz.lastquestions');
 
         return new Response('OK');
     }
 
     /**
-     * @Route("/quiz/entrance")
      * @Template()
      */
     public function entranceAction() {
@@ -337,20 +327,33 @@ class DefaultController extends Controller {
     }
 
     /**
-     * @Route("/quiz")
      * @Template()
      */
     public function indexAction() {
         if ( !$this->isCurrentUserAllowedToDoQuiz() ) {
             return $this->redirect($this->generateUrl('contact_index'));
         }
+
+        $session = $this->get('session');
         
         $user = $this->get('security.context')->getToken()->getUser();
         $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
-        $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
-        $questionsWithAnswers = $this->createQuestionsWithAnswersArray($questions);
+        if (!$questionsWithAnswers = $session->get('quiz.lastquestions')) {
+            $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
+            $questionsWithAnswers = $this->createQuestionsWithAnswersArray($questions);
+            $session->set('quiz.lastquestions', $questionsWithAnswers);
+        }
 
-        return array('rateableId' => $rateable->getId(), 'questions' => $questionsWithAnswers);
+        if (!$starttime = $session->get('quiz.starttime')) {
+            $starttime = time();
+            $session->set('quiz.starttime', $starttime);
+        }
+
+        return array(
+            'rateableId' => $rateable->getId(),
+            'questions' => $questionsWithAnswers,
+            'remainingTime' => $starttime - time() + 180,
+        );
     }
     
     private function isCurrentUserAllowedToDoQuiz() {
@@ -359,31 +362,24 @@ class DefaultController extends Controller {
         $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
         
         if ( 3 <= count($questions) ) {
-            $completedQuizes = $this->getDoctrine()->getRepository('AcmeQuizBundle:Quiz')->createQueryBuilder('q')
+            $completedQuiz = $this->getDoctrine()->getRepository('AcmeQuizBundle:Quiz')->createQueryBuilder('q')
                 ->where('q.rateable = :rateable')
                 ->setParameter('rateable', $rateable)
                 ->orderBy('q.created', 'DESC')
+                ->setMaxResults(1)
                 ->getQuery()
-                ->getResult();
+                ->getOneOrNullResult();
             
-            if ( empty($completedQuizes) ) {
+            if (!$completedQuiz || $this->isDateOlderThanOneDay($completedQuiz->getCreated())) {
                 return true;
-            }
-            
-            $nowDate = new \DateTime();
-            $nowDateString = $nowDate->format('Y-m-d');
-            
-            $lastCompletedQuiz = $completedQuizes[0];
-            $lastCompletedQuizDateString = $lastCompletedQuiz->getCreated()->format('Y-m-d');
-            
-            if ( strlen($lastCompletedQuizDateString) === strlen($nowDateString) ) {
-                if ( $lastCompletedQuiz->getCreated()->format('Y-m-d') != $nowDate->format('Y-m-d') ) {
-                    return true;
-                }
             }
         }
         
         return false;
+    }
+
+    private function isDateOlderThanOneDay(\DateTime $date) {
+        return $date->getTimestamp() + 24*60*60 < time();
     }
     
     private function createQuestionsWithAnswersArray($questions) {

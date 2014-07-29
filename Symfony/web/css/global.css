@@ -772,8 +772,9 @@ p {
 .slider_bg .slider .slide_elem {
 	border-top: 1px solid #797979;
 	box-shadow: 0px -1px 0px 0px #4f4f4f;
-	height: 89px;
-	padding: 0 15px;
+    min-height: 89px;
+	float: left;
+    width: 100%;
 }
 .lister .slider_bg .slider .slide_elem {
 	height: 62px;
@@ -788,7 +789,7 @@ p {
 	background-size: 75px 75px;
 	float: left;
 	height: 71px;
-	margin: 7px 14px 0 0;
+	margin: 7px 0 0 15px;
 	min-width: 75px;
 	padding: 4px 0 0;
 	width: 75px;
@@ -813,6 +814,11 @@ p {
 	width: 47px;
 }
 
+.slider_bg .slider .slide_elem .tail {
+    float: left;
+    margin: 0 15px;
+}
+
 .slider_bg .slider .slide_elem h1 {
 	color: #d0d0d0;
 	font-family: 'DINProH-Medium';
@@ -835,6 +841,7 @@ p {
 	line-height: 24px;
 	text-align: left;
 	text-shadow: 0px 1px rgba(1, 1, 0, 0.75);
+    padding-bottom: 6px;
 }
 .lister .slider_bg .slider .slide_elem h2 {
 	font-size: 13px;

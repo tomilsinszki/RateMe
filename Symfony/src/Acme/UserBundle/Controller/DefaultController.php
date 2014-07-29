@@ -38,7 +38,7 @@ class DefaultController extends Controller
         return $imageURL;
     }
 
-    public function profileEditAction(Request $request)
+    public function profileEditAction()
     {
         $user = $this->getUserFromContext();
 
@@ -308,7 +308,7 @@ class DefaultController extends Controller
     public function managerWelcomeAction()
     {
         return $this->render('AcmeUserBundle:Default:managerWelcome.html.twig', array(
-            'user' => $this->getUserFromContext(),
+            'ownedCollections' => $this->getUser()->getOwnedCollections()
         ));
     }
 }

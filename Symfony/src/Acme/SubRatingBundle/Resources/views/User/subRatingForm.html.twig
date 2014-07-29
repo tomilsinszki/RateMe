@@ -6,6 +6,10 @@
         <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/newRating.css') }}" />
         <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
 
+        <style media="screen" type="text/css">
+            {{ include('AcmeRatingBundle:Rating:customCompanyDesign.css.twig') }}
+        </style>
+
         <script>
             $(function() {
                 function isEmailValid(email) {
@@ -36,6 +40,10 @@
                 });
             });
         </script>
+
+        <script>
+            {% include '::googleAnalytics.js.twig' %}
+        </script>
 	</head>
 	<body>
         <!-- Preloaded images -->
@@ -47,7 +55,7 @@
 				<div class="wrapper">
 					<h2>Köszönjük, hogy válaszával segítette munkánkat!</h2>
 					<p>Ha még válaszol további kérdésekre, akkor az esélyei a sorsoláson annyiszorosára nőnek, ahány kérdésre válaszolt. Ha szeretne biztosra menni, vagy csak elmondaná véleményét, kérjük válaszoljon az alábbi kérdésre.</p>
-					<a href="{{ path('sub_rating_user_thank_you') }}">Ennyi elég volt, nem akarok több kérdésre válaszolni</a>
+					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id}) }}">Ennyi elég volt, nem akarok több kérdésre válaszolni</a>
 				</div>
 
 				<div class="wrapper bottom-wrapper">
@@ -58,6 +66,7 @@
 
                 {% if contact is null %}
                 {% if question is not null %}
+                {% if company.ratingPromotionPrizeName is not null %}
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
@@ -72,6 +81,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
                 {% endif %}
                 {% endif %}
                 {% endif %}

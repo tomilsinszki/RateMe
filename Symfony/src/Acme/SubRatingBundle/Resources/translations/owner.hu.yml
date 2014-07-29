@@ -19,3 +19,7 @@ Questions will appear for customers in a sequential order.: Mindenki ugyanazokat
 Questions will appear for customers in a random order.: Mindenki véletlenszerűen kapja a kérdéseket
 Questions will appear for customers in a random order, however the first question will have the highest chance of showing first, while the last question will have the highest chance of showing last.: A rendszer véletlenszerűen adja a kérdéseket, de az 1. sorszámút adja a legnagyobb valószínűséggel, a legnagyobb sorszámút a legkisebb valószínűséggel
 The order of questions will be determined by how many customer ratings they have received so far. Questions with the least ratings will appear first.: Mindenki azt a kérdést kapja először, amire eddig a legkevesebb válasz érkezett
+Options: Beállítások
+Maximum question count: Maximális kérdésszám
+Ok: Ok
+You have to enter positive integer numbers!: Csak 0-nál nagyobb egész számokat lehet megadni
