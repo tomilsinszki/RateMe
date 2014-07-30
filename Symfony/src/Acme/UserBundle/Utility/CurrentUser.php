@@ -33,6 +33,3 @@ class CurrentUser
         return FALSE;
     }
 }
-
-?>
-

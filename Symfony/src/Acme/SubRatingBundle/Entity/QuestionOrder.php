@@ -105,4 +105,3 @@ class QuestionOrder
         return $this->collections;
     }
 }
-

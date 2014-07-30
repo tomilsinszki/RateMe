@@ -163,4 +163,3 @@ class SubRating
         return $this->rating;
     }
 }
-
