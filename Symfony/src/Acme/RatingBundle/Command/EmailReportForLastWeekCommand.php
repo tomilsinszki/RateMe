@@ -38,7 +38,7 @@ class EmailReportForLastWeekCommand extends ContainerAwareCommand {
         $message    = \Swift_Message::newInstance();
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
-        $message->setSubject($translator->trans('emailTitle', array(), 'riport') . '(' . $manager['rateableCollectionName'] . ')');
+        $message->setSubject($translator->trans('emailTitle', array(), 'riport') . " - {$manager['rateableCollectionName']}");
         $message->setFrom(array('report@rate.me.uk' => $translator->trans('emailFrom', array(), 'riport')));
         $message->setTo($manager['emailAddress']);                 
         $ratingCountAndAvg                  = $this->getRatingCountAndAvg($manager, $startDateTime, $endDateTime);

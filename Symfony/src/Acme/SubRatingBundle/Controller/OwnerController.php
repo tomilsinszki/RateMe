@@ -576,4 +576,3 @@ class OwnerController extends Controller
         return new Response(json_encode($response), 200, array('Content-Type' => 'application/json'));
     }
 }
-

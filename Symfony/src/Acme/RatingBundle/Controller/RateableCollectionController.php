@@ -513,24 +513,24 @@ class RateableCollectionController extends Controller
         $endDateTimeRawParts   = explode('_', $endDateTime);
         $endDateTime           = new \DateTime($endDateTimeRawParts[0] . ' ' . str_replace('-', ':', $endDateTimeRawParts[1]));
         
-        $excelService = $this->getExcelReport($rateableCollection, $startDateTime, $endDateTime);        
-        
-        $response = $excelService->getResponse();
+        $excelObject = $this->getExcelReport($rateableCollection, $startDateTime, $endDateTime);        
+        $excelWriter = $this->get('phpexcel')->createWriter($excelObject, 'Excel2007');
+        $response = $this->get('phpexcel')->createStreamedResponse($excelWriter);
+
         $response->headers->set('Content-Description', 'File Transfer');
         $response->headers->set('Expires', 0);
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
         $response->headers->set('Content-Transfer-Encoding', 'Binary');
         $response->headers->set('Content-Disposition', 'attachment; filename="RateMe - Excel riport.xlsx"');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
-
-        // If you are using a https connection, you have to set those two headers and use sendHeaders() for compatibility with IE <9
         $response->headers->set('Pragma', 'public');
+        
         return $response;
     }
     
     private function getExcelReport($rateableCollection, $startDateTime, $endDateTime) {
-        $excelService = $this->get('xls.service_xls2007');
-        $excelService->excelObj->getProperties()->setCreator($this->get('translator')->trans('excelCreator', array(), 'riport'))
+        $excelObject = $this->get('phpexcel')->createPHPExcelObject();
+        $excelObject->getProperties()->setCreator($this->get('translator')->trans('excelCreator', array(), 'riport'))
                             ->setLastModifiedBy($this->get('translator')->trans('excelModifiedBy', array(), 'riport'))
                             ->setTitle($this->get('translator')->trans('excelTitle', array(), 'riport'))
                             ->setSubject($this->get('translator')->trans('excelTitle', array(), 'riport'))
@@ -538,8 +538,8 @@ class RateableCollectionController extends Controller
                             ->setKeywords($this->get('translator')->trans('excelTitle', array(), 'riport'))
                             ->setCategory($this->get('translator')->trans('excelTitle', array(), 'riport'));
 
-        $excelService->excelObj->setActiveSheetIndex(0);
-        $activeSheet = $excelService->excelObj->getActiveSheet();
+        $excelObject->setActiveSheetIndex(0);
+        $activeSheet = $excelObject->getActiveSheet();
         $activeSheet->setTitle($this->get('translator')->trans('Riport', array(), 'riport'));
         for($col = 'A'; $col != 'G'; $col++) {
             $activeSheet->getColumnDimension($col)->setWidth(35);            
@@ -550,7 +550,7 @@ class RateableCollectionController extends Controller
         $rowCount = $this->setExcelReportQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
         $rowCount = $this->setExcelReportSubRatings($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
         $activeSheet->getStyle('B1:F' . $rowCount)->getAlignment()->setHorizontal('center');
-        return $excelService;
+        return $excelObject;
     }
     
     private function setExcelReportSubRatings($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
@@ -593,27 +593,25 @@ class RateableCollectionController extends Controller
     }
     
     private function getSubRatingsQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime) {
-        $quizQuestionsForRateableCollectionByInterval = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->createQueryBuilder('q')                                                
-                                ->where('q.rateableCollection = :rateableCollection')            
-                                ->setParameter('rateableCollection', $rateableCollection)
-                                ->andWhere('q.created >= :date_from') 
-                                ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                ->andWhere('q.created <= :date_to') 
-                                ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)                                                 
-                                ->getQuery()
-                                ->getResult();
-        return $quizQuestionsForRateableCollectionByInterval;
+        /*
+        return $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->createQueryBuilder('q')
+            ->where('q.rateableCollection = :rateableCollection')            
+            ->setParameter('rateableCollection', $rateableCollection)
+            ->andWhere('q.created >= :date_from') 
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('q.created <= :date_to') 
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)                                                 
+            ->getQuery()
+            ->getResult();
+        */
     }
     
     private function setExcelReportQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
         $this->setExcelReportQuizHeader($activeSheet, $rowCount);
         $startRowCount = $rowCount + 5;
         $rowCount      = $rowCount + 5;
-        $rateablesForRateableCollectionId = $this->getDoctrine()
-                                            ->getRepository('AcmeRatingBundle:Rateable')
-                                            ->findBy(array('collection' => $rateableCollection), 
-                                                     array('name' => 'ASC'));
-        foreach($rateablesForRateableCollectionId as $rateable) {
+        
+        foreach($this->getActiveRateablesForCollection($rateableCollection) as $rateable) {
             $nameCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
             $nameCell->setValueExplicit($rateable->getName());
             
@@ -706,11 +704,7 @@ class RateableCollectionController extends Controller
     private function setExcelReportRatings($activeSheet, $rateableCollection, $startDateTime, $endDateTime) {
         $this->setExcelReportRatingsHeader($activeSheet);
         $rowCount = 7;
-        $rateablesForRateableCollectionId = $this->getDoctrine()
-                                            ->getRepository('AcmeRatingBundle:Rateable')
-                                            ->findBy(array('collection' => $rateableCollection), 
-                                                     array('name' => 'ASC'));
-        foreach($rateablesForRateableCollectionId as $rateable) {
+        foreach($this->getActiveRateablesForCollection($rateableCollection) as $rateable) {
             $nameCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
             $nameCell->setValueExplicit($rateable->getName());
             
@@ -735,6 +729,12 @@ class RateableCollectionController extends Controller
         }
         $this->setExcelReportRatingsSum($activeSheet, $rowCount);
         return ++$rowCount;
+    }
+
+    private function getActiveRateablesForCollection($rateableCollection) {
+        return $this->getDoctrine()
+            ->getRepository('AcmeRatingBundle:Rateable')
+            ->findBy(array('collection' => $rateableCollection, 'isActive' => true), array('name' => 'ASC'));
     }
     
     private function getRatingsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
@@ -1249,4 +1249,3 @@ class RateableCollectionController extends Controller
         return ( $a['currentPeriod']['ratingCount'] < $b['currentPeriod']['ratingCount'] ) ? 1 : -1;
     }
 }
-

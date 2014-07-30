@@ -361,4 +361,3 @@ class Question
         return $this->rateableCollection;
     }
 }
-

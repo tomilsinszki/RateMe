@@ -266,4 +266,3 @@ class Answer
         return $this->subRatings;
     }
 }
-
