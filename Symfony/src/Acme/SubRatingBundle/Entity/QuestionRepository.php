@@ -181,4 +181,3 @@ class QuestionRepository extends EntityRepository {
         return $questionsWithSubRatings;
     }
 }
-

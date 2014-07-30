@@ -134,4 +134,3 @@ class AnswerType
         return $this->answers;
     }
 }
-

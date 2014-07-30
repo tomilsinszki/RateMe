@@ -12,6 +12,3 @@ class ImageDimension extends Constraint {
     public $width = 350;
     public $height = 350;
 }
-
-?>
-

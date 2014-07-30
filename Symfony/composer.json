@@ -20,7 +20,7 @@
         "jms/di-extra-bundle": "1.1.*",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "stof/doctrine-extensions-bundle": "~1.1@dev",
-        "liuggio/excelbundle": ">=1.0.5"
+        "liuggio/excelbundle": "~2.0"
     },
     "scripts": {
         "post-install-cmd": [
@@ -36,7 +36,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ]
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web"
