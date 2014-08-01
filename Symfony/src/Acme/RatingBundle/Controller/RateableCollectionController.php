@@ -556,7 +556,10 @@ class RateableCollectionController extends Controller
     private function setExcelReportSubRatings($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
         $this->setExcelReportSubRatingsHeader($activeSheet, $rowCount);
         $rowCount = $rowCount + 4;        
+        
         $subRatingQuestionsForRateableCollectionByInterval = $this->getSubRatingsQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime);
+        $subRatingAnswerCountsById = $this->getSubRatingAnswersWithCountByInterval($rateableCollection, $startDateTime, $endDateTime);
+        
         if(empty($subRatingQuestionsForRateableCollectionByInterval)) {
             $questionNotFountCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
             $questionNotFountCell->setValueExplicit($this->get('translator')->trans('QuestionsNotFound', array(), 'riport'));
@@ -577,7 +580,8 @@ class RateableCollectionController extends Controller
             foreach($subRatingQuestion->getAnswers() as $answer) {  
                 if(TRUE == $answer->getIsEnabled()) {
                     $answerCountCell = $activeSheet->getCellByColumnAndRow($columnCount, $rowCount);
-                    $answerCountCell->setValue(count($answer->getSubRatings()));
+                    $value = (array_key_exists($answer->getId(), $subRatingAnswerCountsById)) ? $subRatingAnswerCountsById[$answer->getId()] : 0;
+                    $answerCountCell->setValue($value);
                     $columnCount++;
                 }
             }
@@ -593,17 +597,43 @@ class RateableCollectionController extends Controller
     }
     
     private function getSubRatingsQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime) {
-        /*
         return $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->createQueryBuilder('q')
-            ->where('q.rateableCollection = :rateableCollection')            
+            ->where('q.rateableCollection = :rateableCollection')
             ->setParameter('rateableCollection', $rateableCollection)
-            ->andWhere('q.created >= :date_from') 
+            ->andWhere('q.created <= :date_to')
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere(':date_from <= q.deleted OR q.deleted IS NULL')
             ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-            ->andWhere('q.created <= :date_to') 
-            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)                                                 
             ->getQuery()
             ->getResult();
-        */
+    }
+
+    private function getSubRatingAnswersWithCountByInterval($rateableCollection, $startDateTime, $endDateTime) {
+        $rows = $this->getDoctrine()->getManager()->createQueryBuilder()
+            ->select('a.id AS answerId, COUNT(a.id) AS answerCount')
+            ->from('AcmeRatingBundle:RateableCollection', 'rc')
+            ->leftJoin('rc.rateables', 'rb')
+            ->leftJoin('rb.ratings', 'r')
+            ->leftJoin('r.subRatings', 'sr')
+            ->leftJoin('sr.answer', 'a')
+            ->where('rc = :rateableCollection')
+            ->setParameter('rateableCollection', $rateableCollection)
+            ->andWhere('sr IS NOT NULL')
+            ->andWhere('rb.isActive = 1')
+            ->andWhere(':date_from <= sr.created')
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('sr.created <= :date_to')
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getResult();
+        
+        $subRatingAnswerCountsById = array();
+        foreach($rows as $row) {
+            $subRatingAnswerCountsById[$row['answerId']] = intval($row['answerCount']);
+        }
+        
+        return $subRatingAnswerCountsById;
     }
     
     private function setExcelReportQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
@@ -738,29 +768,27 @@ class RateableCollectionController extends Controller
     }
     
     private function getRatingsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
-        $ratingsForRatableByInterval = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->createQueryBuilder('q')                                                                                                
-                                        ->where('q.rateable = :rateable')            
-                                        ->setParameter('rateable', $rateable)
-                                        ->andWhere('q.created >= :date_from') 
-                                        ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                        ->andWhere('q.created <= :date_to') 
-                                        ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                        ->getQuery()
-                                        ->getResult();
-        return $ratingsForRatableByInterval;
+        return $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->createQueryBuilder('r')
+            ->where('r.rateable = :rateable')
+            ->setParameter('rateable', $rateable)
+            ->andWhere('r.created >= :date_from')
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('r.created <= :date_to')
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->getQuery()
+            ->getResult();
     }
     
     private function getContactsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
-        $contactsForRatableByInterval = $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->createQueryBuilder('q')
-                                            ->where('q.rateable = :rateable')            
-                                            ->setParameter('rateable', $rateable)
-                                            ->andWhere('q.contactHappenedAt >= :date_from') 
-                                            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                            ->andWhere('q.contactHappenedAt <= :date_to') 
-                                            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
-                                            ->getQuery()
-                                            ->getResult();
-        return $contactsForRatableByInterval;
+        return $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->createQueryBuilder('c')
+            ->where('c.rateable = :rateable')            
+            ->setParameter('rateable', $rateable)
+            ->andWhere('c.contactHappenedAt >= :date_from') 
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('c.contactHappenedAt <= :date_to') 
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->getQuery()
+            ->getResult();
     }
     
     private function setExcelReportRatingsSum($activeSheet, $rowCount) {
