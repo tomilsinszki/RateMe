@@ -42,6 +42,7 @@ class EmailReportForLastWeekCommand extends ContainerAwareCommand {
         $message->setSubject($translator->trans('emailTitle', array(), 'riport') . " - {$manager['rateableCollectionName']}");
         $message->setFrom(array('report@rate.me.uk' => $translator->trans('emailFrom', array(), 'riport')));
         $message->setTo($manager['emailAddress']);
+        $message->addBcc('rateme.archive@gmail.com');
 
         $ratingCountAndAvg = $this->getRatingCountAndAvg($manager, $startDateTime, $endDateTime);
         $mostFiveRateForRateable = $this->getMostFiveRate($manager, $startDateTime, $endDateTime);
