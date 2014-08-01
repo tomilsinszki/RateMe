@@ -508,6 +508,13 @@ class RateableCollectionController extends Controller
 
     public function reportDownloadAction($rateableCollectionId, $startDateTime, $endDateTime) {          
         $rateableCollection    = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
+        if ( empty($rateableCollection) ) {
+            throw $this->createNotFoundException('Rateable collection not found!');
+        }
+        else if (!$this->getUserFromContext()->getOwnedCollections()->contains($rateableCollection)) {
+            throw $this->createNotFoundException('Current user has no right no access to this rateableCollection.');
+        }
+        
         $startDateTimeRawParts = explode('_', $startDateTime);        
         $startDateTime         = new \DateTime($startDateTimeRawParts[0] . ' ' . str_replace('-', ':', $startDateTimeRawParts[1]));
         $endDateTimeRawParts   = explode('_', $endDateTime);
