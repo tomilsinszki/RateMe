@@ -31,8 +31,8 @@ class DefaultController extends Controller {
     }
 
     public function downloadAction($rateableCollectionId) {
-        $excelService = $this->get('xls.service_xls2007');
-        $excelService->excelObj->getProperties()->setCreator("RateMe")
+        $excel = $this->get('phpexcel')->createPHPExcelObject();
+        $excel->getProperties()->setCreator("RateMe")
                             ->setLastModifiedBy("RateMe")
                             ->setTitle("RateMe Kérdőív")
                             ->setSubject("RateMe Kérdőív kérdések és válaszaik")
@@ -40,8 +40,8 @@ class DefaultController extends Controller {
                             ->setKeywords("RateMe Kérdőív kérdések válaszok")
                             ->setCategory("RateMe Kérdőív kérdések és válaszaik");
 
-        $excelService->excelObj->setActiveSheetIndex(0);
-        $activeSheet = $excelService->excelObj->getActiveSheet();
+        $excel->setActiveSheetIndex(0);
+        $activeSheet = $excel->getActiveSheet();
         $activeSheet->setTitle('Simple');
         $headerNames = array('Kérdés', 'Helyes válasz', 'Egyéb válasz 1', 'Egyéb válasz 2');
         $activeSheet->fromArray($headerNames);
@@ -71,16 +71,16 @@ class DefaultController extends Controller {
             $rowNum++;
         }
 
-        $response = $excelService->getResponse();
+        $writer = $this->get('phpexcel')->createWriter($excel, 'Excel2007');
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
         $response->headers->set("Content-Description", "File Transfer");
         $response->headers->set('Expires', 0);
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
         $response->headers->set("Content-Transfer-Encoding", "Binary");
         $response->headers->set('Content-Disposition', 'attachment; filename="Kérdőív.xlsx"');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
-
-        // If you are using a https connection, you have to set those two headers and use sendHeaders() for compatibility with IE <9
         $response->headers->set('Pragma', 'public');
+        
         return $response;
     }
 
@@ -98,7 +98,7 @@ class DefaultController extends Controller {
             $excelObj = null;
             switch ($questionFile->getExtension()) {
                 case ('xlsx'):
-                    $excelObj = $this->get('xls.load_xls2007')->load($absPath);
+                    $excelObj = $this->get('phpexcel')->createPHPExcelObject($absPath);
                     break;
                 default:
                     break;

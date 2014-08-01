@@ -59,19 +59,19 @@
             A <strong>kérdőív</strong> kérdéseire az alábbi <strong>válaszokat</strong> kaptad:
         </p>
 
-        <ul style="margin: 0; padding: 10px 40px 20px; text-align: left;">
-            <li>
-                {{ subratings.0.question }}
-                <ul>
+        <ul style="margin: 0; padding: 10px 30px 20px; text-align: left;">
+            <li style="list-style: none;">
+                <strong>{{ subratings.0.question }}</strong>
+                <ul style="margin-top: 5px;">
                     {% set lastQuestion = subratings.0.question %}
                     {% for question in subratings %}
                         {% if question.question != lastQuestion %}
                             {% set lastQuestion = question.question %}
                         </ul>
                     </li>
-                    <li>
-                        {{ question.question }}
-                        <ul>
+                    <li style="margin-top: 15px; list-style: none;">
+                        <strong>{{ question.question }}</strong>
+                        <ul style="margin-top: 5px;">
                         {% endif %}
                         <li>
                             Válasz {{ question.answer }}:
