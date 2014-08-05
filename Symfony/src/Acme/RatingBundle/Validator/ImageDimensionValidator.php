@@ -28,6 +28,3 @@ class ImageDimensionValidator extends ConstraintValidator {
         return $isValid;
     }
 }
-
-?>
-

@@ -145,4 +145,3 @@ class QuestionType
         return $this->questions;
     }
 }
-

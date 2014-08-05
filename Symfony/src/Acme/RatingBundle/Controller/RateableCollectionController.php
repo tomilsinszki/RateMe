@@ -19,6 +19,7 @@ use Acme\RatingBundle\Entity\Rateable;
 use Acme\RatingBundle\Entity\Image;
 use Acme\RatingBundle\Utility\Validator;
 use Acme\UserBundle\Utility\CurrentUser;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 class RateableCollectionController extends Controller
@@ -527,6 +528,338 @@ class RateableCollectionController extends Controller
         ));
     }
 
+    public function reportDownloadAction($rateableCollectionId, $startDateTime, $endDateTime) {          
+        $rateableCollection    = $this->getDoctrine()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
+        if ( empty($rateableCollection) ) {
+            throw $this->createNotFoundException('Rateable collection not found!');
+        }
+        else if (!$this->getUserFromContext()->getOwnedCollections()->contains($rateableCollection)) {
+            throw $this->createNotFoundException('Current user has no right no access to this rateableCollection.');
+        }
+        
+        $startDateTimeRawParts = explode('_', $startDateTime);        
+        $startDateTime         = new \DateTime($startDateTimeRawParts[0] . ' ' . str_replace('-', ':', $startDateTimeRawParts[1]));
+        $endDateTimeRawParts   = explode('_', $endDateTime);
+        $endDateTime           = new \DateTime($endDateTimeRawParts[0] . ' ' . str_replace('-', ':', $endDateTimeRawParts[1]));
+        
+        $excelObject = $this->getExcelReport($rateableCollection, $startDateTime, $endDateTime);        
+        $excelWriter = $this->get('phpexcel')->createWriter($excelObject, 'Excel2007');
+        $response = $this->get('phpexcel')->createStreamedResponse($excelWriter);
+
+        $response->headers->set('Content-Description', 'File Transfer');
+        $response->headers->set('Expires', 0);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+        $response->headers->set('Content-Transfer-Encoding', 'Binary');
+        $response->headers->set('Content-Disposition', 'attachment; filename="RateMe - Excel riport.xlsx"');
+        $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0, max-age=0');
+        $response->headers->set('Pragma', 'public');
+        
+        return $response;
+    }
+    
+    private function getExcelReport($rateableCollection, $startDateTime, $endDateTime) {
+        $excelObject = $this->get('phpexcel')->createPHPExcelObject();
+        $excelObject->getProperties()->setCreator($this->get('translator')->trans('excelCreator', array(), 'riport'))
+                            ->setLastModifiedBy($this->get('translator')->trans('excelModifiedBy', array(), 'riport'))
+                            ->setTitle($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setSubject($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setDescription($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setKeywords($this->get('translator')->trans('excelTitle', array(), 'riport'))
+                            ->setCategory($this->get('translator')->trans('excelTitle', array(), 'riport'));
+
+        $excelObject->setActiveSheetIndex(0);
+        $activeSheet = $excelObject->getActiveSheet();
+        $activeSheet->setTitle($this->get('translator')->trans('Riport', array(), 'riport'));
+        for($col = 'A'; $col != 'G'; $col++) {
+            $activeSheet->getColumnDimension($col)->setWidth(35);            
+        }        
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, 1);
+        $headerTitle->setValueExplicit($this->get('translator')->trans('WeeklyRiport', array(), 'riport') . ' ' . $startDateTime->format('Y.m.d.') . ' - ' . $endDateTime->format('Y.m.d.'));
+        $rowCount = $this->setExcelReportRatings($activeSheet, $rateableCollection, $startDateTime, $endDateTime);        
+        $rowCount = $this->setExcelReportQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
+        $rowCount = $this->setExcelReportSubRatings($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime);
+        $activeSheet->getStyle('B1:F' . $rowCount)->getAlignment()->setHorizontal('center');
+        return $excelObject;
+    }
+    
+    private function setExcelReportSubRatings($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
+        $this->setExcelReportSubRatingsHeader($activeSheet, $rowCount);
+        $rowCount = $rowCount + 4;        
+        
+        $subRatingQuestionsForRateableCollectionByInterval = $this->getSubRatingsQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime);
+        $subRatingAnswerCountsById = $this->getSubRatingAnswersWithCountByInterval($rateableCollection, $startDateTime, $endDateTime);
+        
+        if(empty($subRatingQuestionsForRateableCollectionByInterval)) {
+            $questionNotFountCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $questionNotFountCell->setValueExplicit($this->get('translator')->trans('QuestionsNotFound', array(), 'riport'));
+        }
+        foreach($subRatingQuestionsForRateableCollectionByInterval as $subRatingQuestion) {
+            $columnCount = 1;
+            foreach($subRatingQuestion->getAnswers() as $answer) {
+                if(TRUE == $answer->getIsEnabled()) {
+                    $answerCell = $activeSheet->getCellByColumnAndRow($columnCount, $rowCount);
+                    $answerCell->setValueExplicit($answer->getText());
+                    $columnCount++;
+                }
+            }            
+            $rowCount++;
+            $questionCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $questionCell->setValueExplicit($subRatingQuestion->getText());            
+            $columnCount = 1;
+            foreach($subRatingQuestion->getAnswers() as $answer) {  
+                if(TRUE == $answer->getIsEnabled()) {
+                    $answerCountCell = $activeSheet->getCellByColumnAndRow($columnCount, $rowCount);
+                    $value = (array_key_exists($answer->getId(), $subRatingAnswerCountsById)) ? $subRatingAnswerCountsById[$answer->getId()] : 0;
+                    $answerCountCell->setValue($value);
+                    $columnCount++;
+                }
+            }
+            $rowCount += 2;
+        }
+        return ++$rowCount;
+    }
+    
+    private function setExcelReportSubRatingsHeader($activeSheet, $rowCount) {
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount+2);
+        $headerTitle->setValueExplicit($this->get('translator')->trans('SubRatingsHeader', array(), 'riport'));
+        $activeSheet->getStyle('A' . ($rowCount+2))->getFont()->setBold(true);
+    }
+    
+    private function getSubRatingsQuestionsForRateableCollectionByInterval($rateableCollection, $startDateTime, $endDateTime) {
+        return $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->createQueryBuilder('q')
+            ->where('q.rateableCollection = :rateableCollection')
+            ->setParameter('rateableCollection', $rateableCollection)
+            ->andWhere('q.created <= :date_to')
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere(':date_from <= q.deleted OR q.deleted IS NULL')
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function getSubRatingAnswersWithCountByInterval($rateableCollection, $startDateTime, $endDateTime) {
+        $rows = $this->getDoctrine()->getManager()->createQueryBuilder()
+            ->select('a.id AS answerId, COUNT(a.id) AS answerCount')
+            ->from('AcmeRatingBundle:RateableCollection', 'rc')
+            ->leftJoin('rc.rateables', 'rb')
+            ->leftJoin('rb.ratings', 'r')
+            ->leftJoin('r.subRatings', 'sr')
+            ->leftJoin('sr.answer', 'a')
+            ->where('rc = :rateableCollection')
+            ->setParameter('rateableCollection', $rateableCollection)
+            ->andWhere('sr IS NOT NULL')
+            ->andWhere('rb.isActive = 1')
+            ->andWhere(':date_from <= sr.created')
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('sr.created <= :date_to')
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getResult();
+        
+        $subRatingAnswerCountsById = array();
+        foreach($rows as $row) {
+            $subRatingAnswerCountsById[$row['answerId']] = intval($row['answerCount']);
+        }
+        
+        return $subRatingAnswerCountsById;
+    }
+    
+    private function setExcelReportQuiz($activeSheet, $rowCount, $rateableCollection, $startDateTime, $endDateTime) {
+        $this->setExcelReportQuizHeader($activeSheet, $rowCount);
+        $startRowCount = $rowCount + 5;
+        $rowCount      = $rowCount + 5;
+        
+        foreach($this->getActiveRateablesForCollection($rateableCollection) as $rateable) {
+            $nameCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $nameCell->setValueExplicit($rateable->getName());
+            
+            $correctAnswersForRateableByInterval = $this->getCorrectAnswersForRateable($rateable, $startDateTime, $endDateTime);            
+            $correctAnswerCell                   = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+            $correctAnswerCell->setValue(count($correctAnswersForRateableByInterval));
+            
+            $wrongAnswersForRateableByInterval = $this->getWrongAnswersForRateable($rateable, $startDateTime, $endDateTime);            
+            $wrongAnswerCell                   = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+            $wrongAnswerCell->setValue(count($wrongAnswersForRateableByInterval));
+            
+            $correctAnswerRatioCell = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+            $correctAnswerRatioCell->setValue($this->getCorrectAnswerRatio($correctAnswersForRateableByInterval, $wrongAnswersForRateableByInterval));
+            $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+                array( 
+                    'code' => '0.00%',
+                )
+            );
+            
+            $rowCount++;
+        }
+        $this->setExcelReportQuizSum($activeSheet, $rowCount, $startRowCount);
+        return ++$rowCount;
+    }
+    
+    private function getCorrectAnswersForRateable($rateable, $startDateTime, $endDateTime) {
+        $correctAnswersForRateable = $this->getDoctrine()->getRepository('AcmeQuizBundle:QuizReply')->createQueryBuilder('qr')
+                                    ->leftJoin('AcmeQuizBundle:Quiz', 'q', 'WITH', 'q=qr.quiz')                                    
+                                    ->where('q.rateable = :rateable')            
+                                    ->setParameter('rateable', $rateable)
+                                    ->andWhere('q.created >= :date_from') 
+                                    ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('q.created <= :date_to') 
+                                    ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('qr.wrongGivenAnswer IS NULL') 
+                                    ->getQuery()
+                                    ->getResult();
+        return $correctAnswersForRateable;
+    }
+    
+    private function getWrongAnswersForRateable($rateable, $startDateTime, $endDateTime) {
+        $wrongAnswersForRateable = $this->getDoctrine()->getRepository('AcmeQuizBundle:QuizReply')->createQueryBuilder('qr')
+                                    ->leftJoin('AcmeQuizBundle:Quiz', 'q', 'WITH', 'q=qr.quiz')                                    
+                                    ->where('q.rateable = :rateable')            
+                                    ->setParameter('rateable', $rateable)
+                                    ->andWhere('q.created >= :date_from') 
+                                    ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('q.created <= :date_to') 
+                                    ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+                                    ->andWhere('qr.wrongGivenAnswer IS NOT NULL') 
+                                    ->getQuery()
+                                    ->getResult();
+        return $wrongAnswersForRateable;
+    }
+    
+    private function setExcelReportQuizHeader($activeSheet, $rowCount) {
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount+2);
+        $headerTitle->setValueExplicit($this->get('translator')->trans('QuizHeader', array(), 'riport'));
+        $activeSheet->getStyle('A'.($rowCount+2))->getFont()->setBold(true);
+        $correctAnswerHeaderTitle = $activeSheet->getCellByColumnAndRow(1, $rowCount+4);
+        $correctAnswerHeaderTitle->setValueExplicit($this->get('translator')->trans('CorrectAnswers', array(), 'riport'));
+        $wrongAnswerHeaderTitle = $activeSheet->getCellByColumnAndRow(2, $rowCount+4);
+        $wrongAnswerHeaderTitle->setValueExplicit($this->get('translator')->trans('WrongAnswers', array(), 'riport'));
+        $correctAnswerRatioHeaderTitle = $activeSheet->getCellByColumnAndRow(3, $rowCount+4);
+        $correctAnswerRatioHeaderTitle->setValueExplicit($this->get('translator')->trans('CorrectAnswerRatio', array(), 'riport'));
+    }
+    
+    private function setExcelReportQuizSum($activeSheet, $rowCount, $startRowCount) {
+        $sumQuizDataHeaderTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+        $sumQuizDataHeaderTitle->setValueExplicit($this->get('translator')->trans('Sum', array(), 'riport'));               
+        $sumCorrectAnswerCount = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+        $sumCorrectAnswerCount->setValue('=SUM(B' . ($startRowCount) . ':B' . ($rowCount-1) . ')');
+        $sumWrongAnswerCount = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+        $sumWrongAnswerCount->setValue('=SUM(C' . ($startRowCount) . ':C' . ($rowCount-1) . ')');
+        $sumCorrectAnswerRatioAvg = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+        $sumCorrectAnswerRatioAvg->setValue('=ROUND(B' . ($rowCount) . '/(B' . ($rowCount) . '+C' . ($rowCount) . '),2)');
+        $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+            array( 
+                'code' => '0.00%',
+            )
+        );
+        $activeSheet->getStyle('A' . $rowCount . ':F' . $rowCount)->getFont()->setBold(true);
+    }
+    
+    private function getCorrectAnswerRatio($correctAnswersForRateable, $wrongAnswersForRateable) {
+        $allAnswersCount = count($correctAnswersForRateable) + count($wrongAnswersForRateable);
+        return (0 == $allAnswersCount) ? 0 : count($correctAnswersForRateable) / $allAnswersCount;
+    }
+    
+    private function setExcelReportRatings($activeSheet, $rateableCollection, $startDateTime, $endDateTime) {
+        $this->setExcelReportRatingsHeader($activeSheet);
+        $rowCount = 7;
+        foreach($this->getActiveRateablesForCollection($rateableCollection) as $rateable) {
+            $nameCell = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+            $nameCell->setValueExplicit($rateable->getName());
+            
+            $contactsForRatableByInterval = $this->getContactsForRatableByInterval($rateable, $startDateTime, $endDateTime);
+            $contactCountCell             = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+            $contactCountCell->setValue(count($contactsForRatableByInterval));
+            
+            $ratingsForRatableByInterval = $this->getRatingsForRatableByInterval($rateable, $startDateTime, $endDateTime);            
+            $ratingCountCell             = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+            $ratingCountCell->setValue(count($ratingsForRatableByInterval));
+            
+            $ratingAvgCell = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+            $avgForRatings = $this->getAvgForRatings($ratingsForRatableByInterval);
+            $ratingAvgCell->setValue($avgForRatings);            
+            $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+                array( 
+                    'code' => '0.00',
+                )
+            );
+            
+            $rowCount++;
+        }
+        $this->setExcelReportRatingsSum($activeSheet, $rowCount);
+        return ++$rowCount;
+    }
+
+    private function getActiveRateablesForCollection($rateableCollection) {
+        return $this->getDoctrine()
+            ->getRepository('AcmeRatingBundle:Rateable')
+            ->findBy(array('collection' => $rateableCollection, 'isActive' => true), array('name' => 'ASC'));
+    }
+    
+    private function getRatingsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
+        return $this->getDoctrine()->getRepository('AcmeRatingBundle:Rating')->createQueryBuilder('r')
+            ->where('r.rateable = :rateable')
+            ->setParameter('rateable', $rateable)
+            ->andWhere('r.created >= :date_from')
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('r.created <= :date_to')
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->getQuery()
+            ->getResult();
+    }
+    
+    private function getContactsForRatableByInterval($rateable, $startDateTime, $endDateTime) {
+        return $this->getDoctrine()->getRepository('AcmeRatingBundle:Contact')->createQueryBuilder('c')
+            ->where('c.rateable = :rateable')            
+            ->setParameter('rateable', $rateable)
+            ->andWhere('c.contactHappenedAt >= :date_from') 
+            ->setParameter('date_from', $startDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->andWhere('c.contactHappenedAt <= :date_to') 
+            ->setParameter('date_to', $endDateTime, \Doctrine\DBAL\Types\Type::DATETIME)
+            ->getQuery()
+            ->getResult();
+    }
+    
+    private function setExcelReportRatingsSum($activeSheet, $rowCount) {
+        $sumRatingsDataHeaderTitle = $activeSheet->getCellByColumnAndRow(0, $rowCount);
+        $sumRatingsDataHeaderTitle->setValueExplicit($this->get('translator')->trans('Sum', array(), 'riport'));         
+        $sumRatingsContactCount = $activeSheet->getCellByColumnAndRow(1, $rowCount);
+        $sumRatingsContactCount->setValue('=SUM(B7:B'.($rowCount-1).')');
+        $sumRatingsRatingCount = $activeSheet->getCellByColumnAndRow(2, $rowCount);
+        $sumRatingsRatingCount->setValue('=SUM(C7:C' . ($rowCount-1) . ')');
+        $sumRatingsRatingAvg = $activeSheet->getCellByColumnAndRow(3, $rowCount);
+        $sumRatingsRatingAvg->setValue('=AVERAGEIF(D7:D' . ($rowCount-1) . ',">0")');          
+        $activeSheet->getStyle('D' . $rowCount)->getNumberFormat()->applyFromArray( 
+            array( 
+                'code' => '0.00',
+            )
+        );
+        $activeSheet->getStyle('A' . $rowCount . ':F' . $rowCount)->getFont()->setBold(true);
+    }
+    
+    private function setExcelReportRatingsHeader($activeSheet) {
+        $headerTitle = $activeSheet->getCellByColumnAndRow(0, 4);
+        $headerTitle->setValueExplicit($this->get('translator')->trans('Ratings', array(), 'riport'));
+        $activeSheet->getStyle('A4')->getFont()->setBold(true);
+        $contactCountHeaderTitle = $activeSheet->getCellByColumnAndRow(1, 6);
+        $contactCountHeaderTitle->setValueExplicit($this->get('translator')->trans('ContactCount', array(), 'riport'));
+        $ratingCountHeaderTitle = $activeSheet->getCellByColumnAndRow(2, 6);
+        $ratingCountHeaderTitle->setValueExplicit($this->get('translator')->trans('ReceivedRatings', array(), 'riport'));
+        $ratingAvgHeaderTitle = $activeSheet->getCellByColumnAndRow(3, 6);
+        $ratingAvgHeaderTitle->setValueExplicit($this->get('translator')->trans('AverageRatings', array(), 'riport'));
+    }
+    
+    private function getAvgForRatings($ratings) {
+        if(empty($ratings)) {
+            return 0;
+        }
+        $sumStars = 0;
+        foreach($ratings as $rating) {
+            $sumStars += $rating->getStars();
+        }
+        return $sumStars / count($ratings);
+    }
+    
     private function calcPreviousPeriodWithSameLength() {
         $diffTimestamp = $this->reportCurrentPeriod['endDate']->getTimestamp() - $this->reportCurrentPeriod['startDate']->getTimestamp();
         $this->reportPreviousPeriod['startDate'] = new \DateTime();
@@ -973,4 +1306,3 @@ class RateableCollectionController extends Controller
         return ( $a['currentPeriod']['ratingCount'] < $b['currentPeriod']['ratingCount'] ) ? 1 : -1;
     }
 }
-

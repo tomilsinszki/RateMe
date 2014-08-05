@@ -50,7 +50,7 @@ class QuizReply {
      * })
      */
     private $wrongGivenAnswer;
-
+    
     /**
      * Get id
      *

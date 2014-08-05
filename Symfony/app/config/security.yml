@@ -59,6 +59,7 @@ security:
         - { path: ^/ugyfel/kontakt, roles: 'ROLE_CUSTOMERSERVICE' }
         - { path: ^/jelentes/valaszto, roles: 'ROLE_MANAGER' }
         - { path: ^/jelentes/megtekintes, roles: 'ROLE_MANAGER' }
+        - { path: ^/jelentes/letoltes, roles: 'ROLE_MANAGER' }
         - { path: ^/menedzser/nyito, roles: 'ROLE_MANAGER' }
         - { path: ^/quiz/questionnaire, roles: 'ROLE_MANAGER' }
         - { path: ^/quiz/upload, roles: 'ROLE_MANAGER' }

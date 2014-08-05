@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+    <p>{% trans from 'riport' %}Dear{% endtrans %} 
+        {% if null != manager.lastName and null != manager.firstName %}
+            {{ manager.lastName }} {{ manager.firstName }}
+        {% else %}
+            {{ manager.userName }}
+        {% endif %}!
+    </p>
+    <p>{% trans from 'riport' %}TheFollowingResultsThisMonth{% endtrans %}</p>
+    <ul>
+        <li>{% trans with {'%ratingCount%': ratingCount, '%ratingAvg%': ratingAvg } from 'riport' %}RatingCountAndAvgThisWeek{% endtrans %}</li>
+        <li>{% trans with {'%quizAvgResult%': quizAvgResult } from 'riport' %}ClientQuizAvgThisWeek{% endtrans %}</li>
+        {% if null != mostFiveRateName %}
+            <li>
+                {% trans with {'%mostFiveRateCount%': mostFiveRateCount, '%mostFiveRateName%': mostFiveRateName } from 'riport' %}MostFiveRateCountThisWeek{% endtrans %}<br/>
+                <img src="{{ images.mostFiveRateForRateable }}" style="width: 120px; height: 120px;" alt="{{ mostFiveRateName }}" />
+            </li>        
+        {% endif %}
+        {% if null != mostQuizCorrectAnswerName %}
+            <li>
+                {% trans with {'%mostQuizCorrectAnswerPercent%': mostQuizCorrectAnswerPercent, '%mostQuizCorrectAnswerName%': mostQuizCorrectAnswerName } from 'riport' %}MostQuizCorrectAnswerThisWeek{% endtrans %}<br/>
+                <img src="{{ images.mostQuizCorrectAnswerByRateable }}" style="width: 120px; height: 120px;" alt="{{ mostQuizCorrectAnswerName }}" />
+            </li>
+        {% endif %}        
+        {% if null != leastAmountContactsFixedName %}
+            <li>
+                {% trans with {'%leastAmountContactsFixedCount%': leastAmountContactsFixedCount, '%leastAmountContactsFixedName%': leastAmountContactsFixedName } from 'riport' %}LeastAmountContactsFixedThisWeek{% endtrans %}<br/>
+                <img src="{{ images.leastAmountContactsFixedByRateable }}" style="width: 120px; height: 120px;" alt="{{ leastAmountContactsFixedName }}" />
+            </li>
+        {% endif %}
+        {% if null != worstRatedRateableName %}
+            <li>
+                {% trans with {'%worstRatedRateableAvg%': worstRatedRateableAvg, '%worstRatedRateableName%': worstRatedRateableName } from 'riport' %}WorstRatedRateableThisWeek{% endtrans %}<br/>
+                <img src="{{ images.worstRatedRateable }}" style="width: 120px; height: 120px;" alt="{{ worstRatedRateableName }}" />
+            </li>
+        {% endif %}
+    </ul>
+    <p>{% trans with {'%excelRiportUrl%': excelRiportUrl } from 'riport' %}ExcelToDownload{% endtrans %}</p>
+    <img src="{{ images.logo }}" alt="RateMe" />
+    <p>{% trans from 'riport' %}BestRegards{% endtrans %}</p>
+</body>
+</html>

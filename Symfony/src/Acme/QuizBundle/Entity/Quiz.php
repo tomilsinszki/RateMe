@@ -47,6 +47,13 @@ class Quiz {
      */
     private $quizReplies;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="elapsed_seconds", type="integer", nullable=false)
+     */
+    private $elapsedSeconds;
+    
     public function __construct() {
         $this->quizReplies = new ArrayCollection();
     }
@@ -138,5 +145,28 @@ class Quiz {
     public function getQuizReplies()
     {
         return $this->quizReplies;
+    }
+
+    /**
+     * Set elapsedSeconds
+     *
+     * @param integer $elapsedSeconds
+     * @return Quiz
+     */
+    public function setElapsedSeconds($elapsedSeconds)
+    {
+        $this->elapsedSeconds = $elapsedSeconds;
+    
+        return $this;
+    }
+
+    /**
+     * Get elapsedSeconds
+     *
+     * @return integer 
+     */
+    public function getElapsedSeconds()
+    {
+        return $this->elapsedSeconds;
     }
 }

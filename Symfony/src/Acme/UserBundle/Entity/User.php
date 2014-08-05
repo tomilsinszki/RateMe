@@ -81,7 +81,6 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $clients;
 
-
     public function serialize()
     {
         return \json_encode(array(
@@ -202,6 +201,30 @@ class User implements AdvancedUserInterface, \Serializable
         return $this->isActive;
     }
 
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    
+        return $this;
+    }
+    
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+    
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    
+        return $this;
+    }
+    
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+    
     public function setEmail($email) {
         $this->email = $email;
     }
@@ -210,4 +233,20 @@ class User implements AdvancedUserInterface, \Serializable
         return $this->email;
     }
 
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+    
+    public function addOwnedCollection(\Acme\RatingBundle\Entity\RateableCollection $ownedCollection)
+    {
+        $this->ownedCollections[] = $ownedCollection;
+    
+        return $this;
+    }
+    
+    public function removeOwnedCollection(\Acme\RatingBundle\Entity\RateableCollection $ownedCollection)
+    {
+        $this->ownedCollections->removeElement($ownedCollection);
+    }
 }
