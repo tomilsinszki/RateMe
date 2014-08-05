@@ -128,7 +128,10 @@ class RateableCollectionController extends Controller
     }
     
     public function companyAction($id) {
-        $company                      = $this->getDoctrine()->getRepository('AcmeRatingBundle:Company')->find($id);        
+        $company = $this->getDoctrine()->getRepository('AcmeRatingBundle:Company')->find($id);        
+        if ( empty($company) ) {
+            throw $this->createNotFoundException('The company does not exists.');
+        }
         $ratableCollectionsForCompany = $company->getRateableCollections();
         
         $content = $this->renderView('AcmeRatingBundle:RateableCollection:company.html.twig', array(

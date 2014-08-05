@@ -18,6 +18,7 @@
             <div class="slider_bg">
                 <div class="slider">
                     {% for rateableCollection in rateableCollectionsForCompany %}
+                        {% if rateableCollection.identifier is not null %}
                         <div class="slide_elem">
                             <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">
                                 <div class="head">
@@ -30,6 +31,7 @@
                                 </div>
                             </a>
                         </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
