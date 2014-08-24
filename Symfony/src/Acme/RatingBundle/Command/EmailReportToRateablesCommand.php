@@ -186,7 +186,6 @@ EOD;
             ->where('u.isActive = 1')
             ->andWhere('r.isActive = 1')
             ->andWhere('u.email IS NOT NULL')
-            ->andWhere('q.target = 1')
             ->andWhere('q.text IS NOT NULL')
             ->andWhere('t.name IS NOT NULL')
             ->groupBy('r, q, t')
