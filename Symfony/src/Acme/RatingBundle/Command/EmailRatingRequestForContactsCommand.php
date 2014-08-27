@@ -55,7 +55,7 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
         $message->setSubject('Értékelje ügyintézőnk munkáját');
-        $message->setFrom(array('vidanet@rate.me.uk' => 'Vidanet'));
+        $message->setFrom(array('info@rateme.hu' => 'Vidanet'));
         $message->setTo($contactData['emailAddress']);
         $message->addBcc('rateme.archive@gmail.com');
         $embeddedImages = $this->embedImagesIntoMessage($contactData, $message);

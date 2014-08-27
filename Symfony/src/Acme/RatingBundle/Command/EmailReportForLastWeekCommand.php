@@ -40,7 +40,7 @@ class EmailReportForLastWeekCommand extends ContainerAwareCommand {
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
         $message->setSubject($translator->trans('emailTitle', array(), 'riport') . " - {$manager['rateableCollectionName']}");
-        $message->setFrom(array('report@rate.me.uk' => $translator->trans('emailFrom', array(), 'riport')));
+        $message->setFrom(array('info@rateme.hu' => $translator->trans('emailFrom', array(), 'riport')));
         $message->setTo($manager['emailAddress']);
         $message->addBcc('rateme.archive@gmail.com');
 

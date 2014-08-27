@@ -123,7 +123,7 @@ class IdentifierController extends Controller
         $signUpFormData = $signUpForm->getData();
         $message = \Swift_Message::newInstance()
             ->setSubject('[RateMe] SignUp')
-            ->setFrom(array('dontreply@rate.me.uk' => 'RateMe'))
+            ->setFrom(array('info@rateme.hu' => 'RateMe'))
             ->setTo(array('tamas.t.marton@gmail.com', 'ilsinszkitamas@gmail.com'))
             ->addBcc('rateme.archive@gmail.com')
             ->setBody(

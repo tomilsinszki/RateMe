@@ -203,7 +203,7 @@ EOD;
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
         $message->setSubject('Dolgozó heti értékelés');
-        $message->setFrom(array('dontreply@rate.me.uk' => 'RateMe'));
+        $message->setFrom(array('info@rateme.hu' => 'RateMe'));
         $message->setTo($rateableData['email']);
         $message->addBcc('rateme.archive@gmail.com');
         $embeddedImages = $this->embedImagesIntoMessage($message, $rateableData['ratings_average']);
