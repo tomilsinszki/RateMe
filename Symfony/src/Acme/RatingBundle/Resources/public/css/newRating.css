@@ -246,8 +246,8 @@ body {
 
 .price-img {
 	float: right;
-	text-align: right;
 	width: 190px;
+    text-align: center;
 }
 
 .question-box {
