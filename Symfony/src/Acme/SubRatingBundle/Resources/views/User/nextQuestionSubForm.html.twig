@@ -1,5 +1,5 @@
 <form action="{{ path('sub_rating_user_next_question') }}" method="POST">
-    <h3>{{ question.text }}</h3>
+    <h3 style="font-weight: bold;">{{ question.text }}</h3>
     
     <div class="answer-wrapper">
             {% for answer in question.answers %}
@@ -14,12 +14,8 @@
 
     <input type="hidden" name="ratingId" value="{{ rating.id }}" />
     
-    <div class="btn_wrapper" style="text-align: center;">
-        <input class="btn_cont yellow send-button" type="submit" value="Elküld" />
-    </div>
-    
-    <div class="remainingQuestions">
-        Hátralevő kérdések száma: {{ questionsCount }}
+    <div class="btn_wrapper">
+        <input class="btn_cont yellow send-button" type="submit" value="Válaszolok" />
     </div>
 
     <script type="text/javascript">
@@ -32,7 +28,7 @@
             }
 
             $wrapper.before(
-                $('<p />').addClass('error').css('color', 'red').css('font-weight', 'bold')
+                $('<p />').addClass('error')
                         .css('text-align', 'center').text('Nem választott ki egyetlen választ sem.')
             );
 

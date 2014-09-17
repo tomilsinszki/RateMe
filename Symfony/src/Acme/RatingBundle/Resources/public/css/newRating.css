@@ -52,11 +52,14 @@
 	font-size: 16px;
 	height: 30px;
 	margin: 0 auto;
-	width: 94px;	
+	width: 220px;	
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 div.btn_wrapper {
     text-align: center;
+    margin-top: 20px;
 }
 
 input.btn_cont.yellow.send-button {
@@ -69,7 +72,7 @@ input.btn_cont.yellow.send-button {
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
-	height: 30px;
+	height: 50px;
     color: #535353;
 }
 
@@ -131,7 +134,7 @@ body {
 }
 
 .bg-grad {
-	padding: 130px 0;
+	padding: 30px 0;
 }
 
 .container {
@@ -145,7 +148,7 @@ body {
 	margin: 0 auto;
 	padding: 22px 0 20px;
 	position: relative;
-	width: 560px;
+	width: 800px;
 }
 
 .thank-container {
@@ -245,9 +248,9 @@ body {
 }
 
 .price-img {
-	float: right;
-	width: 190px;
     text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .question-box {
@@ -263,6 +266,11 @@ body {
 	text-align: center;
 }
 
+.promotion-rules-container {
+    text-align: center;
+    font-size: 18px;
+}
+
 a.promotion-rules {
     color: #791f7e !important;
 }
@@ -272,18 +280,9 @@ a.promotion-rules {
 	margin: 0 auto 10px;
 }
 
-.email-wrapper h3 {
-	color: #791f7e;
-	font-size: 16px;
-	line-height: 20px;
-	margin-bottom: 15px;
-	text-align: center;
-    padding-top: 20px;
-}
-
 .email-wrapper .error-msg {
 	color: #ed1c24;
-	font-size: 14px;
+	font-size: 18px;
 	font-weight: normal;
 	margin: -13px 0 2px;
 	text-align: center;
@@ -351,7 +350,6 @@ a.promotion-rules {
 	color: #791f7e;
 	cursor: pointer;
 	display: block;
-	font-size: 14px;
 	height: 19px;
 	line-height: 22px;
 	padding-left: 30px;
@@ -415,7 +413,7 @@ a.promotion-rules {
 
 .thank-container p,
 .end-container p {
-	font-size: 14px;
+	font-size: 18px;
 	margin-bottom: 10px;
 }
 
@@ -432,11 +430,10 @@ a.promotion-rules {
 .thank-container a {
 	color: #f9a350;
 	display: block;
-	font-size: 14px;
+	font-size: 18px;
 	font-weight: bold;
 	margin-bottom: 15px;
 	text-align: center;
-	text-decoration: none;
 }
 
 .footer {
@@ -467,7 +464,62 @@ a.promotion-rules {
 	width: 30px;
 }
 
-.remainingQuestions {
-    color: #791f7e;
-    margin-top: 10px;
+#emailInput {
+    text-align: center;
+    font-size: 18px;
+    height: 40px;
+    width: 60%;
 }
+
+.oneMoreQuestion {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.winWithAnswering {
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+.winWithEmailTitle {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+@media all and (max-width: 800px) {
+    .bg-grad {
+        padding: 1px 0;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .starsWrapper {
+        padding: 0;
+    }
+
+    #emailInput {
+        width: 80%;
+    }
+
+    .btn_cont.yellow {
+        width: 80%;
+    }
+    
+    .footer {
+        width: 100%;
+        padding: 10px 0px;
+    }
+}
+
+@media all and (max-width: 400px) {
+    .stars {
+        display: none;
+    }
+
+    .starsWrapper h3 {
+        margin-bottom: 25px;
+    }
+}
+

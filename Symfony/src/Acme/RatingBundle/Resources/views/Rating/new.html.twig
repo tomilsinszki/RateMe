@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" charset="utf-8" />
 		<title>RateMe</title>
         <link  rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/acmerating/css/newRating.css') }}" />
         <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
@@ -52,17 +52,8 @@
 
 		<div class="bg-grad">
 			<div class="container">
-				<div class="wrapper">
-                    {% if contact is not null %}
-                        <h4>Tisztelt {{ contact.lastName }} {{ contact.firstName }}!</h4>
-                    {% endif %}
-
-					<p>Köszönjük értékelését és hogy hozzájárult kiszolgálásunk színvonalának javításához!</p>
-					<h2>{{ rateable.name }}</h2>
-					<div class="head-wrapper">
-						<img src="{{ asset(profileImageURL) }}" />
-					</div>
-					<h3>Az Ön értékelése:</h3>
+				<div class="wrapper starsWrapper">
+					<h3>Köszönjük értékelését!</h3>
 					<ul class="stars">
                         {% if 1 <= rating.stars %}<li></li>{% endif %}
                         {% if 2 <= rating.stars %}<li></li>{% endif %}
@@ -70,58 +61,52 @@
                         {% if 4 <= rating.stars %}<li></li>{% endif %}
                         {% if 5 <= rating.stars %}<li></li>{% endif %}
 					</ul>
-                    <h6>{{ rating.stars }}={% if 1 == rating.stars %}elégtelen{% endif %}{% if 2 == rating.stars %}elégséges{% endif %}{% if 3 == rating.stars %}közepes{% endif %}{% if 4 == rating.stars %}jó{% endif %}{% if 5 == rating.stars %}kitűnő{% endif %}</h6>
 				</div>
 
                 {% if question is not null %}
 				<div class="wrapper bottom-wrapper">
-					<div class="question-box">
-                        {% if company.ratingPromotionPrizeName is not null %}
-                        <div class="question-promo" {% if company.name == 'Lipóti Pékség' %}style='margin-bottom:120px;'{% endif %}>
-                                <div class="price-img">
-                                    {% if company.name == 'Vidanet' %}
-                                    <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Nyereményjáték képe" />
-                                    {% elseif company.name == 'Lipóti Pékség' %}
-                                    <img src="{{ asset('bundles/acmerating/images/orchideaHotel.png') }}" alt="Nyereményjáték képe" />
-                                    {% else %}
-                                    <img src="{{ asset('bundles/acmerating/images/watch.png') }}" alt="Nyereményjáték képe" />
-                                    {% endif %}
-                                </div>
-                                <div>
-                                    Van még pár másodperce? Ha igen, válaszoljon még egy kérdésre és nyerjen <strong>{{ company.ratingPromotionPrizeName }}!</strong>
-                                </div>
-                                {% if company.ratingPromotionRulesURL is not null %}
-                                <div>
-                                    <a class="promotion-rules" href='{{ company.ratingPromotionRulesURL }}'>
-                                        A nyereményjáték részletes szabályzata
-                                    </a>
-                                </div>
-                                {% endif %}
-                        </div>
-                        {% endif %}
+                    <h3 class="oneMoreQuestion">Válaszoljon még egy kérdésre!</h3>
 
+					<div class="question-box">
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
 					</div>
 				</div>
 
-                {% if contact is null %}
                 {% if company.ratingPromotionPrizeName is not null %}
-                {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
-                        <h3>Kérjük adja meg az email címét, hogy értesíteni<br />tudjuk a nyereményjáték eredményéről.</h3>
+                        <h3 class="winWithAnswering">Válaszaival nyerhet</h3>
+                        <h3>{{ company.ratingPromotionPrizeName }}.</h3>
+                        {% if company.ratingPromotionRulesURL is not null %}
+                        <div class="promotion-rules-container">
+                            <a class="promotion-rules" href='{{ company.ratingPromotionRulesURL }}'>
+                                A nyereményjáték részletes szabályzata
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="price-img">
+                            {% if company.name == 'Vidanet' %}
+                            <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Nyereményjáték képe" />
+                            {% else %}
+                            <img src="{{ asset('bundles/acmerating/images/watch.png') }}" alt="Nyereményjáték képe" />
+                            {% endif %}
+                        </div>
+                        
+                        {% if contact is null %}
+                        {% if rating.email is null %}
                         <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
 
                         <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
-                        <input id="emailInput" type="text" />
+                        <input id="emailInput" type="text" placeholder="Adja meg e-mail címét" />
 
-                        <div class="btn_wrapper" style="text-align: center;">
-                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="Elküld" />
+                        <div class="btn_wrapper">
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="E-mail mentése" />
                         </div>
+                        {% endif %}
+                        {% endif %}
                     </div>
                 </div>
-                {% endif %}
-                {% endif %}
                 {% endif %}
 
                 {% endif %}

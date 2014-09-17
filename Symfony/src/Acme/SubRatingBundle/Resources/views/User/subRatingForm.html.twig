@@ -53,9 +53,8 @@
 		<div class="bg-grad">
 			<div class="container thank-container">
 				<div class="wrapper">
-					<h2>Köszönjük, hogy válaszával segítette munkánkat!</h2>
-					<p>Ha még válaszol további kérdésekre, akkor az esélyei a sorsoláson annyiszorosára nőnek, ahány kérdésre válaszolt. Ha szeretne biztosra menni, vagy csak elmondaná véleményét, kérjük válaszoljon az alábbi kérdésre.</p>
-					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id}) }}">Ennyi elég volt, nem akarok több kérdésre válaszolni</a>
+                    <h3>{{ questionsCount+1 }} kérdésünk van még...</h3>
+					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id}) }}">Nem válaszolok több kérdésre</a>
 				</div>
 
 				<div class="wrapper bottom-wrapper">
@@ -70,14 +69,14 @@
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
-                        <h3>Kérjük adja meg az email címét, hogy értesíteni<br />tudjuk a nyereményjáték eredményéről.</h3>
+                        <h3 class="winWithEmailTitle">Nyereményjátékunk eredményéről az alábbi címen értesítjük:</h3>
                         <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
                         
                         <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
-                        <input id="emailInput" type="text" />
+                        <input id="emailInput" type="text" placeholder="Adja meg e-mail címét" />
 
-                        <div class="btn_wrapper" style="text-align: center;">
-                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="Elküld" />
+                        <div class="btn_wrapper">
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="E-mail mentése" />
                         </div>
                     </div>
                 </div>
