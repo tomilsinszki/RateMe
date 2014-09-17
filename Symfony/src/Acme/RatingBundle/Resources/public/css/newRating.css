@@ -483,7 +483,7 @@ a.promotion-rules {
 
 .winWithEmailTitle {
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
 }
 
 @media all and (max-width: 800px) {
