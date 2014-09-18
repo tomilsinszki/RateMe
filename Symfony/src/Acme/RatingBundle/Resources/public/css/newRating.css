@@ -477,7 +477,7 @@ a.promotion-rules {
 }
 
 .winWithAnswering {
-    font-weight: bold;
+    font-weight: bold !important;
     margin-top: 30px;
 }
 
