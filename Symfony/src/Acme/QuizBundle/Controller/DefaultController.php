@@ -370,7 +370,7 @@ class DefaultController extends Controller {
                 ->getQuery()
                 ->getOneOrNullResult();
             
-            if (!$completedQuiz || $this->isDateOlderThanOneDay($completedQuiz->getCreated())) {
+            if (!$completedQuiz || $this->isDateOlderThan10Hours($completedQuiz->getCreated())) {
                 return true;
             }
         }
@@ -378,8 +378,8 @@ class DefaultController extends Controller {
         return false;
     }
 
-    private function isDateOlderThanOneDay(\DateTime $date) {
-        return $date->getTimestamp() + 24*60*60 < time();
+    private function isDateOlderThan10Hours(\DateTime $date) {
+        return $date->getTimestamp() + 10*60*60 < time();
     }
     
     private function createQuestionsWithAnswersArray($questions) {
