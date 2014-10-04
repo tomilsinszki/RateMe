@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dolgozó heti értékelés</title>
+    <title>Dolgozó értékelés</title>
 </head>
 <body style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;">
 <div style="background: #424242 url('{{ images.background }}') repeat; width: 600px;">
@@ -12,7 +12,7 @@
     {% if contacts != 0 %}
     <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align: center;">
         <p style="margin: 0; padding: 10px 0 20px;">
-            Az elmúlt héten összesen
+            A hónapban összesen
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ contacts }}</span>
             <strong>kontaktust</strong> rögzítettél.
         </p>
@@ -21,7 +21,7 @@
     {% if ratings != 0 %}
     <div style="background-color: white; border: 2px solid #EAEAEA; border-top: 0; color: #535353; text-align: center;">
         <p style="margin: 0; padding: 10px 0 15px;">
-            Az elmúlt héten összesen
+            A hónapban összesen
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings }}</span>
             <strong>értékelést</strong> kaptál,<br/>melyek <strong>átlaga</strong>
             <span style="font-size: 2.5em; margin: 0 5px;"> {{ ratings_average|round(1, 'common') }}</span>
@@ -74,7 +74,7 @@
                         <ul style="margin-top: 5px;">
                         {% endif %}
                         <li>
-                            Válasz {{ question.answer }}:
+                            {{ question.answer }}:
                             {{ question.answers }} db,
                             {{ (question.answers * 100 /
                             attribute(subratingSums, question.question_id))|number_format(0) }}%
