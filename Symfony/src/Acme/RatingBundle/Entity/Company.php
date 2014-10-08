@@ -62,7 +62,21 @@ class Company
      * @ORM\Column(name="ratingPageCancelSubratingFontColor", type="text", nullable=false)
      */
     private $ratingPageCancelSubratingFontColor;
-
+    
+    /**
+     * @var string $ratingEmailBackgroundColor
+     *
+     * @ORM\Column(name="ratingEmailBackgroundColor", type="text", nullable=false)
+     */
+    private $ratingEmailBackgroundColor;
+    
+    /**
+     * @var string $ratingEmailFontColor
+     *
+     * @ORM\Column(name="ratingEmailFontColor", type="text", nullable=false)
+     */
+    private $ratingEmailFontColor;
+    
     /**
      * @var string $ratingPromotionPrizeName
      *
@@ -161,6 +175,17 @@ class Company
         return $this;
     }
 
+    public function getRatingEmailBackgroundColor()
+    {
+        return $this->ratingEmailBackgroundColor;
+    }
+
+    public function setRatingEmailBackgroundColor($ratingEmailBackgroundColor)
+    {
+        $this->ratingEmailBackgroundColor = $ratingEmailBackgroundColor;
+        return $this;
+    }
+
     public function getRatingPageFontColor()
     {
         return $this->ratingPageFontColor;
@@ -169,6 +194,17 @@ class Company
     public function setRatingPageFontColor($ratingPageFontColor)
     {
         $this->ratingPageFontColor = $ratingPageFontColor;
+        return $this;
+    }
+
+    public function getRatingEmailFontColor()
+    {
+        return $this->ratingEmailFontColor;
+    }
+
+    public function setRatingEmailFontColor($ratingEmailFontColor)
+    {
+        $this->ratingEmailFontColor = $ratingEmailFontColor;
         return $this;
     }
 

@@ -2,18 +2,18 @@
 <html>
 	<head></head>
 	<body>
-		<table style="font-family: Arial; width: 100%; border: none; border-collapse: collapse; border-spacing: 0; background-color: #f2eaf3;">
+		<table style="font-family: Arial; width: 100%; border: none; border-collapse: collapse; border-spacing: 0; background-color: #{{ contactData.backgroudColor }};">
 			<tr>
 				<td style="padding: 40px 20px 25px 20px;">
-					<h2 style="color: #791f7e; font-size: 16px; font-weight: bold; margin: 0 0 20px 0; text-transform:capitalize;">Tisztelt {{ contactData.lastName }} {{ contactData.firstName }}!</h2>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Köszönjük, hogy a közelmúltban felkereste a Vidanet ügyfélszolgálatát! Reméljük, meg tudtuk válaszolni kérdéseit.</p>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Fontosnak tartjuk, hogy ügyfeleink a lehető legjobb kiszolgálásban részesüljenek az ügyintézés során. Munkánk minőségének folyamatos javításában számítunk az Ön véleményére is!</p>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Kérjük, értékelje az Önt {% if contactData.rateableIsReachableViaTelephone %}telefonon {% endif %}kiszolgáló kollégánk munkáját és a kiszolgálás színvonalát.</p>
-					<h3 style="color: #791f7e; font-size: 16px; font-weight: bold; margin: 0 0 7px 0; text-align: center; text-transform:capitalize;">{{ contactData.rateableName }}</h3>
+					<h2 style="color: #{{ contactData.fontColor }}; font-size: 16px; font-weight: bold; margin: 0 0 20px 0; text-transform:capitalize;">Tisztelt {{ contactData.lastName }} {{ contactData.firstName }}!</h2>
+					<p style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Köszönjük, hogy a közelmúltban igénybe vette {{ contactData.companyName }} szolgáltatásunkat vagy felkereste ügyfélszolgálatunkat!</p>
+					<p style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Fontosnak tartjuk, hogy ügyfeleink a lehető legjobb kiszolgálásban részesüljenek az ügyintézés során. Munkánk minőségének folyamatos javításában számítunk az Ön véleményére is!</p>
+					<p style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Kérjük, értékelje az Önt {% if contactData.rateableIsReachableViaTelephone %}telefonon {% endif %}kiszolgáló kollégánk munkáját és a kiszolgálás színvonalát.</p>
+					<h3 style="color: #{{ contactData.fontColor }}; font-size: 16px; font-weight: bold; margin: 0 0 7px 0; text-align: center; text-transform:capitalize;">{{ contactData.rateableName }}</h3>
 					<div style="height: 120px; margin: 0 auto 30px auto; text-align: center;">
 						<img src="{{ images.profile }}" style="width: 120px; height: 120px; border-radius: 120px;" alt="{{ contactData.rateableName }}" />
 					</div>
-					<h4 style="color: #791f7e; font-size: 14px; font-weight: bold; margin: 0 0 10px 0; text-align: center;">Az értékeléshez kattintson a megfelelő csillagra</h4>
+					<h4 style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: bold; margin: 0 0 10px 0; text-align: center;">Az értékeléshez kattintson a megfelelő csillagra</h4>
 					<table style="width: 445px; border-collapse: collapse; border-spacing: 0; table-layout: fixed; margin: 0 auto 35px auto;">
 						<tr>
 							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':1}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star1 }}" style="border: none; width: 79px; height: 75px;" alt="1" /></a></td>
@@ -23,16 +23,16 @@
 							<td style="height: 75px;"><a href="{{ url('vote_after_contact', {'token':rateToken, 'stars':5}) }}" style="border: none; text-decoration: none; display: block; height: 75px; margin: 0 auto; width: 79px;"><img src="{{ images.star5 }}" style="border: none; width: 79px; height: 75px;" alt="5" /></a></td>
 						</tr>
 					</table>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Köszönjük a visszajelzését, várjuk újra ügyfélszolgálatunkon!</p>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Üdvözlettel,</p>
-					<p style="color: #791f7e; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">A Vidanet csapata</p>
+					<p style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Köszönjük a visszajelzését!</p>
+					<p style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">Üdvözlettel,</p>
+					<p style="color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal; margin: 0 0 18px 0;">{{ contactData.companyName }} csapata</p>
 				</td>
 			</tr>
 			<tr>
 				<td style="height: 10px; background-color: #fff;"></td>
 			</tr>
 			<tr>
-				<td style="padding: 10px 20px; color: #791f7e; font-size: 14px; font-weight: normal;">Nem lépett kapcsolatba Vidanet ügyfélszolgálattal? Kérjük jelezze <a href="{{ url('flag_email_for_contact_as_flawed', {'token':rateToken}) }}" style="color: #f9a350; text-decoration: none; text-transform: uppercase;">ITT</a>, hogy eltávolíthassuk email címét rendszerünkből.</td>
+				<td style="padding: 10px 20px; color: #{{ contactData.fontColor }}; font-size: 14px; font-weight: normal;">Nem lépett kapcsolatba kollégánkkal? Kérjük jelezze <a href="{{ url('flag_email_for_contact_as_flawed', {'token':rateToken}) }}" style="color: #{{ contactData.fontColor }}; text-transform: uppercase;">ITT</a>, hogy eltávolíthassuk email címét rendszerünkből.</td>
 			</tr>
 			<tr>
 				<td style="height: 10px; background-color: #fff;"></td>

@@ -20,9 +20,14 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
             r.name AS rateableName,
             r.is_reachable_via_telephone AS rateableIsReachableViaTelephone,
             i.id AS imageFileName,
-            i.path AS imageFileExtension
+            i.path AS imageFileExtension,
+            co.name AS companyName,
+            co.ratingEmailBackgroundColor AS backgroudColor,
+            co.ratingEmailFontColor AS fontColor
         FROM contact c
         LEFT JOIN rateable r ON c.rateable_id=r.id
+        LEFT JOIN rateable_collection rc ON r.collection_id=rc.id
+        LEFT JOIN company co ON rc.company_id=co.id
         LEFT JOIN image i ON r.image_id=i.id
         WHERE sent_email_at IS NULL
         ORDER BY contact_happened_at ASC";
@@ -54,8 +59,8 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $message = \Swift_Message::newInstance();
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
-        $message->setSubject('Értékelje ügyintézőnk munkáját');
-        $message->setFrom(array('info@rateme.hu' => 'Vidanet'));
+        $message->setSubject('Értékelje szolgáltatásunk minőségét');
+        $message->setFrom(array('info@rateme.hu' => $contactData['companyName']));
         $message->setTo($contactData['emailAddress']);
         $message->addBcc('rateme.archive@gmail.com');
         $embeddedImages = $this->embedImagesIntoMessage($contactData, $message);
