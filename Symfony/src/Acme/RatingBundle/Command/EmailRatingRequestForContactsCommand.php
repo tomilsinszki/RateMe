@@ -59,7 +59,7 @@ class EmailRatingRequestForContactsCommand extends ContainerAwareCommand
         $message = \Swift_Message::newInstance();
         $message->setCharset('UTF-8');
         $message->setContentType('text/html');
-        $message->setSubject('Értékelje szolgáltatásunk minőségét');
+        $message->setSubject('Értékelje kollégánk munkáját');
         $message->setFrom(array('info@rateme.hu' => $contactData['companyName']));
         $message->setTo($contactData['emailAddress']);
         $message->addBcc('rateme.archive@gmail.com');
