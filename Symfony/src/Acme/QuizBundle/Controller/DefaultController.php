@@ -127,8 +127,25 @@ class DefaultController extends Controller {
                     
                     foreach ($rowIterator as $row) {
                 		$cellIterator = $row->getCellIterator();
-                		$qText = $cellIterator->current()->getValue();
+                		$qText = trim($cellIterator->current()->getValue());
                         $qTextKey = $qText;
+
+                        $aTexts = array();
+                		$cellIterator->next();
+                		$aTexts[] = trim($cellIterator->current()->getValue());
+                		$cellIterator->next();
+                		$aTexts[] = trim($cellIterator->current()->getValue());
+
+                        $hasRowNonEmptyCell = ($qText !== '');
+                        foreach($aTexts as $v) {
+                            if ($v !== '') {
+                                $hasNonEmptyCell = true;
+                            }
+                        }
+
+                        if (!$hasRowNonEmptyCell) {
+                            continue;
+                        }
                         
                 		$question = null;
                 		if (!isset($questions[$qTextKey])) {
@@ -144,16 +161,10 @@ class DefaultController extends Controller {
 
                 		$cellIterator->next();
                 		$answer = null;
-                	    $aText = $cellIterator->current()->getValue();
+                	    $aText = trim($cellIterator->current()->getValue());
                 		if ($question->getCorrectAnswerText() !== $aText) {
                             $question->setCorrectAnswerText($aText);
                 		}
-
-                        $aTexts = array();
-                		$cellIterator->next();
-                		$aTexts[] = $cellIterator->current()->getValue();
-                		$cellIterator->next();
-                		$aTexts[] = $cellIterator->current()->getValue();
 
                 		foreach ($aTexts as $aText) {
                             $aTextKey = $aText;
@@ -229,16 +240,28 @@ class DefaultController extends Controller {
             }
     		$cellIterator = $row->getCellIterator();
     		$cellIterator->setIterateOnlyExistingCells(false);
+            $cellValues = array();
             foreach ($cellIterator as $i => $cell) {
-                $cellValue = trim($cell->getValue());
-                
+                $cellValues[$i] = trim($cell->getValue());
+            }
+            
+            foreach ($cellValues as $i => $cellValue) {    
                 if ($i >= $validHeaderOrigSize and $cellValue) {
                     $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a megengedettnél ('.$validHeaderOrigSize.') több mező van kitöltve (' . ($i+1) . '. cella)!';
                     break;
                 }
                 
                 if ($i < $validHeaderOrigSize and ( $cellValue===null or $cellValue==='' )) {
-                    $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella nincs kitöltve!';
+                    $hasNonEmptyCell = false;
+                    foreach($cellValues as $v) {
+                        if ($v !== '') {
+                            $hasNonEmptyCell = true;
+                        }
+                    }
+
+                    if ($hasNonEmptyCell) {
+                        $errors['QUESTIONS'][] = 'A(z) ' . $rowNum  . '. sorban a(z) ' . ($i+1) . '. cella nincs kitöltve!';
+                    }
                     break;
                 }
                 
