@@ -52,7 +52,7 @@ class QuestionRepository extends EntityRepository {
                     'SELECT q, wA
                      FROM AcmeQuizBundle:Question q
                      JOIN q.wrongAnswers wA
-                     WHERE q.id IN (:ids)'
+                     WHERE q.id IN (:ids) and wA.deleted IS NULL'
                 )
                 ->setParameter('ids', $randomIds)
                 ->getResult();

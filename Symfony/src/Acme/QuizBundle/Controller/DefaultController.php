@@ -130,23 +130,6 @@ class DefaultController extends Controller {
                 		$qText = trim($cellIterator->current()->getValue());
                         $qTextKey = $qText;
 
-                        $aTexts = array();
-                		$cellIterator->next();
-                		$aTexts[] = trim($cellIterator->current()->getValue());
-                		$cellIterator->next();
-                		$aTexts[] = trim($cellIterator->current()->getValue());
-
-                        $hasRowNonEmptyCell = ($qText !== '');
-                        foreach($aTexts as $v) {
-                            if ($v !== '') {
-                                $hasNonEmptyCell = true;
-                            }
-                        }
-
-                        if (!$hasRowNonEmptyCell) {
-                            continue;
-                        }
-                        
                 		$question = null;
                 		if (!isset($questions[$qTextKey])) {
                     		$question = new Question();
@@ -166,6 +149,16 @@ class DefaultController extends Controller {
                             $question->setCorrectAnswerText($aText);
                 		}
 
+                        $aTexts = array();
+                		$cellIterator->next();
+                		$aTexts[] = trim($cellIterator->current()->getValue());
+                		$cellIterator->next();
+                		$aTexts[] = trim($cellIterator->current()->getValue());
+
+                        if ($qText==='' OR $aText==='' OR $aTexts[0]==='' OR $aTexts[1]==='') {
+                            continue;
+                        }
+                        
                 		foreach ($aTexts as $aText) {
                             $aTextKey = $aText;
                 		    if (isset($questions[$qTextKey]['wrongAnswers'][$aTextKey])) {
