@@ -1,4 +1,4 @@
-INSERT INTO company (name, ratingPageBackgroundColor, ratingPageFontColor, ratingPageStarsSubtitleFontColor, ratingPageCancelSubratingFontColor, ratingEmailBackgroundColor, ratingEmailFontColor) VALUES ('Benyovszky Orvosi Központ', 'D0E0EB', 'B0D235', 'B0D235', 'B0D235', 'EBF7F8', 'B0D235');
+INSERT INTO company (name, ratingPageBackgroundColor, ratingPageFontColor, ratingPageStarsSubtitleFontColor, ratingPageCancelSubratingFontColor, ratingEmailBackgroundColor, ratingEmailFontColor) VALUES ('Benyovszky Orvosi Központ', 'D0E0EB', '607848', '607848', '607848', 'EBF7F8', '607848');
 INSERT INTO rateable_collection (company_id, question_order_id, name, created, updated) SELECT c.id AS company_id, 1 AS question_order_id, 'Benyovszky Orvosi Központ' AS name, NOW() AS created, NOW() AS updated FROM company c WHERE c.name='Benyovszky Orvosi Központ';
 
 DELETE FROM rateable_collection_owner WHERE user_id=(SELECT id FROM user WHERE username='marton.tamas');
