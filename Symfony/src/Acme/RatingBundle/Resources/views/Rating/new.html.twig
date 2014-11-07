@@ -88,6 +88,8 @@
                         <div class="price-img">
                             {% if company.name == 'Vidanet' %}
                             <img src="{{ asset('bundles/acmerating/images/bosch.png') }}" alt="Nyereményjáték képe" />
+                            {% elseif company.name == 'Vidanet Menedzsment' %}
+                            <img src="{{ asset('bundles/acmerating/images/rabbit.png') }}" alt="Nyereményjáték képe" />
                             {% else %}
                             <img src="{{ asset('bundles/acmerating/images/watch.png') }}" alt="Nyereményjáték képe" />
                             {% endif %}
