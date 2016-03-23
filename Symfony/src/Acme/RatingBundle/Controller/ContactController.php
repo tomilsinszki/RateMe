@@ -71,6 +71,10 @@ class ContactController extends Controller
 
     public function indexAction(Request $request)
     {
+        if ( $this->isCurrentUserAllowedToDoQuiz() ) {
+            return $this->redirect($this->generateUrl('quiz_entrance'));
+        }
+
         $defaultData = array();
         $contactForm = $this->createFormBuilder($defaultData)
             ->add('email', 'email', array('required' => true, 'attr' => array('autocomplete' => 'off')))
@@ -85,6 +89,32 @@ class ContactController extends Controller
         return $this->render('AcmeRatingBundle:Contact:index.html.twig', array(
             'form' => $contactForm->createView(),
         ));
+    }
+    
+    private function isCurrentUserAllowedToDoQuiz() {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $rateable = $this->getDoctrine()->getRepository('AcmeRatingBundle:Rateable')->findOneByRateableUser($user);
+        $questions = $this->getDoctrine()->getRepository('AcmeQuizBundle:Question')->find3RandomQuestionsNotShownInTheLast2Weeks($rateable);
+        
+        if ( 3 <= count($questions) ) {
+            $completedQuiz = $this->getDoctrine()->getRepository('AcmeQuizBundle:Quiz')->createQueryBuilder('q')
+                ->where('q.rateable = :rateable')
+                ->setParameter('rateable', $rateable)
+                ->orderBy('q.created', 'DESC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+            
+            if (!$completedQuiz || $this->isDateOlderThan10Hours($completedQuiz->getCreated())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private function isDateOlderThan10Hours(\DateTime $date) {
+        return $date->getTimestamp() + 10*60*60 < time();
     }
     
     public function newAction(Request $request)
