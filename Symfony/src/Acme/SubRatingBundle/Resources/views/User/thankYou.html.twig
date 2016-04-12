@@ -19,6 +19,11 @@
 			<div class="container end-container">
 				<div class="wrapper">
                     <p style="margin-bottom: 60px;">Köszönjük! Válaszait elküldtük a cégvezetőnek.</p>
+                    {% if rateableCollection.identifier is not empty %}
+                    {% if rateableCollection.identifier.alphanumericValue is not empty %}
+                        <p style="margin-bottom: 30px;">Még valakit értékelne? Vissza a <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">dolgozók listája</a>.
+                    {% endif %}
+                    {% endif %}
                     <p>Vissza a <a href="{{ path('_welcome') }}">főoldalra</a>.
 				</div>
 			</div>

@@ -45,10 +45,16 @@ class UserController extends Controller {
         $unratedQuestionsCount = $this->getDoctrine()->getRepository('AcmeSubRatingBundle:Question')->getUnratedQuestionsCountByRating($rating);
 
         if(empty($question)) {
-            return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array('companyId' => $company->getId())));
+            return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array(
+                'companyId' => $company->getId(),
+                'rateableCollectionId' => $rating->getRateable()->getCollection()->getId(),
+            )));
         }
         if(NULL != $maximumQuestionCount && $maximumQuestionCount == $ratedQuestionsCount) {
-            return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array('companyId' => $company->getId())));
+            return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array(
+                'companyId' => $company->getId(),
+                'rateableCollectionId' => $rating->getRateable()->getCollection()->getId(),
+            )));
         }
         if(NULL != $maximumQuestionCount  && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount) {
             $unratedQuestionsCount = $maximumQuestionCount - $ratedQuestionsCount;
@@ -65,13 +71,18 @@ class UserController extends Controller {
         );
     }
 
-    public function thankYouAction(Request $request, $companyId) {
+    public function thankYouAction(Request $request, $companyId, $rateableCollectionId) {
         $company = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:Company')->find($companyId);
         if ( empty($company) ) {
             throw $this->createNotFoundException('Company not found by id.');
         }
 
-        return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig', array('company' => $company));
+        $rateableCollection = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:RateableCollection')->find($rateableCollectionId);
+        if ( empty($rateableCollection) ) {
+            throw $this->createNotFoundException('Rateable collection not found by id.');
+        }
+
+        return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig', array('company' => $company, 'rateableCollection' => $rateableCollection));
     }
 
 }

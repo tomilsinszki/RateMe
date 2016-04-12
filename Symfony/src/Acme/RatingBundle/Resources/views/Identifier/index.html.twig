@@ -38,7 +38,9 @@
             </div>
         </header>
         <section class="simple stripe" id="rate">            
-            <div class="wrap">                
+            <div class="wrap">
+                <div style="text-align:center; color:#000000; font-size:38px; margin-bottom:15px;">Értékelné egyik dolgozónk munkáját?</div>
+                <div style="text-align:center; color:#aac62d; font-size:24px; margin-bottom:15px;">Adja meg a 4 jegyű értékelő kódót!</div>
                 {% if not form.vars.valid %}
                     <div style="margin-top:5px;" class="formErrorContainer">
                         {{ form_errors(form) }}
@@ -47,7 +49,7 @@
                 <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>                                        
                     {{ form_widget(form.alphanumericValue, {'attr': {'class': 'alphanumericCodeInput'}}) }}                    
                     {{ form_rest(form) }}                    
-                    <input type="submit" value="OK" />                   
+                    <input type="submit" value="Tovább" />
                 </form>
             </div>
         </section>

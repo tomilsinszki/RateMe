@@ -18,7 +18,7 @@
         <div class="vote">
             <h1>{{ rateable.name }}</h1>
             <h2>{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName }}</h3>
-            <h3>Értékelj a csillagok segítségével!</h3>
+            <h3>Értékeljen a csillagok segítségével!</h3>
             <ul>
                 <li id="star0"><a href="#"></a></li>
                 <li id="star1"><a href="#"></a></li>
@@ -30,7 +30,7 @@
                 <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
                 <input type="hidden" id="stars" name="stars" />
                 <div class="btn_cont yellow ok">
-                    <input type="submit" id="submitRating" disabled="true" value="OK" class="btn" style="font-size: 30px;" />
+                    <input type="submit" id="submitRating" disabled="true" value="Értékelés elküldése" class="btn" style="font-size: 30px;" />
                 </div>
             </form>
             {% if collection is not null %}

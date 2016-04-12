@@ -54,7 +54,7 @@
 			<div class="container thank-container">
 				<div class="wrapper">
                     <h3>{{ questionsCount+1 }} kérdésünk van még...</h3>
-					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id}) }}">Nem válaszolok több kérdésre</a>
+					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id, 'rateableCollectionId': rating.rateable.collection.id}) }}">Nem válaszolok több kérdésre</a>
 				</div>
 
 				<div class="wrapper bottom-wrapper">

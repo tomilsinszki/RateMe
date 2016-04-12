@@ -14,7 +14,7 @@ class IdentifierController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => $this->get('translator')->trans('Enter Code Here', array(), 'identifier'), 'autocomplete' => 'off')))
+            ->add('alphanumericValue', 'text', array('attr' => array('autocomplete' => 'off')))
             ->getForm();
         
         $signUpForm = $this->createFormBuilder($defaultData, array('csrf_protection' => false))
@@ -35,7 +35,7 @@ class IdentifierController extends Controller
     {
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('alphanumericValue', 'text', array('attr' => array('placeholder' => 'Értékelő kód', 'autocomplete' => 'off')))
+            ->add('alphanumericValue', 'text', array('attr' => array('autocomplete' => 'off')))
             ->getForm();
         
         $signUpForm = $this->createFormBuilder($defaultData, array('csrf_protection' => false))
@@ -61,7 +61,7 @@ class IdentifierController extends Controller
 
                 $identifier = $this->getDoctrine()->getRepository('AcmeRatingBundle:Identifier')->findOneByAlphanumericValue($alphanumericValue);
                 if ( empty($identifier) === TRUE ) {
-                    $form->addError(new FormError('Az általad megadott kód nem létezik'));                      
+                    $form->addError(new FormError('Ilyen kód nem létezik. Biztos jó kódot adott meg?'));                      
                     return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
                         'form'       => $form->createView(),
                         'signUpForm' => $signUpForm->createView(),
