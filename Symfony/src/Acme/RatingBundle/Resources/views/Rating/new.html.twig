@@ -45,7 +45,7 @@
             {{ include('AcmeRatingBundle:Rating:customCompanyDesign.css.twig') }}
         </style>
 	</head>
-	<body>
+	<body {% if company.name == 'Lipóti Pékség' %}style="background-color: #EADEBB;"{% endif %}>
         <!-- Preloaded images -->
         <img src="/images/custom_radio_on.png" style="display: none;">
 
@@ -65,7 +65,8 @@
 
                 {% if question is not null %}
 				<div class="wrapper bottom-wrapper">
-                    <h3 class="oneMoreQuestion">Válaszoljon még egy kérdésre!</h3>
+                    <h3 class="oneMoreQuestion">Fontosnak tartjuk, hogy vásárlóink a lehető legjobb kiszolgálásban részesüljenek, munkánk minőségének folyamatos javításában számítunk az Ön véleményére is!</h3>
+                    <h3 class="oneMoreQuestion">Kérjük, válaszaival segítse munkánkat!</h3>
 
 					<div class="question-box">
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}

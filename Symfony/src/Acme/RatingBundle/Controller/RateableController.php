@@ -160,6 +160,14 @@ class RateableController extends Controller
             return $this->renderView('AcmeRatingBundle:Rateable:archiveRateable.html.twig');
         }
 
+        if ($rateable->getCollection()->getCompany()->getName() == 'Lipóti Pékség') {
+            return $this->renderView('AcmeRatingBundle:Rateable:index_lipoti.html.twig', array(
+                'rateable' => $rateable,
+                'collection' => $rateable->getCollection(),
+                'imageURL' => $this->getImageURL($rateable),
+            ));
+        }
+
         return $this->renderView('AcmeRatingBundle:Rateable:index.html.twig', array(
             'rateable' => $rateable,
             'collection' => $rateable->getCollection(),

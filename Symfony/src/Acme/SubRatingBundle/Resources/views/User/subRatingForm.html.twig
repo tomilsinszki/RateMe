@@ -45,7 +45,7 @@
             {% include '::googleAnalytics.js.twig' %}
         </script>
 	</head>
-	<body>
+	<body {% if company.name == 'Lipóti Pékség' %}style="background-color: #EADEBB;"{% endif %}>
         <!-- Preloaded images -->
         <img src="/images/custom_radio_on.png" style="display: none;">
         

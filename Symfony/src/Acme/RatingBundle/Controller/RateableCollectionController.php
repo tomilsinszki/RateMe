@@ -118,11 +118,20 @@ class RateableCollectionController extends Controller
             'isActive' => true,
         ));
 
-        $content = $this->renderView('AcmeRatingBundle:RateableCollection:index.html.twig', array(
-            'collection' => $collection,
-            'rateables' => $rateables,
-            'rateableImageURLs' => $this->getImageURLsForRateablesInCollection($collection),
-        ));
+        if ($collection->getCompany()->getName() == 'Lipóti Pékség') {
+            $content = $this->renderView('AcmeRatingBundle:RateableCollection:index_lipoti.html.twig', array(
+                'collection' => $collection,
+                'rateables' => $rateables,
+                'rateableImageURLs' => $this->getImageURLsForRateablesInCollection($collection),
+            ));
+        }
+        else {
+            $content = $this->renderView('AcmeRatingBundle:RateableCollection:index.html.twig', array(
+                'collection' => $collection,
+                'rateables' => $rateables,
+                'rateableImageURLs' => $this->getImageURLsForRateablesInCollection($collection),
+            ));
+        }
 
         return new Response($content);
     }

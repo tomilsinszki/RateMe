@@ -14,7 +14,7 @@
             {{ include('AcmeRatingBundle:Rating:customCompanyDesign.css.twig') }}
         </style>
 	</head>
-	<body>
+	<body {% if rateableCollection.company.name == 'Lipóti Pékség' %}style="background-color: #EADEBB;"{% endif %}>
 		<div class="bg-grad">
 			<div class="container end-container">
 				<div class="wrapper">

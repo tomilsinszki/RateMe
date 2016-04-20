@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RateMe</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        
+        {% block stylesheets %}
+            <link href="{{ asset('css/global.css') }}" type="text/css" rel="stylesheet" />
+            <link href="{{ asset('css/upper-menu.css') }}" type="text/css" rel="stylesheet" />
+        {% endblock %}
+        
+        {% block javascripts %}
+            <script src="{{ asset('js/jquery.min.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('js/utils.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('bundles/acmerating/js/rating.js') }}" type="text/javascript"></script>
+            <style type="text/css">
+            #logo {
+                background: transparent url(/images/company/lipoti/header_bg_hun.jpg) center top no-repeat; width: 100%; height: 190px; display:block;
+            }
+            @media only screen and (max-width: 900px)  {
+            #logo  {
+                background: transparent url(/images/company/lipoti/logo.png) center top no-repeat; width: 100%; height: 190px; display:block;
+            }
+            }
+            </style>
+            
+            <script>
+                {% include '::googleAnalytics.js.twig' %}
+            </script>
+        {% endblock %}
+    </head>
+    <body style="background: none;">
+        <div class="bg_grad">
+            <div class="content" style='background: none;'>
+                <div id="logo">
+                </div>
+
+
+                <div class="wrap">
+                    <h3 style="color: #613813; font-size: 30px; padding-bottom: 20px;">Értékeljen a csillagok segítségével!</h3>
+                    <div class="head">
+                        {% if imageURL %}
+                            <img src="{{ asset(imageURL) }}" alt="head" />
+                        {% endif %}
+                    </div>
+                    <div class="vote" style="background: none;">
+                        <h1 style="color: #613813; font-family: Tahoma, sans-serif; text-shadow:none;">{{ rateable.name }}</h1>
+                        <h2 style="color: #613813; font-family: Tahoma, sans-serif; text-shadow:none;">{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName }}</h3>
+                        <ul>
+                            <li id="star0"><a href="#"></a></li>
+                            <li id="star1"><a href="#"></a></li>
+                            <li id="star2"><a href="#"></a></li>
+                            <li id="star3"><a href="#"></a></li>
+                            <li id="star4"><a href="#"></a></li>
+                        </ul>
+                        <form method="post" action="{{ path('rating_new') }}">
+                            <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
+                            <input type="hidden" id="stars" name="stars" />
+                            <div class="btn_cont yellow ok" style="background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);">
+                                <input type="submit" id="submitRating" disabled="true" value="Értékelés elküldése" class="btn" style="font-size: 30px; background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);" />
+                            </div>
+                        </form>
+                        {% if collection is not null %}
+                        {% if collection.identifier is not null %}
+                        <div class="btn_cont gray">
+                            <a href="{{ path('rateable_collection_main', {'alphanumericValue': collection.identifier.alphanumericValue}) }}">
+                                <div class="button_bg">
+                                    <div class="btn"><h3><div style="color: #EADEBB;">Mást értékelek</div></h3></div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
