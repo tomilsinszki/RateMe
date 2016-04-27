@@ -38,15 +38,15 @@
 
 
                 <div class="wrap">
-                    <h3 style="color: #613813; font-size: 30px; padding-bottom: 20px;">Értékeljen a csillagok segítségével!</h3>
+                    <h3 style="color: #613813; font-size: 30px; padding-bottom: 20px; padding-top: 35px;">Értékeljen a csillagok segítségével!</h3>
                     <div class="head">
                         {% if imageURL %}
                             <img src="{{ asset(imageURL) }}" alt="head" />
                         {% endif %}
                     </div>
                     <div class="vote" style="background: none;">
-                        <h1 style="color: #613813; font-family: Tahoma, sans-serif; text-shadow:none;">{{ rateable.name }}</h1>
-                        <h2 style="color: #613813; font-family: Tahoma, sans-serif; text-shadow:none;">{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName }}</h3>
+                        <h1 style="color: #A37E58; font-family: Tahoma, sans-serif; text-shadow:none;">{{ rateable.name }}</h1>
+                        <h2 style="color: #A37E58; font-family: Tahoma, sans-serif; text-shadow:none; padding-bottom:25px;">{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName }}</h3>
                         <ul>
                             <li id="star0"><a href="#"></a></li>
                             <li id="star1"><a href="#"></a></li>
@@ -54,7 +54,7 @@
                             <li id="star3"><a href="#"></a></li>
                             <li id="star4"><a href="#"></a></li>
                         </ul>
-                        <form method="post" action="{{ path('rating_new') }}">
+                        <form style="margin-top:30px;" method="post" action="{{ path('rating_new') }}">
                             <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
                             <input type="hidden" id="stars" name="stars" />
                             <div class="btn_cont yellow ok" style="background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);">
