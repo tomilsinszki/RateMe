@@ -471,6 +471,13 @@ a.promotion-rules {
     width: 60%;
 }
 
+#commentInput {
+    text-align: center;
+    font-size: 18px;
+    height: 40px;
+    width: 60%;
+}
+
 .oneMoreQuestion {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -500,6 +507,10 @@ a.promotion-rules {
     }
 
     #emailInput {
+        width: 80%;
+    }
+
+    #commentInput {
         width: 80%;
     }
 

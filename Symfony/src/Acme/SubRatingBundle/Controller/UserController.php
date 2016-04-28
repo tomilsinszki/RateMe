@@ -48,12 +48,14 @@ class UserController extends Controller {
             return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array(
                 'companyId' => $company->getId(),
                 'rateableCollectionId' => $rating->getRateable()->getCollection()->getId(),
+                'ratingId' => $rating->getId(),
             )));
         }
         if(NULL != $maximumQuestionCount && $maximumQuestionCount == $ratedQuestionsCount) {
             return $this->redirect($this->generateUrl('sub_rating_user_thank_you', array(
                 'companyId' => $company->getId(),
                 'rateableCollectionId' => $rating->getRateable()->getCollection()->getId(),
+                'ratingId' => $rating->getId(),
             )));
         }
         if(NULL != $maximumQuestionCount  && ($unratedQuestionsCount + $ratedQuestionsCount) > $maximumQuestionCount) {
@@ -71,7 +73,7 @@ class UserController extends Controller {
         );
     }
 
-    public function thankYouAction(Request $request, $companyId, $rateableCollectionId) {
+    public function thankYouAction(Request $request, $companyId, $rateableCollectionId, $ratingId) {
         $company = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:Company')->find($companyId);
         if ( empty($company) ) {
             throw $this->createNotFoundException('Company not found by id.');
@@ -82,7 +84,12 @@ class UserController extends Controller {
             throw $this->createNotFoundException('Rateable collection not found by id.');
         }
 
-        return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig', array('company' => $company, 'rateableCollection' => $rateableCollection));
+        $rating  = $this->getDoctrine()->getManager()->getRepository('AcmeRatingBundle:Rating')->find($ratingId);
+        if ( empty($rating) ) {
+            throw $this->createNotFoundException('Rating not found by id.');
+        }
+
+        return $this->render('AcmeSubRatingBundle:User:thankYou.html.twig', array('company' => $company, 'rateableCollection' => $rateableCollection, 'rating' => $rating));
     }
 
 }

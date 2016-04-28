@@ -13,18 +13,86 @@
         <style media="screen" type="text/css">
             {{ include('AcmeRatingBundle:Rating:customCompanyDesign.css.twig') }}
         </style>
+
+        <script>
+            $(function() {
+                $('#saveCommentForRatingButton').on('click', function() {
+                    var comment = $("#commentInput").val();
+                    $("#commentContainer").css('display', 'none');
+                });
+
+                function isEmailValid(email) {
+                    var emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+                    return ( email.search(emailRegExp) != -1 );
+                }
+
+                $('#saveEmailForRatingButton').on('click', function() {
+                    var email = $("#emailInput").val();
+
+                    if ( !isEmailValid(email) ) {
+                        $("#emailErrorContainer").css('display', 'block');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: "{{ path('rating_set_email') }}",
+                        type: 'POST',
+                        data: {
+                            ratingId: $("#ratingIdInput").val(),
+                            email: email
+                        },
+                        dataType: 'html',
+                        async: false
+                    }).done(function(innerHTML) {
+                        $("#emailContainer").html(innerHTML);
+                    });
+                });
+            });
+        </script>
 	</head>
 	<body {% if rateableCollection.company.name == 'Lipóti Pékség' %}style="background-color: #EADEBB;"{% endif %}>
 		<div class="bg-grad">
 			<div class="container end-container">
 				<div class="wrapper">
-                    <p style="margin-bottom: 60px;">Köszönjük! Válaszait elküldtük a cégvezetőnek.</p>
+                    <p style="margin-bottom: 20px; font-weight: bold;">Köszönjük, hogy válaszaival segítette munkánkat!</p>
+				</div>
+
+                <div id="commentContainer">
+                    <div class="wrapper bottom-wrapper email-wrapper">
+                        <p style="margin-bottom: 20px; margin-top: 20px;">Egyéb észrevétele is van? Kérjük ossza meg velünk!</p>
+                        <input id="commentInput" type="text" placeholder="Egyéb észrevételek" />
+
+                        <div class="btn_wrapper" style="margin-bottom: 20px;">
+                            <input id="saveCommentForRatingButton" class="btn_cont yellow send-button" type="button" value="Elküldés" />
+                        </div>
+                    </div>
+                </div>
+
+                {% if company.ratingPromotionPrizeName is not null %}
+                {% if rating.email is null %}
+                <div id="emailContainer">
+                    <div class="wrapper bottom-wrapper email-wrapper">
+                        <p style="margin-bottom: 20px; margin-top: 20px;">Részt venne nyereményjátékunkban? Adja meg e-mail címét!</p>
+                        <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
+
+                        <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
+                        <input id="emailInput" type="text" placeholder="E-mail cím" />
+
+                        <div class="btn_wrapper" style="margin-bottom: 20px;">
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="E-mail mentése" />
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+
+				<div class="wrapper bottom-wrapper">
                     {% if rateableCollection.identifier is not empty %}
                     {% if rateableCollection.identifier.alphanumericValue is not empty %}
-                        <p style="margin-bottom: 30px;">Még valakit értékelne? Vissza a <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">dolgozók listája</a>.
+                        <p style="margin-top: 20px; margin-bottom: 20px;">Még egy kollégánkat értékelné? Vissza a <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">dolgozók listához</a>.
                     {% endif %}
                     {% endif %}
-                    <p>Vissza a <a href="{{ path('_welcome') }}">főoldalra</a>.
+                    <p>Vagy térjen vissza a <a href="{{ path('_welcome') }}">főoldalra</a>.
 				</div>
 			</div>
 			

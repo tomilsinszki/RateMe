@@ -3,7 +3,7 @@ sub_rating_user_next_question:
     defaults: { _controller: AcmeSubRatingBundle:User:saveSubRatingAndShowNextQuestion }
 
 sub_rating_user_thank_you:
-    pattern:   /melysegi/kerdoiv/koszonjuk/{companyId}/{rateableCollectionId}
+    pattern:   /melysegi/kerdoiv/koszonjuk/{companyId}/{rateableCollectionId}/{ratingId}
     defaults: { _controller: AcmeSubRatingBundle:User:thankYou }
 
 sub_rating_owner_question_form:

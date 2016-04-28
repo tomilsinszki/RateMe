@@ -4,10 +4,12 @@
     <div class="answer-wrapper">
             {% for answer in question.answers %}
                 {% if answer.isEnabled %}
+                {% if company.name != 'Lipóti Pékség' or answer.text|trim is not empty %}
                     <div class="answer-option">
                         <input type="radio" class="checkbox-input" id="an-{{ answer.id }}" name="answerId" value="{{ answer.id }}" />
                         <label class="checkbox-input-label" for="an-{{ answer.id }}">{{ answer.text }}</label>
                     </div>
+                {% endif %}
                 {% endif %}
             {% endfor %}
     </div>
