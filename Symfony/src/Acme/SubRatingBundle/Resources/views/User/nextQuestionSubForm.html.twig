@@ -1,5 +1,5 @@
 <form action="{{ path('sub_rating_user_next_question') }}" method="POST">
-    <h3 style="font-weight: bold;">{{ question.text }}</h3>
+    <h3 style="font-weight: bold;">{{ question.text|trans({},'user') }}</h3>
     
     <div class="answer-wrapper">
             {% for answer in question.answers %}
@@ -7,7 +7,7 @@
                 {% if company.name != 'Lipóti Pékség' or answer.text|trim is not empty %}
                     <div class="answer-option">
                         <input type="radio" class="checkbox-input" id="an-{{ answer.id }}" name="answerId" value="{{ answer.id }}" />
-                        <label class="checkbox-input-label" for="an-{{ answer.id }}">{{ answer.text }}</label>
+                        <label class="checkbox-input-label" for="an-{{ answer.id }}">{{ answer.text|trans({},'user') }}</label>
                     </div>
                 {% endif %}
                 {% endif %}
@@ -17,7 +17,7 @@
     <input type="hidden" name="ratingId" value="{{ rating.id }}" />
     
     <div class="btn_wrapper">
-        <input class="btn_cont yellow send-button" type="submit" value="Válaszolok" />
+        <input class="btn_cont yellow send-button" type="submit" value="{% trans from 'company' %}Submit{% endtrans %}" />
     </div>
 
     <script type="text/javascript">
@@ -31,7 +31,7 @@
 
             $wrapper.before(
                 $('<p />').addClass('error')
-                        .css('text-align', 'center').text('Nem választott ki egyetlen választ sem.')
+                        .css('text-align', 'center').text("{% trans from 'user' %}Please select an answer{% endtrans %}")
             );
 
             return false;

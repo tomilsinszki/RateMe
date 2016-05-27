@@ -38,7 +38,14 @@
 
 
                 <div class="wrap">
-                    <h3 style="color: #613813; font-size: 30px; padding-bottom: 20px; padding-top: 35px;">Értékeljen a csillagok segítségével!</h3>
+                    <div style="text-align:center; margin-bottom: 5px;">
+                        {% if app.request.getLocale() != 'en' %}
+                            <a style="color:blue !important;" href="{{ path('identifier_lang', {'locale': 'en'}) }}">Switch to English version</a>
+                        {% else %}
+                            <a href="{{ path('identifier_lang', {'locale': 'hu'}) }}">Váltás a magyar nyelvű oldalra</a>
+                        {% endif %}
+                    </div>
+                    <h3 style="color: #613813; font-size: 30px; padding-bottom: 20px; padding-top: 35px;">{% trans from 'company' %}Click on the stars to rate!{% endtrans %}</h3>
                     <div class="head">
                         {% if imageURL %}
                             <img src="{{ asset(imageURL) }}" alt="head" />
@@ -46,7 +53,7 @@
                     </div>
                     <div class="vote" style="background: none;">
                         <h1 style="color: #A37E58; font-family: Tahoma, sans-serif; text-shadow:none;">{{ rateable.name }}</h1>
-                        <h2 style="color: #A37E58; font-family: Tahoma, sans-serif; text-shadow:none; padding-bottom:25px;">{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName }}</h3>
+                        <h2 style="color: #A37E58; font-family: Tahoma, sans-serif; text-shadow:none; padding-bottom:25px;">{% if collection %}{{ collection.name }},{% endif %} {{ rateable.typeName|trans({},'company') }}</h3>
                         <ul>
                             <li id="star0"><a href="#"></a></li>
                             <li id="star1"><a href="#"></a></li>
@@ -58,7 +65,7 @@
                             <input type="hidden" name="rateableId" value="{{ rateable.id }}" />
                             <input type="hidden" id="stars" name="stars" />
                             <div class="btn_cont yellow ok" style="background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);">
-                                <input type="submit" id="submitRating" disabled="true" value="Értékelés elküldése" class="btn" style="font-size: 30px; background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);" />
+                                <input type="submit" id="submitRating" disabled="true" value="{% trans from 'company' %}Send rating{% endtrans %}" class="btn" style="font-size: 30px; background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);" />
                             </div>
                         </form>
                         {% if collection is not null %}
@@ -66,7 +73,7 @@
                         <div class="btn_cont gray">
                             <a href="{{ path('rateable_collection_main', {'alphanumericValue': collection.identifier.alphanumericValue}) }}">
                                 <div class="button_bg">
-                                    <div class="btn"><h3><div style="color: #EADEBB;">Mást értékelek</div></h3></div>
+                                    <div class="btn"><h3><div style="color: #EADEBB; content: '';">{% trans from 'company' %}Pick another employee{% endtrans %}</div></h3></div>
                                 </div>
                             </a>
                         </div>

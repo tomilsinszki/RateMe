@@ -54,16 +54,16 @@
 		<div class="bg-grad">
 			<div class="container end-container">
 				<div class="wrapper">
-                    <p style="margin-bottom: 20px; font-weight: bold;">Köszönjük, hogy válaszaival segítette munkánkat!</p>
+                    <p style="margin-bottom: 20px; font-weight: bold;">{% trans from 'user' %}Thank you for your feedback!{% endtrans %}</p>
 				</div>
 
                 <div id="commentContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
-                        <p style="margin-bottom: 20px; margin-top: 20px;">Egyéb észrevétele is van? Kérjük ossza meg velünk!</p>
-                        <input id="commentInput" type="text" placeholder="Egyéb észrevételek" />
+                        <p style="margin-bottom: 20px; margin-top: 20px;">{% trans from 'user' %}Do you have anything else that you'd like to share with us?{% endtrans %}</p>
+                        <input id="commentInput" type="text" placeholder="{% trans from 'user' %}Enter feedback{% endtrans %}" />
 
                         <div class="btn_wrapper" style="margin-bottom: 20px;">
-                            <input id="saveCommentForRatingButton" class="btn_cont yellow send-button" type="button" value="Elküldés" />
+                            <input id="saveCommentForRatingButton" class="btn_cont yellow send-button" type="button" value="{% trans from 'user' %}Send{% endtrans %}" />
                         </div>
                     </div>
                 </div>
@@ -72,14 +72,14 @@
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
-                        <p style="margin-bottom: 20px; margin-top: 20px;">Részt venne nyereményjátékunkban? Adja meg e-mail címét!</p>
-                        <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
+                        <p style="margin-bottom: 20px; margin-top: 20px;">{% trans from 'user' %}Enter your e-mail to win{% endtrans %}</p>
+                        <h4 id="emailErrorContainer" class="error-msg">{% trans from 'user' %}E-mail seems to be wrong!{% endtrans %}</h4>
 
                         <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
-                        <input id="emailInput" type="text" placeholder="E-mail cím" />
+                        <input id="emailInput" type="text" placeholder="{% trans from 'user' %}Enter your email{% endtrans %}" />
 
                         <div class="btn_wrapper" style="margin-bottom: 20px;">
-                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="E-mail mentése" />
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="{% trans from 'user' %}Save email{% endtrans %}" />
                         </div>
                     </div>
                 </div>
@@ -89,16 +89,16 @@
 				<div class="wrapper bottom-wrapper">
                     {% if rateableCollection.identifier is not empty %}
                     {% if rateableCollection.identifier.alphanumericValue is not empty %}
-                        <p style="margin-top: 20px; margin-bottom: 20px;">Még egy kollégánkat értékelné? Vissza a <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">dolgozók listához</a>.
+                        <p style="margin-top: 20px; margin-bottom: 20px;">{% trans from 'user' %}Would you like to rate another employee? Back to{% endtrans %} <a href="{{ path('rateable_collection_main', {'alphanumericValue': rateableCollection.identifier.alphanumericValue}) }}">{% trans from 'user' %}the list of employees{% endtrans %}</a>.
                     {% endif %}
                     {% endif %}
-                    <p>Vagy térjen vissza a <a href="{{ path('_welcome') }}">főoldalra</a>.
+                    <p>{% trans from 'user' %}Or load the{% endtrans %} <a href="{{ path('_welcome') }}">{% trans from 'user' %}homepage{% endtrans %}</a>.
 				</div>
 			</div>
 			
 			<div class="footer">
                 <p>
-                    Az értékelés technikai támogatója a RateMe.
+                    {% trans from 'user' %}This customer satisfaction survey is powered by RateMe{% endtrans %}
 					<span class="rateme-logo"></span>
                 </p>
 			</div>

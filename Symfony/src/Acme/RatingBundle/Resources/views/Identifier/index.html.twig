@@ -39,8 +39,15 @@
         </header>
         <section class="simple stripe" id="rate">            
             <div class="wrap">
-                <div style="text-align:center; color:#000000; font-size:38px; margin-bottom:15px;">Értékelné egyik dolgozónk munkáját?</div>
-                <div style="text-align:center; color:#aac62d; font-size:24px; margin-bottom:15px;">Adja meg a 4 jegyű értékelő kódót!</div>
+                <div style="text-align:center; margin-bottom: 5px;">
+                    {% if app.request.getLocale() != 'en' %}
+                        <a style="color:blue !important;" href="{{ path('identifier_lang', {'locale': 'en'}) }}">Switch to English version</a>
+                    {% else %}
+                        <a href="{{ path('identifier_lang', {'locale': 'hu'}) }}">Váltás a magyar nyelvű oldalra</a>
+                    {% endif %}
+                </div>
+                <div style="text-align:center; color:#000000; font-size:38px; margin-bottom:15px;">{% trans from 'identifier' %}Take our customer satisfaction survey!{% endtrans %}</div>
+                <div style="text-align:center; color:#aac62d; font-size:24px; margin-bottom:15px;">{% trans from 'identifier' %}Please enter 4 digit code{% endtrans %}</div>
                 {% if not form.vars.valid %}
                     <div style="margin-top:5px;" class="formErrorContainer">
                         {{ form_errors(form) }}
@@ -49,7 +56,7 @@
                 <form action="{{ path('identifier_search') }}" method="post" {{ form_enctype(form) }}>                                        
                     {{ form_widget(form.alphanumericValue, {'attr': {'class': 'alphanumericCodeInput'}}) }}                    
                     {{ form_rest(form) }}                    
-                    <input type="submit" value="Tovább" />
+                    <input type="submit" value="{% trans from 'identifier' %}Next{% endtrans %}" />
                 </form>
             </div>
         </section>

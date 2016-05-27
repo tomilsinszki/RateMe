@@ -4,6 +4,8 @@ About: Rólunk
 'Contact Us': Kapcsolat
 Login: Belépés
 Menu: Menü
+'Take our customer satisfaction survey!': 'Értékelje a kiszolgálás minőségét!'
+'Please enter 4 digit code': 'Adja meg a 4 jegyű értékelő kódót'
 'Measure employee performance –': 'Mérd dolgozóid egyéni teljesítményét -'
 'using customer feedback!': 'valós ügyfél értékelések alapján!'
 'What is RateMe?': 'Mi a RateMe?'
@@ -28,3 +30,6 @@ Message: Üzenet
 Send: Küldés
 'Enter Code Here': 'Értékelő kód'
 Your message was sent!: Üzenetedet elküldtük!
+Please enter code: Nem adtál meg kódot
+Code doesn't seem valid: Ilyen kód nem létezik. Biztos jó kódot adott meg?
+Next: Tovább

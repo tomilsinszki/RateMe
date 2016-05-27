@@ -245,7 +245,7 @@
 }
 
 .form .btn_cont.back_to_home .btn h3:after {
-	content: 'Vissza a főoldalra';
+	content: '';
 }
 
 .form .btn_cont.login .btn h3:after {
@@ -980,10 +980,11 @@ p {
 	margin: 15px auto 0 auto;
 	width: 78.125%;
 }
-
+/*
 .vote .btn_cont.gray .btn h3:after {
 	content: 'Mást értékelek';
 }
+*/
 
 
 .floated_bg {

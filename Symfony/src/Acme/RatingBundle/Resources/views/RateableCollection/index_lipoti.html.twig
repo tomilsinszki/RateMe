@@ -39,12 +39,19 @@
                     </div>
                     <div class="prof_bg" style="background: none;">
                         <div class="wrap">
+                            <div style="text-align:center; margin-bottom: 5px;">
+                                {% if app.request.getLocale() != 'en' %}
+                                    <a style="color:blue !important; font-weight:normal;" href="{{ path('identifier_lang', {'locale': 'en'}) }}">Switch to English version</a>
+                                {% else %}
+                                    <a style="font-weight:normal;" href="{{ path('identifier_lang', {'locale': 'hu'}) }}">Váltás a magyar nyelvű oldalra</a>
+                                {% endif %}
+                            </div>
                             {% if collection %}
                                 <h1 style="margin-bottom: 20px; margin-top: 10px; color: #613813; font-family: Tahoma, sans-serif; text-shadow:none;">{{ collection.name }}</h1>
                             {% endif %}
-                            <h3 style="color:#A37E58; font-family: Tahoma, sans-serif; font-weight:normal; text-shadow:none;">Köszönjük, hogy a közelmúltban üzletünkben vásárolt!</h3>
-                            <h3 style="color:#A37E58; font-family: Tahoma, sans-serif; font-weight:normal; text-shadow:none;">Kérjük, értékelje az Önt kiszolgáló kollégánk munkáját és a kiszolgálás színvonalát.</h3>
-                            <h3 style="margin-top: 35px; margin-bottom: 20px; color: #613813; font-size:26px; font-family: Tahoma, sans-serif; text-shadow:none;">Melyik dolgozót szeretné értékelni?</h3>
+                            <h3 style="color:#A37E58; font-family: Tahoma, sans-serif; font-weight:normal; text-shadow:none;">{% trans from 'company' %}Thank you for shopping with us!{% endtrans %}</h3>
+                            <h3 style="color:#A37E58; font-family: Tahoma, sans-serif; font-weight:normal; text-shadow:none;">{% trans from 'company' %}Your feedback is highly appreciated and will help us to improve our service.{% endtrans %}</h3>
+                            <h3 style="margin-top: 35px; margin-bottom: 20px; color: #613813; font-size:26px; font-family: Tahoma, sans-serif; text-shadow:none;">{% trans from 'company' %}Which employee would you like to rate?{% endtrans %}</h3>
 
                             <div class="slider_bg">
                                 <div class="slider" style="background-color: #EADEBB; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EADEBB', endColorstr='#D9CEB2'); background: -webkit-gradient(linear, left top, left bottom, from(#EADEBB), to(#D9CEB2)); background: -moz-linear-gradient(top,  #EADEBB,  #D9CEB2); background: -o-linear-gradient(top,  #EADEBB,  #D9CEB2);">
@@ -58,7 +65,7 @@
                                                 </div>
                                                 <div class="tail">
                                                     <h1 style="color: #613813;">{{ rateable.name }}</h1>
-                                                    <h2 style="color: #613813;">{{ rateable.typeName }}</h2>
+                                                    <h2 style="color: #613813;">{{ rateable.typeName|trans({},'company') }}</h2>
                                                 </div>
                                             </a>
                                         </div>

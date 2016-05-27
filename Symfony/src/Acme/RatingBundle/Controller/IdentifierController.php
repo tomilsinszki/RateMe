@@ -31,6 +31,12 @@ class IdentifierController extends Controller
         ));
     }
 
+    public function langAction($locale)
+    {
+        $this->get('session')->set('_locale', $locale);
+        return $this->redirect($this->generateUrl('_welcome'));  
+    }
+
     public function searchAction(Request $request)
     {
         $defaultData = array();
@@ -50,9 +56,12 @@ class IdentifierController extends Controller
             $form->bind($request);
 
             if ( $form->isValid() ) {
+                $noCodeErrorMessage = $this->get('translator')->trans('Please enter code', array(), 'identifier');
+                $isCodeValidErrorMessage = $this->get('translator')->trans("Code doesn't seem valid", array(), 'identifier');
+
                 $alphanumericValue = $form->get('alphanumericValue')->getData();
                 if ( empty($alphanumericValue) === TRUE ) {
-                    $form->addError(new FormError('Nem adtál meg kódot'));                    
+                    $form->addError(new FormError($noCodeErrorMessage));
                     return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
                         'form'       => $form->createView(),
                         'signUpForm' => $signUpForm->createView(),
@@ -61,7 +70,7 @@ class IdentifierController extends Controller
 
                 $identifier = $this->getDoctrine()->getRepository('AcmeRatingBundle:Identifier')->findOneByAlphanumericValue($alphanumericValue);
                 if ( empty($identifier) === TRUE ) {
-                    $form->addError(new FormError('Ilyen kód nem létezik. Biztos jó kódot adott meg?'));                      
+                    $form->addError(new FormError($isCodeValidErrorMessage));
                     return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
                         'form'       => $form->createView(),
                         'signUpForm' => $signUpForm->createView(),
@@ -78,7 +87,7 @@ class IdentifierController extends Controller
                     return $this->redirect($this->generateUrl('rateable_collection_main', array('alphanumericValue' => $alphanumericValue)));
                 }
 
-                $form->addError(new FormError('Az általad megadott kód nem létezik'));                
+                $form->addError(new FormError($isCodeValidErrorMessage));
                 return $this->render('AcmeRatingBundle:Identifier:index.html.twig', array(
                     'form'       => $form->createView(),
                     'signUpForm' => $signUpForm->createView(),

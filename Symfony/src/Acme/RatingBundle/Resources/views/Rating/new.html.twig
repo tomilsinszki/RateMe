@@ -53,7 +53,7 @@
 		<div class="bg-grad">
 			<div class="container">
 				<div class="wrapper starsWrapper">
-					<h3>Köszönjük értékelését!</h3>
+					<h3>{% trans from 'company' %}Thank you for your rating!{% endtrans %}</h3>
 					<ul class="stars">
                         {% if 1 <= rating.stars %}<li></li>{% endif %}
                         {% if 2 <= rating.stars %}<li></li>{% endif %}
@@ -65,8 +65,8 @@
 
                 {% if question is not null %}
 				<div class="wrapper bottom-wrapper">
-                    <h3 class="oneMoreQuestion">Fontosnak tartjuk, hogy vásárlóink a lehető legjobb kiszolgálásban részesüljenek, munkánk minőségének folyamatos javításában számítunk az Ön véleményére is!</h3>
-                    <h3 class="oneMoreQuestion">Kérjük, válaszaival segítse munkánkat!</h3>
+                    <h3 class="oneMoreQuestion">{% trans from 'company' %}Your feedback is highly appreciated and will help us to improve our service.{% endtrans %}</h3>
+                    <h3 class="oneMoreQuestion">{% trans from 'company' %}Please also answer the following questions!{% endtrans %}</h3>
 
 					<div class="question-box">
                         {{ include('AcmeSubRatingBundle:User:nextQuestionSubForm.html.twig') }}
@@ -76,8 +76,8 @@
                 {% if company.ratingPromotionPrizeName is not null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
-                        <h3 class="winWithAnswering">Válaszaival nyerhet</h3>
-                        <h3>{{ company.ratingPromotionPrizeName }}.</h3>
+                        <h3 class="winWithAnswering">{% trans from 'company' %}Win{% endtrans %}</h3>
+                        <h3>{{ company.ratingPromotionPrizeName|trans({},'company') }}</h3>
                         {% if company.ratingPromotionRulesURL is not null %}
                         <div class="promotion-rules-container">
                             <a class="promotion-rules" target="_blank" href='{{ company.ratingPromotionRulesURL }}'>
@@ -98,13 +98,13 @@
                         
                         {% if contact is null %}
                         {% if rating.email is null %}
-                        <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
+                        <h4 id="emailErrorContainer" class="error-msg">{% trans from 'company' %}E-mail seems to be wrong!{% endtrans %}</h4>
 
                         <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
-                        <input id="emailInput" type="text" placeholder="Adja meg e-mail címét" />
+                        <input id="emailInput" type="text" placeholder="{% trans from 'company' %}Enter your email{% endtrans %}" />
 
                         <div class="btn_wrapper">
-                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="E-mail mentése" />
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="{% trans from 'company' %}Save email{% endtrans %}" />
                         </div>
                         {% endif %}
                         {% endif %}
@@ -117,10 +117,10 @@
 
 			<div class="footer">
                 <p>
-                    Az értékelés technikai támogatója a RateMe.
+                    {% trans from 'company' %}This customer satisfaction survey is powered by RateMe{% endtrans %}
 					<span class="rateme-logo"></span>
                 </p>
-                <p>Az Ön üzletének is fontosak a fogyasztói visszajelzések? Írjon nekünk az info@rateme.hu címre.</p>
+                <p>{% trans from 'company' %}Do you also value customer feedback in your business? E-mail us at info@rateme.hu{% endtrans %}</p>
 			</div>
 		</div>
 	</body>

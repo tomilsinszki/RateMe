@@ -4,6 +4,8 @@ About: About
 'Contact Us': 'Contact Us'
 Login: Login
 Menu: Menu
+'Take our customer satisfaction survey!': 'Take our customer satisfaction survey!'
+'Please enter 4 digit code': 'Please enter 4 digit code'
 'Measure employee performance –': 'Measure employee performance –'
 'using customer feedback!': 'using customer feedback!'
 'What is RateMe?': 'What is RateMe?'
@@ -28,3 +30,6 @@ Message: Message
 Send: Send
 Enter Code Here: 'Enter Code Here'
 Your message was sent!: Your message was sent!
+Please enter code: Please enter code
+Code doesn't seem valid: Code doesn't seem valid
+Next: Next

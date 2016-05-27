@@ -53,8 +53,8 @@
 		<div class="bg-grad">
 			<div class="container thank-container">
 				<div class="wrapper">
-                    <h3>{{ questionsCount+1 }} kérdésünk van még...</h3>
-					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id, 'rateableCollectionId': rating.rateable.collection.id, 'ratingId' : rating.id}) }}">Nem válaszolok több kérdésre</a>
+                    <h3>{{ questionsCount+1 }} {% trans from 'user' %}questions remaining...{% endtrans %}</h3>
+					<a href="{{ path('sub_rating_user_thank_you', {'companyId': company.id, 'rateableCollectionId': rating.rateable.collection.id, 'ratingId' : rating.id}) }}">{% trans from 'user' %}I'd like to stop here{% endtrans %}</a>
 				</div>
 
 				<div class="wrapper bottom-wrapper">
@@ -69,14 +69,14 @@
                 {% if rating.email is null %}
                 <div id="emailContainer">
                     <div class="wrapper bottom-wrapper email-wrapper">
-                        <h3 class="winWithEmailTitle">Nyereményjátékunk eredményéről az alábbi címen értesítjük:</h3>
-                        <h4 id="emailErrorContainer" class="error-msg">Hibás e-mail cím!</h4>
+                        <h3 class="winWithEmailTitle">{% trans from 'user' %}Enter your e-mail to win{% endtrans %}</h3>
+                        <h4 id="emailErrorContainer" class="error-msg">{% trans from 'user' %}E-mail seems to be wrong!{% endtrans %}</h4>
                         
                         <input id="ratingIdInput" type="hidden" value="{{ rating.id }}" />
-                        <input id="emailInput" type="text" placeholder="Adja meg e-mail címét" />
+                        <input id="emailInput" type="text" placeholder="{% trans from 'user' %}Enter your email{% endtrans %}" />
 
                         <div class="btn_wrapper">
-                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="E-mail mentése" />
+                            <input id="saveEmailForRatingButton" class="btn_cont yellow send-button" type="button" value="{% trans from 'user' %}Save email{% endtrans %}" />
                         </div>
                     </div>
                 </div>
@@ -88,10 +88,10 @@
 			
 			<div class="footer">
                 <p>
-                    Az értékelés technikai támogatója a RateMe.
+                    {% trans from 'user' %}This customer satisfaction survey is powered by RateMe{% endtrans %}
 					<span class="rateme-logo"></span>
                 </p>
-                <p>Az Ön üzletének is fontosak a fogyasztói visszajelzések? Írjon nekünk az info@rateme.hu címre.</p>
+                <p>{% trans from 'user' %}Do you also value customer feedback in your business? E-mail us at info@rateme.hu{% endtrans %}</p>
 			</div>
 		</div>
 	</body>

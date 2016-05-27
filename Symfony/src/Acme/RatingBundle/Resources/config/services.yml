@@ -8,3 +8,8 @@ services:
             - { name: kernel.event_listener, event: rating.modify.identifier, method: modifyIdentifierForEntity }
         arguments:
             - @doctrine.orm.entity_manager
+    acme_locale.locale_listener:
+        class: Acme\RatingBundle\EventListener\LocaleListener
+        arguments: ["%kernel.default_locale%"]
+        tags:
+            - { name: kernel.event_subscriber }

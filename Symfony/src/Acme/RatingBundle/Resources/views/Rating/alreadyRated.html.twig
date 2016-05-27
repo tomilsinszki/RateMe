@@ -10,14 +10,14 @@
     <div class="wrap">
         <div class="form center">
             <h2>
-                Már értékelte kollégánkat az elmúlt hét napban, ezért most nem tudja. Kérjük próbálkozzon újra később.
+                {% trans from 'company' %}You already rated this employee during the last seven days. Please try again later.{% endtrans %}
             </h2>
             <h3 class='centeredTitle'>
-                A sikertelen értékelésről értesítettük az oldal üzemeltetőit.
+                {% trans from 'company' %}Please note: Your attempt to rate this employee was logged.{% endtrans %}
             </h3>
             <a href="{{ path('_welcome') }}">
                 <div class="btn_cont yellow back_to_home">
-                    <div class="btn"><h3><div>Vissza a főoldalra</div></h3></div>
+                    <div class="btn"><h3><div>{% trans from 'company' %}Back to the homepage{% endtrans %}</div></h3></div>
                 </div>
             </a>
         </div>
